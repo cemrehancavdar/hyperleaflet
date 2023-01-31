@@ -1,0 +1,8 @@
+{% macro point_row(point) %}
+    <tr data-id={{point.id}} data-latlng={{point.x}},{{point.y}}>
+        <td>{{point.x}}</td>
+        <td>{{point.y}}</td>
+        <td>{{point.name}}</td>
+        <td><button role='button' hx-delete='point/{{point.id}}'>Sil</button></td>
+    </tr>
+{% endmacro %}
