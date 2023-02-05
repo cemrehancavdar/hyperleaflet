@@ -3,20 +3,18 @@
 {%from 'macros.jinja' import point_row%}
 
 {% block body %}
-<div id="map" data-center="39.73, 39.99" data-zoom="5" style="width: 600px; height: 400px;">
-    <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default></div>
-    <div data-tile="OpenStreetMap"></div>
-</div>
-<table hx-target="closest tr" hx-ext="leaflet" hx-swap="outerHTML">
+<div class="pico-container">
+  <table hx-target="closest tr" hx-ext="leaflet" hx-swap="outerHTML">
     {% for point in points %}
     {{point_row(point)}}
     {% endfor %}
     <tr id="replaceMe">
-        <td colspan="3">
-          <button class='btn' hx-get="/point?page=2" hx-target="#replaceMe" hx-swap="outerHTML">
-            Load More Points...
-          </button>
-        </td>
-      </tr>
-</table>
-{% endblock %}
+      <td colspan="5">
+        <button class='btn' hx-get="/point?page=2" hx-target="#replaceMe" hx-swap="outerHTML">
+          Load More Points...
+        </button>
+      </td>
+    </tr>
+  </table>
+  {% endblock %}
+</div>

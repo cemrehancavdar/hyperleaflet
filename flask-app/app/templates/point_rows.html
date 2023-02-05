@@ -4,7 +4,7 @@
 {{point_row(point)}}
 {% endfor %}
 <tr id="replaceMe">
-    <td colspan="3">
+    <td colspan="4">
         <button class='btn' hx-get="/point?page={{page}}" hx-target="#replaceMe" hx-swap="outerHTML">
             Load More Points...
         </button>
