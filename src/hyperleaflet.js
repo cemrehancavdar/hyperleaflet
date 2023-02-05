@@ -30,12 +30,12 @@ const hyperleaflet = (function hyperleaflet() {
     const { dataset: tileLayerDataset } = tileLayer;
     const tileLayerName = tileLayerDataset.tile;
     if (tileLayerName in TILE_LAYERS) {
-      const tempTile = TILE_LAYERS[tileLayerName];
-      tempTile.options.minZoom = tileLayerDataset.minZoom;
-      tempTile.options.maxZoom = tileLayerDataset.maxZoom;
-      tiles[tileLayerName] = tempTile;
+      const currentTile = TILE_LAYERS[tileLayerName];
+      currentTile.options.minZoom = tileLayerDataset.minZoom;
+      currentTile.options.maxZoom = tileLayerDataset.maxZoom;
+      tiles[tileLayerName] = currentTile;
       if ('default' in tileLayerDataset) {
-        tile = tempTile;
+        tile = currentTile;
       }
     } else {
       // eslint-disable-next-line no-console
