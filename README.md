@@ -18,10 +18,8 @@ Hyperleaflet uses HTML dataset attributes as inputs. For example:
     </div>
 
 The data-center attribute in the first div element means that the Leaflet map will be centered on the specified latitude and longitude location.
-##### WIP
-data-center, data-zoom, data-max-zoom, data-tile etc. will be documented.
 
-### showing data
+### Showing Data
 Hyperleaflet listens to HTML elements marked with hx-ext="leaflet":
 
     <table hx-ext="leaflet" >
@@ -33,4 +31,19 @@ Hyperleaflet listens to HTML elements marked with hx-ext="leaflet":
         ...
     </table>
 
+Every HTML element tagged with data-id and data-latlng will be added to the Leaflet map as a point marker. This allows you to easily display data on the map.
+
+Hyperleaflet will also listen for changes triggered by HTMX events and dynamically update the Leaflet map accordingly.
+
 Note: data-center, data-zoom, data-max-zoom, data-tile, etc. will be documented in future releases.
+
+### What is cooking?
+
+Hyperleaflet will be constantly evolving. 
+We're working on adding new features and functionality.
+
+With the help of hyperscript interactions, we aim to enhance the library with features like map interaction on click, data interaction on click, and the ability to retrieve map click coordinates to input elements.
+
+ Additionally, we are exploring the possibility of adding other geometry types to the library.
+
+ We're working towards version 1.0 and will be publishing a roadmap to outline our plans. However, we're not afraid to experiment and try new things on the way. We welcome feedback and suggestions from the HTMX and Leaflet communities.
