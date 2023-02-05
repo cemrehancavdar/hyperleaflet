@@ -9,5 +9,8 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "rules": {}
+  "rules": {
+    "no-param-reassign": "off",
+    "no-multiple-empty-lines": "error"
+  }
 }
