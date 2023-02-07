@@ -8,7 +8,7 @@
 
 Hyperleaflet is a library that allows you to use the popular Leaflet library with just HTML attributes as an HTMX extension. With Hyperleaflet, you can interact with Leaflet maps without writing a single line of JavaScript.
 
-### motivation
+### Motivation
 
 HTMX is a powerful tool that aims to bring modern web development to the HTML level. With Hyperleaflet, HTMX extends its reach to interactive mapping, making it possible to interact with Leaflet maps without the need for any JavaScript code.
 
