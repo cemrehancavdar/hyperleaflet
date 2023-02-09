@@ -3,6 +3,15 @@
 {%from 'macros.jinja' import point_row%}
 
 {% block body %}
+<script type="text/hyperscript">
+
+  on pointclick(rowId) from #map
+    toggle .highlight on <[data-id="$rowId"]/>
+    remove .highlight from <[data-id]:not([data-id="$rowId"])/>
+    then log rowId
+
+</script>
+
 <div class="pico-container">
   <table hx-target="closest tr" hx-ext="leaflet" hx-swap="outerHTML">
     {% for point in points %}
@@ -16,5 +25,21 @@
       </td>
     </tr>
   </table>
+  <!-- TODO: split these code to new pages -->
+<div class="grid">
+
+  <input type="text" id="lat" _="on mapclick(latlng) from #map set value of me to latlng.lat as Fixed:4">
+  
+  <input type="text" id="lng" _="on mapclick(latlng) from #map set value of me to latlng.lng as Fixed:4">
+  
+</div>
+<div class="grid">
+  <input type="text" id="lat" _="on mapmove(center) from #map set value of me to center.lat as Fixed:4">
+  <input type="text" id="lng" _="on mapmove(center) from #map set value of me to center.lng as Fixed:4">
+</div>
+
+<div class="grid">
+  <input type="text" id="lat" _="on mapzoom(zoom) from #map set value of me to zoom">
+
   {% endblock %}
 </div>

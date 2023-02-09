@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import { defineExtension } from 'htmx.org';
 import TILE_LAYERS from './constants';
+import initEvents, {initPointEvents} from './events';
 
 const hyperleaflet = (function hyperleaflet() {
   if (typeof L === 'undefined') {
@@ -45,6 +46,8 @@ const hyperleaflet = (function hyperleaflet() {
 
   const map = L.map(mapDiv).setView(center, zoom);
 
+  initEvents(map);
+
   if (Object.keys(tiles).length) {
     L.control.layers(tiles).addTo(map);
   }
@@ -55,6 +58,7 @@ const hyperleaflet = (function hyperleaflet() {
   const proxy = new Proxy(leafletObjects, {
     set(target, property, value) {
       const point = L.marker(value.split(',')).addTo(map);
+      initPointEvents(point, property)
       target[property] = point;
       return true;
     },
