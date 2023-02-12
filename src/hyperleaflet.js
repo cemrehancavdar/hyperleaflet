@@ -1,7 +1,8 @@
 import L from 'leaflet';
 import { defineExtension } from 'htmx.org';
 import TILE_LAYERS from './constants';
-import initEvents, {initPointEvents} from './events';
+import initEvents from './events';
+import createLeafletObject from './leaflet_utils';
 
 const hyperleaflet = (function hyperleaflet() {
   if (typeof L === 'undefined') {
@@ -9,6 +10,11 @@ const hyperleaflet = (function hyperleaflet() {
     console.error('Hyperleaf can not access Leaflet');
     return undefined;
   }
+
+  const debugMode = document.createElement('script');
+  debugMode.type = 'application/json';
+  debugMode.innerText = `{}`;
+  document.body.appendChild(debugMode);
 
   const mapDiv = document.querySelector('#map');
   const tileLayerDivs = mapDiv.querySelectorAll('[data-tile]');
@@ -57,9 +63,13 @@ const hyperleaflet = (function hyperleaflet() {
 
   const proxy = new Proxy(leafletObjects, {
     set(target, property, value) {
-      const point = L.marker(value.split(',')).addTo(map);
-      initPointEvents(point, property)
-      target[property] = point;
+      const geometry = createLeafletObject(value);
+      if (geometry) {
+        geometry.addTo(map)
+        target[property] = geometry;
+      } else {
+        console.warn(`Geometry with ${property} can not be created`);
+      }
       return true;
     },
     deleteProperty(target, property) {
@@ -80,17 +90,28 @@ const hyperleaflet = (function hyperleaflet() {
   };
 
   const processHyperleafTable = (target) => {
+    const debugData = JSON.parse(debugMode.text);
     const rowNodeList = target.querySelectorAll('[data-id]');
     const rowList = Array.from(rowNodeList);
-    const currentObjects = rowList.reduce((curr, next) => ({ ...curr, [next.dataset.id]: next.dataset.latlng }), {});
-    const difference = getDifference(leafletObjects, currentObjects);
+    console.log(new Set(rowList));
+    const currentObjects = rowList.reduce(
+      (curr, next) => ({ ...curr, [next.dataset.id]: { ...next.dataset } }),
+      {},
+    );
 
+    const difference = getDifference(leafletObjects, currentObjects);
     difference.adds.forEach((row) => {
+      debugData[row] = JSON.parse(currentObjects[row].geometry);
       proxy[row] = currentObjects[row];
     });
     difference.deletes.forEach((row) => {
+      delete debugData[row];
       delete proxy[row];
     });
+    rowNodeList.forEach((row) => {
+      row.removeAttribute('data-geometry');
+    });
+    debugMode.text = JSON.stringify(debugData, null, 2);
   };
 
   defineExtension('leaflet', {
