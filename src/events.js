@@ -1,7 +1,7 @@
 export default function initMapEvents(map) {
   map.on('click', (e) => {
     const elem = document.getElementById('map');
-    const event = new CustomEvent('mapclick', { detail: { latlng: e.latlng } });
+    const event = new CustomEvent('mapclick', { detail: { point: e.latlng } });
     elem.dispatchEvent(event);
   });
 
@@ -18,10 +18,10 @@ export default function initMapEvents(map) {
   });
 }
 
-export function initPointEvents(point, id) {
-  point.on('click', (e) => {
+export function setGeometryEvents(geometry, id) {
+  geometry.on('click', (e) => {
     const elem = document.getElementById('map');
-    const event = new CustomEvent('pointclick', { detail: { latlng: e.latlng, rowId: id } });
+    const event = new CustomEvent('pointclick', { detail: { point: e.latlng, rowId: id } });
     elem.dispatchEvent(event);
   });
 }
