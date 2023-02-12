@@ -5,15 +5,45 @@
 {% block body %}
 <script type="text/hyperscript">
 
-  on pointclick(rowId) from #map
+  on pointclick(rowId, point) from #map
     toggle .highlight on <[data-id="$rowId"]/>
     remove .highlight from <[data-id]:not([data-id="$rowId"])/>
-    then log rowId
+  then log point
 
 </script>
 
 <div class="pico-container">
   <table hx-target="closest tr" hx-ext="leaflet" hx-swap="outerHTML">
+    <tr data-id=0 data-geometry='          [[
+    [
+      35.37998406708573,
+      39.98326056217266
+    ],
+    [
+      34.71503927826882,
+      39.26345697389897
+    ],
+    [
+      36.242615144471074,
+      38.900752074309366
+    ],
+    [
+      36.979445856404084,
+      40.01079566583766
+    ],
+    [
+      35.79332812499942,
+      40.57281577431712
+    ],
+    [
+      35.37998406708573,
+      39.98326056217266
+    ]
+  ]]' data-geometry-type="Polygon">
+      <td>test</td>
+      <td>test</td>
+      <td>testtttttt</td>
+    </tr>
     {% for point in points %}
     {{point_row(point)}}
     {% endfor %}
@@ -26,20 +56,18 @@
     </tr>
   </table>
   <!-- TODO: split these code to new pages -->
-<div class="grid">
+  <div class="grid">
 
-  <input type="text" id="lat" _="on mapclick(latlng) from #map set value of me to latlng.lat as Fixed:4">
-  
-  <input type="text" id="lng" _="on mapclick(latlng) from #map set value of me to latlng.lng as Fixed:4">
-  
-</div>
-<div class="grid">
-  <input type="text" id="lat" _="on mapmove(center) from #map set value of me to center.lat as Fixed:4">
-  <input type="text" id="lng" _="on mapmove(center) from #map set value of me to center.lng as Fixed:4">
-</div>
+    <input type="text" id="lat" _="on mapclick(point) from #map set value of me to point.lat as Fixed:4">
+    <input type="text" id="lng" _="on mapclick(point) from #map set value of me to point.lng as Fixed:4">
 
-<div class="grid">
-  <input type="text" id="lat" _="on mapzoom(zoom) from #map set value of me to zoom">
+  </div>
+  <div class="grid">
+    <input type="text" id="lat" _="on mapmove(center) from #map set value of me to center.lat as Fixed:4">
+    <input type="text" id="lng" _="on mapmove(center) from #map set value of me to center.lng as Fixed:4">
+  </div>
 
+  <div class="grid">
+    <input type="text" id="lat" _="on mapzoom(zoom) from #map set value of me to zoom">
+  </div>
   {% endblock %}
-</div>
