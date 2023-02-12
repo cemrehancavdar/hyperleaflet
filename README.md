@@ -27,7 +27,7 @@ The data-center attribute in the first div element means that the Leaflet map wi
 Hyperleaflet listens to HTML elements marked with hx-ext="leaflet":
 
     <table hx-ext="leaflet" >
-        <tr data-id="1" data-latlng="39.97,32.85">
+        <tr data-id="1" data-geometry="39.97,32.85">
             <td>39.97</td>
             <td>32.85</td>
             <td>Ankara</td>
@@ -35,7 +35,7 @@ Hyperleaflet listens to HTML elements marked with hx-ext="leaflet":
         ...
     </table>
 
-Every HTML element tagged with data-id and data-latlng will be added to the Leaflet map as a point marker. This allows you to easily display data on the map.
+Every HTML element tagged with data-id and data-geometry will be added to the Leaflet map as a point marker. This allows you to easily display data on the map.
 
 Hyperleaflet will also listen for changes triggered by HTMX events and dynamically update the Leaflet map accordingly.
 
