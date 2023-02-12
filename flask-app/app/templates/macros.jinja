@@ -1,5 +1,5 @@
 {% macro point_row(point) %}
-    <tr data-id={{point.id}} data-latlng={{point.x}},{{point.y}}>
+    <tr data-id={{point.id}} data-geometry="[{{point.x}},{{point.y}}]" data-geometry-type="Point" data-popup='<h1>{{point.name}}<h1>'>
         <td>{{point.x}}</td>
         <td>{{point.y}}</td>
         <td>{{point.name}}</td>
