@@ -23,9 +23,7 @@ export default function createLeafletObject(row) {
       return line;
     }
     case 'Polygon': {
-      console.log(parsedGeometry);
       const flippedGeometry = L.GeoJSON.coordsToLatLngs(parsedGeometry, 1);
-      console.log(flippedGeometry);
       const polygon = L.polygon(flippedGeometry);
       if (popup) {
         polygon.bindPopup(popup);

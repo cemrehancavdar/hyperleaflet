@@ -13,7 +13,7 @@
 </script>
 
 <div class="pico-container">
-  <table hx-target="closest tr" hx-ext="leaflet" hx-swap="outerHTML">
+  <table hyperleaflet hx-target="closest tr" hx-swap="outerHTML">
     <tr data-id=0 data-geometry='          [[
     [
       35.37998406708573,
@@ -55,7 +55,6 @@
       </td>
     </tr>
   </table>
-  <!-- TODO: split these code to new pages -->
   <div class="grid">
 
     <input type="text" id="lat" _="on mapclick(point) from #map set value of me to point.lat as Fixed:4">

@@ -1,5 +1,4 @@
 import L from 'leaflet';
-import { defineExtension } from 'htmx.org';
 import TILE_LAYERS from './constants';
 import initEvents from './events';
 import createLeafletObject from './leaflet_utils';
@@ -11,10 +10,13 @@ const hyperleaflet = (function hyperleaflet() {
     return undefined;
   }
 
+  const hyperleafletContainer = document.querySelector('[hyperleaflet]');
+
   const debugMode = document.createElement('script');
   debugMode.type = 'application/json';
   debugMode.innerText = `{}`;
   document.body.appendChild(debugMode);
+  const debugData = JSON.parse(debugMode.text);
 
   const mapDiv = document.querySelector('#map');
   const tileLayerDivs = mapDiv.querySelectorAll('[data-tile]');
@@ -65,7 +67,7 @@ const hyperleaflet = (function hyperleaflet() {
     set(target, property, value) {
       const geometry = createLeafletObject(value);
       if (geometry) {
-        geometry.addTo(map)
+        geometry.addTo(map);
         target[property] = geometry;
       } else {
         console.warn(`Geometry with ${property} can not be created`);
@@ -79,51 +81,56 @@ const hyperleaflet = (function hyperleaflet() {
     },
   });
 
-  const getDifference = (original, current) => {
-    const originalList = Object.keys(original);
-    const newsList = Object.keys(current);
+  function addNodeToHyperleaf(node) {
+    const { dataset: data } = node;
+    const rowId = data.id;
+    proxy[rowId] = { ...data };
+    return [rowId, data.geometry];
+  }
+  function deleteNodeFromHyperleaflet(node) {
+    const rowId = node.dataset.id;
+    delete proxy[rowId];
+    return rowId;
+  }
+  
+  (() => {
+    hyperleafletContainer.querySelectorAll('[data-id]').forEach((node) => {
+      const [rowId, geometry] = addNodeToHyperleaf(node);
+      debugData[rowId] = JSON.parse(geometry);
+      debugMode.text = JSON.stringify(debugData, null, 2);
+    })
+  })();
 
-    const adds = newsList.filter((item) => !originalList.includes(item));
-    const deletes = originalList.filter((item) => !newsList.includes(item));
+  function callback(mutations) {
 
-    return { adds, deletes };
-  };
-
-  const processHyperleafTable = (target) => {
-    const debugData = JSON.parse(debugMode.text);
-    const rowNodeList = target.querySelectorAll('[data-id]');
-    const rowList = Array.from(rowNodeList);
-    console.log(new Set(rowList));
-    const currentObjects = rowList.reduce(
-      (curr, next) => ({ ...curr, [next.dataset.id]: { ...next.dataset } }),
-      {},
-    );
-
-    const difference = getDifference(leafletObjects, currentObjects);
-    difference.adds.forEach((row) => {
-      debugData[row] = JSON.parse(currentObjects[row].geometry);
-      proxy[row] = currentObjects[row];
-    });
-    difference.deletes.forEach((row) => {
-      delete debugData[row];
-      delete proxy[row];
-    });
-    rowNodeList.forEach((row) => {
-      row.removeAttribute('data-geometry');
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === 1 && node.hasAttribute('data-id')) {
+            const [rowId, geometry] = addNodeToHyperleaf(node);
+            debugData[rowId] = JSON.parse(geometry);
+          }
+        });
+        mutation.removedNodes.forEach((node) => {
+          if (node.nodeType === 1 && node.hasAttribute('data-id')) {
+            const rowId = deleteNodeFromHyperleaflet(node);
+            delete debugData[rowId];
+          }
+        });
+      }
     });
     debugMode.text = JSON.stringify(debugData, null, 2);
-  };
+  }
 
-  defineExtension('leaflet', {
-    onEvent: (name) => {
-      if (['htmx:afterProcessNode', 'htmx:afterOnLoad'].includes(name)) {
-        const hyperleafTable = document.querySelector('[hx-ext=leaflet]');
-        processHyperleafTable(hyperleafTable);
-      }
-    },
+  const observer = new MutationObserver(callback);
+
+  observer.observe(hyperleafletContainer, {
+    childList: true, // observe direct children
+    subtree: true, // and lower descendants too
+    attributeFilter: ['data-id'],
   });
 
-  return { map };
+  return { map, observer };
 })();
 
 export default hyperleaflet;
