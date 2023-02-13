@@ -92,17 +92,16 @@ const hyperleaflet = (function hyperleaflet() {
     delete proxy[rowId];
     return rowId;
   }
-  
+
   (() => {
     hyperleafletContainer.querySelectorAll('[data-id]').forEach((node) => {
       const [rowId, geometry] = addNodeToHyperleaf(node);
       debugData[rowId] = JSON.parse(geometry);
       debugMode.text = JSON.stringify(debugData, null, 2);
-    })
+    });
   })();
 
   function callback(mutations) {
-
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList') {
         mutation.addedNodes.forEach((node) => {
@@ -130,7 +129,12 @@ const hyperleaflet = (function hyperleaflet() {
     attributeFilter: ['data-id'],
   });
 
-  return { map, observer };
+  const addGeoJsonToMap = (geoJson) => {
+    console.log("first")
+    L.geoJSON(geoJson).addTo(map);
+  };
+
+  return { map, addGeoJsonToMap };
 })();
 
 export default hyperleaflet;
