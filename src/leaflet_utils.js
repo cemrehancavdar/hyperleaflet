@@ -2,13 +2,16 @@ import L from 'leaflet';
 import { setGeometryEvents } from './events';
 
 export default function createLeafletObject(row) {
-  const { geometry, popup, geometryType, id } = row;
+  const { geometry, popup, tooltip, geometryType, id } = row;
   const parsedGeometry = JSON.parse(geometry);
   switch (geometryType) {
     case 'Point': {
       const marker = L.marker(parsedGeometry);
       if (popup) {
         marker.bindPopup(popup);
+      }
+      if (tooltip) {
+        marker.bindTooltip(tooltip);
       }
       setGeometryEvents(marker, id);
       return marker;
@@ -19,6 +22,9 @@ export default function createLeafletObject(row) {
       if (popup) {
         line.bindPopup(popup);
       }
+      if (tooltip) {
+        line.bindTooltip(tooltip);
+      }
       setGeometryEvents(line, id);
       return line;
     }
@@ -27,6 +33,9 @@ export default function createLeafletObject(row) {
       const polygon = L.polygon(flippedGeometry);
       if (popup) {
         polygon.bindPopup(popup);
+      }
+      if (tooltip) {
+        polygon.bindTooltip(tooltip);
       }
       setGeometryEvents(polygon, id);
       return polygon;
