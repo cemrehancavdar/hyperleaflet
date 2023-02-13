@@ -11,10 +11,11 @@
   },
   "main": "./dist/hyperleaflet.cjs",
   "module": "./dist/hyperleaflet.module.js",
-  "unpkg": "./dist/hyperleaflet.umd.js",
+  "umd": "./flask-app/app/static/hyperleaflet.umd.js",
   "scripts": {
-    "build": "microbundle --globals htmx.org=htmx",
-    "dev": "microbundle watch --globals htmx.org=htmx"
+    "build": "microbundle",
+    "dev": "microbundle watch",
+    "dev_flask": "microbundle watch --format=umd --output=flask-app/app/static/"
   },
   "devDependencies": {
     "eslint": "^7.32.0 || ^8.2.0",
@@ -25,7 +26,6 @@
     "prettier": "2.8.0"
   },
   "dependencies": {
-    "htmx.org": "^1.8.5",
     "leaflet": "^1.9.3"
   }
 }
