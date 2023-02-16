@@ -4,6 +4,7 @@ import { setGeometryEvents } from './events';
 export default function createLeafletObject(row) {
   const { geometry, popup, tooltip, geometryType, id } = row;
   const parsedGeometry = JSON.parse(geometry);
+
   switch (geometryType) {
     case 'Point': {
       const marker = L.marker(parsedGeometry);

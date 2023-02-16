@@ -1,7 +1,6 @@
 import L from 'leaflet';
-import TILE_LAYERS from './constants';
-import initEvents from './events';
-import createLeafletObject from './leaflet_utils';
+import createLeafletObject from './geometry';
+import createLeafletMap from './map';
 
 const hyperleaflet = (function hyperleaflet() {
   if (typeof L === 'undefined') {
@@ -10,6 +9,7 @@ const hyperleaflet = (function hyperleaflet() {
     return undefined;
   }
 
+  const map = createLeafletMap();
   const hyperleafletContainer = document.querySelector('[hyperleaflet]');
 
   const debugMode = document.createElement('script');
@@ -18,65 +18,30 @@ const hyperleaflet = (function hyperleaflet() {
   document.body.appendChild(debugMode);
   const debugData = JSON.parse(debugMode.text);
 
-  const mapDiv = document.querySelector('#map');
-  const tileLayerDivs = mapDiv.querySelectorAll('[data-tile]');
-
-  const initalMapAttributes = {
-    center: [0, 0],
-    zoom: 1,
-    tile: TILE_LAYERS.OpenStreetMap,
-  };
-
-  const { dataset } = mapDiv;
-
-  const center = dataset?.center.split(',') || initalMapAttributes.center.center;
-  const zoom = dataset?.zoom || initalMapAttributes.zoom;
-  let { tile } = initalMapAttributes;
-
-  const tiles = {};
-
-  tileLayerDivs.forEach((tileLayer) => {
-    const { dataset: tileLayerDataset } = tileLayer;
-    const tileLayerName = tileLayerDataset.tile;
-    if (tileLayerName in TILE_LAYERS) {
-      const currentTile = TILE_LAYERS[tileLayerName];
-      currentTile.options.minZoom = tileLayerDataset.minZoom;
-      currentTile.options.maxZoom = tileLayerDataset.maxZoom;
-      tiles[tileLayerName] = currentTile;
-      if ('default' in tileLayerDataset) {
-        tile = currentTile;
-      }
-    } else {
-      // eslint-disable-next-line no-console
-      console.warn(`${tileLayerName} is not in: \n${Object.keys(TILE_LAYERS).join('\n')}`);
-    }
-  });
-
-  const map = L.map(mapDiv).setView(center, zoom);
-
-  initEvents(map);
-
-  if (Object.keys(tiles).length) {
-    L.control.layers(tiles).addTo(map);
-  }
-  tile.addTo(map);
-
   const leafletObjects = {};
 
   const proxy = new Proxy(leafletObjects, {
-    set(target, property, value) {
-      const geometry = createLeafletObject(value);
-      if (geometry) {
-        geometry.addTo(map);
-        target[property] = geometry;
+    set(target, id, row) {
+      if (id in target) {
+        // eslint-disable-next-line no-console
+        console.error(`${id} already exists`);
+        return false;
+      }
+
+      const leafletObject = createLeafletObject(row);
+
+      if (leafletObject) {
+        leafletObject.addTo(map);
+        target[id] = leafletObject;
       } else {
-        console.warn(`Geometry with ${property} can not be created`);
+        // eslint-disable-next-line no-console
+        console.warn(`Geometry with ${id} can not be created`);
       }
       return true;
     },
-    deleteProperty(target, property) {
-      target[property].remove();
-      delete target[property];
+    deleteProperty(target, id) {
+      target[id].remove();
+      delete target[id];
       return true;
     },
   });
@@ -85,7 +50,7 @@ const hyperleaflet = (function hyperleaflet() {
     const { dataset: data } = node;
     const rowId = data.id;
     proxy[rowId] = { ...data };
-    return [rowId, data.geometry];
+    return [rowId, data.geometry, data.geometryType];
   }
   function deleteNodeFromHyperleaflet(node) {
     const rowId = node.dataset.id;
@@ -95,8 +60,11 @@ const hyperleaflet = (function hyperleaflet() {
 
   (() => {
     hyperleafletContainer.querySelectorAll('[data-id]').forEach((node) => {
-      const [rowId, geometry] = addNodeToHyperleaf(node);
-      debugData[rowId] = JSON.parse(geometry);
+      const [rowId, geometry, geometryType] = addNodeToHyperleaf(node);
+      if (rowId) {
+        debugData[rowId] = { type: geometryType, coordinates: JSON.parse(geometry) };
+        node.removeAttribute('data-geometry');
+      }
       debugMode.text = JSON.stringify(debugData, null, 2);
     });
   })();
@@ -106,8 +74,11 @@ const hyperleaflet = (function hyperleaflet() {
       if (mutation.type === 'childList') {
         mutation.addedNodes.forEach((node) => {
           if (node.nodeType === 1 && node.hasAttribute('data-id')) {
-            const [rowId, geometry] = addNodeToHyperleaf(node);
-            debugData[rowId] = JSON.parse(geometry);
+            const [rowId, geometry, geometryType] = addNodeToHyperleaf(node);
+            if (rowId) {
+              debugData[rowId] = { type: geometryType, coordinates: JSON.parse(geometry) };
+              node.removeAttribute('data-geometry');
+            }
           }
         });
         mutation.removedNodes.forEach((node) => {
@@ -130,7 +101,6 @@ const hyperleaflet = (function hyperleaflet() {
   });
 
   const addGeoJsonToMap = (geoJson) => {
-    console.log("first")
     L.geoJSON(geoJson).addTo(map);
   };
 
