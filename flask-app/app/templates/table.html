@@ -14,7 +14,16 @@
 
 <div class="pico-container">
   <table hyperleaflet hx-target="closest tr" hx-swap="outerHTML">
-    <tr data-id=0 data-geometry='          [[
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-id=0 data-geometry='          [[
     [
       35.37998406708573,
       39.98326056217266
@@ -40,20 +49,21 @@
       39.98326056217266
     ]
   ]]' data-geometry-type="Polygon">
-      <td>test</td>
-      <td>test</td>
-      <td>testtttttt</td>
-    </tr>
-    {% for point in points %}
-    {{point_row(point)}}
-    {% endfor %}
-    <tr id="replaceMe">
-      <td colspan="5">
-        <button class='btn' hx-get="/point?page=2" hx-target="#replaceMe" hx-swap="outerHTML">
-          Load More Points...
-        </button>
-      </td>
-    </tr>
+        <td>test</td>
+        <td>test</td>
+        <td>testtttttt</td>
+      </tr>
+      {% for point in points %}
+      {{point_row(point)}}
+      {% endfor %}
+      <tr id="replaceMe">
+        <td colspan="5">
+          <button class='btn' hx-get="/point?page=2" hx-target="#replaceMe" hx-swap="outerHTML">
+            Load More Points...
+          </button>
+        </td>
+      </tr>
+    </tbody>
   </table>
   <div class="grid">
 
