@@ -1,7 +1,6 @@
 import L from 'leaflet';
-import GeometryStrategy from './geometryStrategy';
-import LeafletWrapper from './hyperleafletHandlers';
-import createLeafletMap from './map';
+import LeafletWrapper from './HyperleafletHandlers';
+import createLeafletMap from './Map';
 
 const hyperleaflet = (function hyperleaflet() {
   if (typeof L === 'undefined') {
@@ -12,42 +11,25 @@ const hyperleaflet = (function hyperleaflet() {
 
   const map = createLeafletMap();
   const hyperleafletContainer = document.querySelector('[hyperleaflet]');
+  const geometryStrategy = "inline" 
 
-  const { addNodeToHyperleaf, deleteNodeFromHyperleaflet } = LeafletWrapper(map);
-  const { addToDebugObject, deleteFromDebugObject, saveDebugObject } = GeometryStrategy();
+  const { hyperleafletInteraction } = LeafletWrapper(map);
+  const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = hyperleafletInteraction(geometryStrategy);
 
   // TODO implement strategy
-
+  
   map.whenReady(() => {
-    hyperleafletContainer.querySelectorAll('[data-id]').forEach((node) => {
-      const [rowId, geometry, geometryType] = addNodeToHyperleaf(node);
-      if (rowId) {
-        addToDebugObject(rowId, geometry, geometryType);
-      }
-      saveDebugObject();
-    });
+    const nodes = hyperleafletContainer.querySelectorAll('[data-id]')
+    addNoteListToHyperleaflet(nodes)
   });
 
   function callback(mutations) {
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList') {
-        mutation.addedNodes.forEach((node) => {
-          if (node.nodeType === 1 && node.hasAttribute('data-id')) {
-            const [rowId, geometry, geometryType] = addNodeToHyperleaf(node);
-            if (rowId) {
-              addToDebugObject(rowId, geometry, geometryType);
-            }
-          }
-        });
-        mutation.removedNodes.forEach((node) => {
-          if (node.nodeType === 1 && node.hasAttribute('data-id')) {
-            const rowId = deleteNodeFromHyperleaflet(node);
-            deleteFromDebugObject(rowId);
-          }
-        });
+        addNoteListToHyperleaflet(mutation.addedNodes)
+        removeNodeListToHyperleaflet(mutation.removedNodes)
       }
     });
-    saveDebugObject();
   }
 
   const observer = new MutationObserver(callback);

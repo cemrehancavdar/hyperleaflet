@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { setGeometryEvents } from './events';
+import { setGeometryEvents } from './Events';
 
 export default function createLeafletObject(row) {
   const { geometry, popup, tooltip, geometryType, id } = row;

@@ -1,6 +1,6 @@
 import L from 'leaflet';
-import TILE_LAYERS from './constants';
-import initEvents from './events';
+import TILE_LAYERS from './Constants';
+import initEvents from './Events';
 
 const createLeafletMap = () => {
   const mapDiv = document.querySelector('#map');
