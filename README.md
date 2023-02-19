@@ -1,4 +1,4 @@
-## Hyperleaflet - An HTML-based Leaflet Library
+## Hyperleaflet <🍃/> - An HTML-based Leaflet Library
 
 [![Hyperleaflet]](https://user-images.githubusercontent.com/50503448/217046480-e997b33b-fddc-4c6d-af5e-18a6f4899928.mp4)
 
