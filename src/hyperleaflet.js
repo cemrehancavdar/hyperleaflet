@@ -9,25 +9,25 @@ const hyperleaflet = (function hyperleaflet() {
     return undefined;
   }
 
-  const map = createLeafletMap();
+  const map = createLeafletMap('#map');
   const hyperleafletContainer = document.querySelector('[hyperleaflet]');
-  const geometryStrategy = "inline" 
+  const geometryStrategy = 'inline';
 
   const { hyperleafletInteraction } = LeafletWrapper(map);
   const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = hyperleafletInteraction(geometryStrategy);
 
   // TODO implement strategy
-  
+
   map.whenReady(() => {
-    const nodes = hyperleafletContainer.querySelectorAll('[data-id]')
-    addNoteListToHyperleaflet(nodes)
+    const nodes = hyperleafletContainer.querySelectorAll('[data-id]');
+    addNoteListToHyperleaflet(nodes);
   });
 
   function callback(mutations) {
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList') {
-        addNoteListToHyperleaflet(mutation.addedNodes)
-        removeNodeListToHyperleaflet(mutation.removedNodes)
+        addNoteListToHyperleaflet(mutation.addedNodes);
+        removeNodeListToHyperleaflet(mutation.removedNodes);
       }
     });
   }
