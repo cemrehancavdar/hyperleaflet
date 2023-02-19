@@ -2,9 +2,9 @@ import L from 'leaflet';
 import TILE_LAYERS from './Constants';
 import initEvents from './Events';
 
-const createLeafletMap = () => {
-  const mapDiv = document.querySelector('#map');
-  const tileLayerDivs = mapDiv.querySelectorAll('[data-tile]');
+const createLeafletMap = (mapSelector) => {
+  const mapDiv = document.querySelector(mapSelector);
+  const tileLayerDivList = mapDiv.querySelectorAll('[data-tile]');
 
   const { dataset } = mapDiv;
 
@@ -15,7 +15,7 @@ const createLeafletMap = () => {
     tiles: {},
   };
 
-  tileLayerDivs.forEach((tileLayer) => {
+  tileLayerDivList.forEach((tileLayer) => {
     const { dataset: tileLayerDataset } = tileLayer;
     const tileLayerName = tileLayerDataset.tile;
 
