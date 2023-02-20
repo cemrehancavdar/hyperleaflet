@@ -2,47 +2,52 @@ import L from 'leaflet';
 import TILE_LAYERS from './Constants';
 import initEvents from './Events';
 
-const createLeafletMap = (mapSelector) => {
-  const mapDiv = document.querySelector(mapSelector);
-  const tileLayerDivList = mapDiv.querySelectorAll('[data-tile]');
+function createHyperleafletTiles(tileLayerElementList) {
+  const hyperleafletTiles = new Map();
+  let defautHyperleafletTile = TILE_LAYERS.OpenStreetMap;
 
-  const { dataset } = mapDiv;
+  tileLayerElementList.forEach((element) => {
+    const { tile, minZoom, maxZoom, defautTile } = element.dataset;
 
-  const mapAttr = {
-    center: dataset?.center.split(',') || [0, 0],
-    zoom: dataset?.zoom || 1,
-    tile: TILE_LAYERS.OpenStreetMap,
-    tiles: {},
-  };
+    if (tile in TILE_LAYERS) {
+      const currentTile = TILE_LAYERS[tile];
+      currentTile.options.minZoom = minZoom;
+      currentTile.options.maxZoom = maxZoom;
+      hyperleafletTiles.set(tile, currentTile);
 
-  tileLayerDivList.forEach((tileLayer) => {
-    const { dataset: tileLayerDataset } = tileLayer;
-    const tileLayerName = tileLayerDataset.tile;
-
-    if (tileLayerName in TILE_LAYERS) {
-      const currentTile = TILE_LAYERS[tileLayerName];
-      currentTile.options.minZoom = tileLayerDataset.minZoom;
-      currentTile.options.maxZoom = tileLayerDataset.maxZoom;
-      mapAttr.tiles[tileLayerName] = currentTile;
-
-      if ('default' in tileLayerDataset) {
-        mapAttr.tile = currentTile;
+      if (defautTile) {
+        defautHyperleafletTile = currentTile;
       }
     } else {
       // eslint-disable-next-line no-console
-      console.error(`${tileLayerName} is not in: \n${Object.keys(TILE_LAYERS).join('\n')}`);
+      console.error(`${tile} is not in: \n${Object.keys(TILE_LAYERS).join('\n')}`);
     }
   });
+  return { hyperleafletTiles, defautHyperleafletTile };
+}
 
-  const map = L.map(mapDiv).setView(mapAttr.center, mapAttr.zoom);
+const createLeafletMap = (mapSelector) => {
+  const mapContainer = document.querySelector(mapSelector);
+  const tileLayerElementList = mapContainer.querySelectorAll('[data-tile]');
 
-  if (Object.keys(mapAttr.tiles).length) {
-    L.control.layers(mapAttr.tiles).addTo(map);
+  const { center, zoom } = mapContainer.dataset;
+
+  const { hyperleafletTiles, defautHyperleafletTile } = createHyperleafletTiles(tileLayerElementList);
+
+  const view = {
+    center: center?.split(','),
+    zoom: zoom || 1,
+  };
+
+  const map = L.map(mapContainer).setView(view.center, view.zoom);
+
+  if (hyperleafletTiles.size) {
+    L.control.layers(Object.fromEntries(hyperleafletTiles)).addTo(map);
   }
 
   initEvents(map);
 
-  mapAttr.tile.addTo(map);
+  defautHyperleafletTile.addTo(map);
   return map;
 };
 
