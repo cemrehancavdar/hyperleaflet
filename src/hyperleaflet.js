@@ -1,25 +1,35 @@
 import L from 'leaflet';
 import LeafletWrapper from './HyperleafletHandlers';
-import createLeafletMap from './Map';
+import createLeafletMap, { createHyperleafletTiles } from './Map';
 
 const hyperleaflet = (function hyperleaflet() {
   if (typeof L === 'undefined') {
     // eslint-disable-next-line no-console
-    console.error('Hyperleaf can not access Leaflet');
+    console.error('Hyperleaflet can not access Leaflet');
     return undefined;
   }
 
-  const map = createLeafletMap('#map');
-  const hyperleafletContainer = document.querySelector('[hyperleaflet]');
-  const geometryStrategy = 'inline';
+  const mapContainer = document.querySelector('#map');
+  const map = createLeafletMap(mapContainer);
+  const hyperleafletDataContainer = document.querySelector('[hyperleaflet]');
 
-  const { hyperleafletInteraction } = LeafletWrapper(map);
-  const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = hyperleafletInteraction(geometryStrategy);
+  const tileLayerElementList = mapContainer.querySelectorAll('[data-tile]');
+  const { defaultHyperleafletTile, tileController } = createHyperleafletTiles(tileLayerElementList);
 
-  // TODO implement strategy
+  if (tileController) {
+    tileController.addTo(map);
+  }
+  defaultHyperleafletTile.addTo(map);
+
+  const geometryStrategy = mapContainer.dataset.geometryStrategy || 'inline';
+
+  const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = HyperleafletGeometryManager(
+    map,
+    geometryStrategy,
+  );
 
   map.whenReady(() => {
-    const nodes = hyperleafletContainer.querySelectorAll('[data-id]');
+    const nodes = hyperleafletDataContainer.querySelectorAll('[data-id]');
     addNoteListToHyperleaflet(nodes);
   });
 
@@ -34,7 +44,7 @@ const hyperleaflet = (function hyperleaflet() {
 
   const observer = new MutationObserver(callback);
 
-  observer.observe(hyperleafletContainer, {
+  observer.observe(hyperleafletDataContainer, {
     childList: true, // observe direct children
     subtree: true, // and lower descendants too
     attributeFilter: ['data-id'],
