@@ -67,16 +67,17 @@
   </table>
   <div class="grid">
 
-    <input type="text" id="lat" _="on mapclick(point) from #map set value of me to point.lat as Fixed:4">
-    <input type="text" id="lng" _="on mapclick(point) from #map set value of me to point.lng as Fixed:4">
+    <input type="text" _="on mapclick(point) from #map set value of me to point.lat as Fixed:4">
+    <input type="text" _="on mapclick(point) from #map set value of me to point.lng as Fixed:4">
 
   </div>
   <div class="grid">
-    <input type="text" id="lat" _="on mapmove(center) from #map set value of me to center.lat as Fixed:4">
-    <input type="text" id="lng" _="on mapmove(center) from #map set value of me to center.lng as Fixed:4">
+    <input type="text" _="on mapmove(center) from #map set value of me to center.lat as Fixed:4">
+    <input type="text" _="on mapmove(center) from #map set value of me to center.lng as Fixed:4">
   </div>
 
   <div class="grid">
-    <input type="text" id="lat" _="on mapzoom(zoom) from #map set value of me to zoom">
+    <input type="text" _="on mapzoom(zoom) from #map set value of me to zoom">
   </div>
+</div>
   {% endblock %}
