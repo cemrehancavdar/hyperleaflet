@@ -1,6 +1,7 @@
 import L from 'leaflet';
 import HyperleafletGeometryManager from './HyperleafletHandlers';
 import createLeafletMap, { createHyperleafletTiles } from './Map';
+import handleGeometryDisplay from './GeometryDebug.js';
 
 const hyperleaflet = (function hyperleaflet() {
   if (typeof L === 'undefined') {
@@ -21,16 +22,14 @@ const hyperleaflet = (function hyperleaflet() {
   }
   defaultHyperleafletTile.addTo(map);
 
-  const geometryStrategy = mapContainer.dataset.geometryStrategy || 'inline';
+  const geometryDisplayStrategy = mapContainer.dataset.geometryStrategy || 'none';
 
-  const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = HyperleafletGeometryManager(
-    map,
-    geometryStrategy,
-  );
+  const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = HyperleafletGeometryManager(map);
 
   map.whenReady(() => {
     const nodes = hyperleafletDataContainer.querySelectorAll('[data-id]');
     addNoteListToHyperleaflet(nodes);
+    handleGeometryDisplay(nodes, [], geometryDisplayStrategy);
   });
 
   function callback(mutations) {
@@ -38,6 +37,7 @@ const hyperleaflet = (function hyperleaflet() {
       if (mutation.type === 'childList') {
         addNoteListToHyperleaflet(mutation.addedNodes);
         removeNodeListToHyperleaflet(mutation.removedNodes);
+        handleGeometryDisplay(mutation.addedNodes, mutation.removedNodes, geometryDisplayStrategy);
       }
     });
   }
