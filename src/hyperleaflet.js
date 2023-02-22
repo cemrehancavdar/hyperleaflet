@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import LeafletWrapper from './HyperleafletHandlers';
+import HyperleafletGeometryManager from './HyperleafletHandlers';
 import createLeafletMap, { createHyperleafletTiles } from './Map';
 
 const hyperleaflet = (function hyperleaflet() {

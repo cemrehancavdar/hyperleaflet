@@ -3,9 +3,9 @@ import createGeometryDebugObject from './GeometryDebug';
 
 const leafletObjectMap = new Map();
 
-function addNodeToHyperleaflet(node, map) {
-  const { dataset: data } = node;
-  const rowId = data.id;
+function addNodeToHyperleaflet(node) {
+  const { dataset } = node;
+  const rowId = dataset.id;
 
   if (rowId in leafletObjectMap) {
     // eslint-disable-next-line no-console
@@ -13,27 +13,28 @@ function addNodeToHyperleaflet(node, map) {
     return [];
   }
 
-  const leafletObject = createLeafletObject({ ...data });
+  const leafletObject = createLeafletObject({ ...dataset });
   leafletObjectMap.set(rowId, leafletObject);
-  leafletObject.addTo(map);
 
-  return [rowId, data.geometry, data.geometryType];
+  return [leafletObject, rowId, dataset.geometry, dataset.geometryType];
 }
 
 function deleteNodeFromHyperleaflet(node) {
   const rowId = node.dataset.id;
-  leafletObjectMap.get(rowId).remove();
+  const leafletObject = leafletObjectMap.get(rowId);
   leafletObjectMap.delete(rowId);
-  return rowId;
+  return [leafletObject, rowId];
 }
 
 const { addToDebugObject, deleteFromDebugObject, saveDebugObject } = createGeometryDebugObject();
 
-export default function Hyperleaflet(map) {
-  const makeAddNoteListToHyperleaflet = (geometryStrategy) => (nodes) => {
+// TODO make a better name for it
+export default function HyperleafletGeometryManager(map, geometryStrategy) {
+  const addNoteListToHyperleaflet = (nodes) => {
     nodes.forEach((node) => {
       if (node.nodeType === 1 && node.matches('[data-id]')) {
-        const [rowId, geometry, geometryType] = addNodeToHyperleaflet(node, map);
+        const [leafletObject, rowId, geometry, geometryType] = addNodeToHyperleaflet(node);
+        leafletObject.addTo(map);
         if (rowId) {
           if (['none', 'object'].includes(geometryStrategy)) {
             node.removeAttribute('data-geometry');
@@ -47,10 +48,11 @@ export default function Hyperleaflet(map) {
     saveDebugObject();
   };
 
-  const makeRemoveNodeListToHyperleaflet = (geometryStrategy) => (nodes) => {
+  const removeNodeListToHyperleaflet = (nodes) => {
     nodes.forEach((node) => {
       if (node.nodeType === 1 && node.matches('[data-id]')) {
-        const rowId = deleteNodeFromHyperleaflet(node, map);
+        const [leafletObject, rowId] = deleteNodeFromHyperleaflet(node);
+        leafletObject.remove();
         if (['none', 'object'].includes(geometryStrategy)) {
           deleteFromDebugObject(rowId);
         }
@@ -59,11 +61,5 @@ export default function Hyperleaflet(map) {
     saveDebugObject();
   };
 
-  function hyperleafletInteraction(geometryStrategy) {
-    const addNoteListToHyperleaflet = makeAddNoteListToHyperleaflet(geometryStrategy);
-    const removeNodeListToHyperleaflet = makeRemoveNodeListToHyperleaflet(geometryStrategy);
-    return { addNoteListToHyperleaflet, removeNodeListToHyperleaflet };
-  }
-
-  return { hyperleafletInteraction };
+  return { addNoteListToHyperleaflet, removeNodeListToHyperleaflet };
 }
