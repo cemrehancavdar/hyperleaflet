@@ -13,7 +13,8 @@
 </script>
 
 <div class="pico-container">
-  <table hyperleaflet hx-target="closest tr" hx-swap="outerHTML">
+  <table  hyperleaflet hx-target="closest tr" hx-swap="outerHTML">
+    <caption>Locations</caption>
     <thead>
       <tr>
         <th>Name</th>
@@ -67,17 +68,19 @@
   </table>
   <div class="grid">
 
-    <input type="text" _="on mapclick(point) from #map set value of me to point.lat as Fixed:4">
-    <input type="text" _="on mapclick(point) from #map set value of me to point.lng as Fixed:4">
+    <input type="text" _="on mapclick(point) from window set value of me to point.lat as Fixed:4">
+    <input type="text" _="on mapclick(point) from window set value of me to point.lng as Fixed:4">
 
   </div>
   <div class="grid">
-    <input type="text" _="on mapmove(center) from #map set value of me to center.lat as Fixed:4">
-    <input type="text" _="on mapmove(center) from #map set value of me to center.lng as Fixed:4">
+    <input type="text" _="on mapmove(center) from window set value of me to center.lat as Fixed:4">
+    <input type="text" _="on mapmove(center) from window set value of me to center.lng as Fixed:4">
   </div>
 
   <div class="grid">
-    <input type="text" _="on mapzoom(zoom) from #map set value of me to zoom">
+    <input type="text" _="on mapzoom(zoom) from window set value of me to zoom">
   </div>
+  <button _="on click log globalVarX ">Click</button>
+
 </div>
   {% endblock %}
