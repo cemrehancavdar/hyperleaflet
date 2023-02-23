@@ -1,12 +1,10 @@
-// TODO implement strategy
 const createGeometryDebugObject = (element = document) => {
   const debugMode = document.createElement('script');
   debugMode.type = 'application/json';
   debugMode.setAttribute('data-testid', 'debug');
   debugMode.innerText = '{}';
-  element.body.appendChild(debugMode);
-  const debugObject = JSON.parse(debugMode.text);
 
+  const debugObject = JSON.parse(debugMode.text);
   const addToDebugObject = (rowId, geometry, geometryType) => {
     debugObject[rowId] = { type: geometryType, coordinates: JSON.parse(geometry) };
   };
@@ -15,9 +13,12 @@ const createGeometryDebugObject = (element = document) => {
     delete debugObject[rowId];
   };
   const saveDebugObject = () => {
+    if (!debugMode.isConnected) {
+      element.body.appendChild(debugMode);
+    }
     debugMode.text = JSON.stringify(debugObject, null, 2);
   };
-  return { debugMode, addToDebugObject, deleteFromDebugObject, saveDebugObject };
+  return { addToDebugObject, deleteFromDebugObject, saveDebugObject };
 };
 
 export default function handleGeometryDisplay(addedNodes, removedNodes, displayStrategy) {
