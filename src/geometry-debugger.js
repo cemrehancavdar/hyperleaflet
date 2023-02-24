@@ -5,14 +5,14 @@ debugMode.innerText = '{}';
 document.body.appendChild(debugMode);
 
 const debugObject = JSON.parse(debugMode.text);
-export function addToDebugObject(node) {
+export function addToDebug(node) {
   const { id, geometry, geometryType } = node.dataset;
   node.removeAttribute('data-geometry');
   debugObject[id] = { type: geometryType, coordinates: JSON.parse(geometry) };
   debugMode.text = JSON.stringify(debugObject, null, 2);
 }
 
-export function deleteFromDebugObject(node) {
+export function deleteFromDebug(node) {
   const { id } = node.dataset;
   delete debugObject[id];
   debugMode.text = JSON.stringify(debugObject, null, 2);
