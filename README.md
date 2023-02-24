@@ -15,17 +15,18 @@ HTMX is a powerful tool that aims to bring modern web development to the HTML le
 ### How does it work?
 
 Hyperleaflet uses HTML dataset attributes as inputs. For example:
+```html
 
     <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">
         <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default></div>
         <div data-tile="OpenStreetMap"></div>
     </div>
-
+```
 The data-center attribute in the first div element means that the Leaflet map will be centered on the specified latitude and longitude location.
 
 ### Showing Data
 Hyperleaflet listens to HTML elements marked with hx-ext="leaflet":
-
+```html
     <table hx-ext="leaflet" >
         <tr data-id="1" data-geometry="39.97,32.85">
             <td>39.97</td>
@@ -34,7 +35,7 @@ Hyperleaflet listens to HTML elements marked with hx-ext="leaflet":
         </tr>
         ...
     </table>
-
+```
 Every HTML element tagged with data-id and data-geometry will be added to the Leaflet map as a point marker. This allows you to easily display data on the map.
 
 Hyperleaflet will also listen for changes triggered by HTMX events and dynamically update the Leaflet map accordingly.
