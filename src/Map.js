@@ -2,7 +2,7 @@ import L from 'leaflet';
 import TILE_LAYERS from './Constants';
 import initializeMapEvents from './Events';
 
-export const createHyperleafletTiles = (tileLayerElementList) => {
+export function createHyperleafletTiles(tileLayerElementList) {
   const hyperleafletTiles = new Map();
   const hyperleafletTileManager = { defaultHyperleafletTile: TILE_LAYERS.OpenStreetMap, tileController: null };
 
@@ -19,6 +19,7 @@ export const createHyperleafletTiles = (tileLayerElementList) => {
         hyperleafletTileManager.defaultHyperleafletTile = currentTile;
       }
     } else {
+      // eslint-disable-next-line no-console
       console.warn(`${tile} is not in: \n${Object.keys(TILE_LAYERS).join('\n')}`);
     }
   });
@@ -27,9 +28,9 @@ export const createHyperleafletTiles = (tileLayerElementList) => {
     hyperleafletTileManager.tileController = L.control.layers(Object.fromEntries(hyperleafletTiles));
   }
   return { ...hyperleafletTileManager };
-};
+}
 
-const createLeafletMap = (mapContainer) => {
+export default function createLeafletMap(mapContainer) {
   const { center, zoom } = mapContainer.dataset;
 
   const view = {
@@ -42,6 +43,4 @@ const createLeafletMap = (mapContainer) => {
   initializeMapEvents(map);
 
   return map;
-};
-
-export default createLeafletMap;
+}

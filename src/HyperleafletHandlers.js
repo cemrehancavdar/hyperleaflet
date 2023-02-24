@@ -36,7 +36,7 @@ export default function HyperleafletGeometryManager(map) {
     });
   };
 
-  const removeNodeListToHyperleaflet = (nodes) => {
+  function removeNodeListToHyperleaflet(nodes) {
     nodes.forEach((node) => {
       if (node.nodeType === 1 && node.matches('[data-id]')) {
         const [leafletObject] = deleteNodeFromHyperleaflet(node);
