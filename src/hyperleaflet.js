@@ -23,7 +23,7 @@ const hyperleaflet = (function hyperleaflet() {
   }
   defaultHyperleafletTile.addTo(map);
 
-  const geometryDisplayStrategy = 'object';
+  const geometryDisplayStrategy = hyperleafletDataContainer.dataset.geometryDisplay || 'object';
 
   let callbackFunctions = {};
   if (geometryDisplayStrategy === 'object') {
