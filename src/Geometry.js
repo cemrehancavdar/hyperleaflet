@@ -1,50 +1,63 @@
 import L from 'leaflet';
 import { setGeometryEvents } from './Events';
 
+const createPointGeometry = (parsedGeometry, options) => {
+  const marker = L.marker(parsedGeometry);
+  if (options.popup) {
+    marker.bindPopup(options.popup);
+  }
+  if (options.tooltip) {
+    marker.bindTooltip(options.tooltip);
+  }
+  setGeometryEvents(marker, options.id);
+  return marker;
+};
+
+const createLineGeometry = (parsedGeometry, options) => {
+  const flippedGeometry = L.GeoJSON.coordsToLatLngs(parsedGeometry, 1);
+  const line = L.polyline(flippedGeometry);
+  if (options.popup) {
+    line.bindPopup(options.popup);
+  }
+  if (options.tooltip) {
+    line.bindTooltip(options.tooltip);
+  }
+  setGeometryEvents(line, options.id);
+  return line;
+};
+
+const createPolygonGeometry = (parsedGeometry, options) => {
+  const flippedGeometry = L.GeoJSON.coordsToLatLngs(parsedGeometry, 1);
+  const polygon = L.polygon(flippedGeometry);
+  if (options.popup) {
+    polygon.bindPopup(options.popup);
+  }
+  if (options.tooltip) {
+    polygon.bindTooltip(options.tooltip);
+  }
+  setGeometryEvents(polygon, options.id);
+  return polygon;
+};
+
+const createGeometry = (geometryType) => (parsedGeometry, options) => {
+  switch (geometryType) {
+    case 'Point':
+      return createPointGeometry(parsedGeometry, options);
+    case 'LineString':
+      return createLineGeometry(parsedGeometry, options);
+    case 'Polygon':
+      return createPolygonGeometry(parsedGeometry, options);
+    default:
+      // eslint-disable-next-line no-console
+      console.warn(`${geometryType} is not supported`);
+      return null;
+  }
+};
+
 export default function createLeafletObject(row) {
   const { geometry, popup, tooltip, geometryType, id } = row;
   const parsedGeometry = JSON.parse(geometry);
 
-  switch (geometryType) {
-    case 'Point': {
-      const marker = L.marker(parsedGeometry);
-      if (popup) {
-        marker.bindPopup(popup);
-      }
-      if (tooltip) {
-        marker.bindTooltip(tooltip);
-      }
-      setGeometryEvents(marker, id);
-      return marker;
-    }
-    case 'LineString': {
-      const flippedGeometry = L.GeoJSON.coordsToLatLngs(parsedGeometry, 1);
-      const line = L.polyline(flippedGeometry);
-      if (popup) {
-        line.bindPopup(popup);
-      }
-      if (tooltip) {
-        line.bindTooltip(tooltip);
-      }
-      setGeometryEvents(line, id);
-      return line;
-    }
-    case 'Polygon': {
-      const flippedGeometry = L.GeoJSON.coordsToLatLngs(parsedGeometry, 1);
-      const polygon = L.polygon(flippedGeometry);
-      if (popup) {
-        polygon.bindPopup(popup);
-      }
-      if (tooltip) {
-        polygon.bindTooltip(tooltip);
-      }
-      setGeometryEvents(polygon, id);
-      return polygon;
-    }
-    default: {
-      // eslint-disable-next-line no-console
-      console.warn(`${geometryType} is not supported`);
-      return null;
-    }
-  }
+  const createGeometryFn = createGeometry(geometryType);
+  return createGeometryFn(parsedGeometry, { popup, tooltip, id });
 }
