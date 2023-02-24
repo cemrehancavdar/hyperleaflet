@@ -1,4 +1,4 @@
-export default function initMapEvents(map) {
+export default function setMapEvents(map) {
   map.on('click', (e) => {
     const event = new CustomEvent('mapclick', { detail: { point: e.latlng } });
     window.dispatchEvent(event);
