@@ -5,7 +5,7 @@
 {% block body %}
 <script type="text/hyperscript">
 
-  on pointclick(rowId, point) from #map
+  on pointclick(rowId, point) from window
     toggle .highlight on <[data-id="$rowId"]/>
     remove .highlight from <[data-id]:not([data-id="$rowId"])/>
   then log point
