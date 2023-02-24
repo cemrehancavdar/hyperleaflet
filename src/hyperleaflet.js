@@ -1,8 +1,8 @@
 import L from 'leaflet';
 import HyperleafletGeometryManager from './HyperleafletHandlers';
 import createLeafletMap, { createHyperleafletTiles } from './Map';
-import { addToDebugObject, deleteFromDebugObject } from './GeometryDOMObject';
-import removeGeometryAttributes from './GeometryUtils';
+import { addToDebug, deleteFromDebug } from './geometry-debugger';
+import removeGeometryAttributes from './removeGeometryAttribute';
 
 const hyperleaflet = (function hyperleaflet() {
   if (typeof L === 'undefined') {
@@ -23,18 +23,18 @@ const hyperleaflet = (function hyperleaflet() {
   }
   defaultHyperleafletTile.addTo(map);
 
-  const geometryDisplayStrategy = mapContainer.dataset.geometryStrategy || 'remove';
+  const geometryDisplayStrategy = 'object';
 
   let callbackFunctions = {};
   if (geometryDisplayStrategy === 'object') {
     callbackFunctions = {
-      addCallBack: addToDebugObject,
-      removeCallBack: deleteFromDebugObject,
+      addCallback: addToDebug,
+      removeCallback: deleteFromDebug,
     };
   } else if (geometryDisplayStrategy === 'remove') {
     callbackFunctions = {
-      addCallBack: removeGeometryAttributes,
-      removeCallBack: () => {},
+      addCallback: removeGeometryAttributes,
+      removeCallback: () => {},
     };
   }
 

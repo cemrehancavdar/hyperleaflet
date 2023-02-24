@@ -26,12 +26,13 @@ function deleteNodeFromHyperleaflet(node) {
 }
 
 // TODO make a better name for it
-export default function HyperleafletGeometryManager(map) {
+export default function HyperleafletGeometryManager(map, { addCallback = () => {}, removeCallback = () => {} }) {
   const addNoteListToHyperleaflet = (nodes) => {
     nodes.forEach((node) => {
       if (node.nodeType === 1 && node.matches('[data-id]')) {
         const [leafletObject] = addNodeToHyperleaflet(node);
         leafletObject.addTo(map);
+        addCallback(node);
       }
     });
   };
@@ -41,9 +42,10 @@ export default function HyperleafletGeometryManager(map) {
       if (node.nodeType === 1 && node.matches('[data-id]')) {
         const [leafletObject] = deleteNodeFromHyperleaflet(node);
         leafletObject.remove();
+        removeCallback(node);
       }
     });
-  };
+  }
 
   return { addNoteListToHyperleaflet, removeNodeListToHyperleaflet };
 }
