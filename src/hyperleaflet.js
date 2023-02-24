@@ -1,7 +1,8 @@
 import L from 'leaflet';
 import HyperleafletGeometryManager from './HyperleafletHandlers';
 import createLeafletMap, { createHyperleafletTiles } from './Map';
-import handleGeometryDisplay from './GeometryDebug.js';
+import { addToDebugObject, deleteFromDebugObject } from './GeometryDOMObject';
+import removeGeometryAttributes from './GeometryUtils';
 
 const hyperleaflet = (function hyperleaflet() {
   if (typeof L === 'undefined') {
@@ -22,14 +23,29 @@ const hyperleaflet = (function hyperleaflet() {
   }
   defaultHyperleafletTile.addTo(map);
 
-  const geometryDisplayStrategy = mapContainer.dataset.geometryStrategy || 'none';
+  const geometryDisplayStrategy = mapContainer.dataset.geometryStrategy || 'remove';
 
-  const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = HyperleafletGeometryManager(map);
+  let callbackFunctions = {};
+  if (geometryDisplayStrategy === 'object') {
+    callbackFunctions = {
+      addCallBack: addToDebugObject,
+      removeCallBack: deleteFromDebugObject,
+    };
+  } else if (geometryDisplayStrategy === 'remove') {
+    callbackFunctions = {
+      addCallBack: removeGeometryAttributes,
+      removeCallBack: () => {},
+    };
+  }
+
+  const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = HyperleafletGeometryManager(
+    map,
+    callbackFunctions,
+  );
 
   map.whenReady(() => {
     const nodes = hyperleafletDataContainer.querySelectorAll('[data-id]');
     addNoteListToHyperleaflet(nodes);
-    handleGeometryDisplay(nodes, [], geometryDisplayStrategy);
   });
 
   function callback(mutations) {
@@ -37,7 +53,6 @@ const hyperleaflet = (function hyperleaflet() {
       if (mutation.type === 'childList') {
         addNoteListToHyperleaflet(mutation.addedNodes);
         removeNodeListToHyperleaflet(mutation.removedNodes);
-        handleGeometryDisplay(mutation.addedNodes, mutation.removedNodes, geometryDisplayStrategy);
       }
     });
   }
