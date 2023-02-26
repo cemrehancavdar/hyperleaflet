@@ -5,6 +5,7 @@
   "author": "cemrehancavdar",
   "license": "MIT",
   "source": "src/hyperleaflet.js",
+  "type": "module",
   "exports": {
     "require": "./dist/hyperleaflet.cjs",
     "default": "./dist/hyperleaflet.modern.js"
@@ -15,15 +16,21 @@
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch",
-    "dev:flask": "microbundle watch --format=umd --output=flask-app/app/static/"
+    "dev:flask": "microbundle watch --format=umd --output=flask-app/app/static/",
+    "test": "vitest"
   },
   "devDependencies": {
+    "@happy-dom/jest-environment": "^8.4.4",
+    "@testing-library/dom": "^9.0.0",
+    "@testing-library/jest-dom": "^5.16.5",
     "eslint": "^7.32.0 || ^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.2",
+    "happy-dom": "^8.4.4",
     "microbundle": "^0.15.1",
-    "prettier": "2.8.0"
+    "prettier": "2.8.0",
+    "vitest": "^0.28.5"
   },
   "dependencies": {
     "leaflet": "^1.9.3"
