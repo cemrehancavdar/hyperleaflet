@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import { setGeometryEvents } from './Events';
+import { setGeometryEvents } from './events';
 
 const createPointGeometry = (parsedGeometry, options) => {
   const marker = L.marker(parsedGeometry);

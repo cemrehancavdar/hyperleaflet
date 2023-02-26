@@ -1,4 +1,4 @@
-import createLeafletObject from './Geometry';
+import createLeafletObject from './leaflet-geometry';
 
 const leafletObjectMap = new Map();
 

@@ -17,6 +17,8 @@ export default function setMapEvents(map) {
     });
     window.dispatchEvent(event);
   });
+
+  return map;
 }
 
 export function setGeometryEvents(geometry, id) {

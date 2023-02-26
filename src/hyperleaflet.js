@@ -1,8 +1,8 @@
 import L from 'leaflet';
-import HyperleafletGeometryManager from './HyperleafletHandlers';
-import createLeafletMap, { createHyperleafletTiles } from './Map';
+import HyperleafletGeometryManager from './hyperleaflet-geometry-manager';
+import createHyperleafletMap, { createHyperleafletTiles } from './map-utils';
 import { addToDebug, deleteFromDebug } from './geometry-debugger';
-import removeGeometryAttributes from './removeGeometryAttribute';
+import removeGeometryAttributes from './remove-geometry-attribute';
 
 const hyperleaflet = (function hyperleaflet() {
   if (typeof L === 'undefined') {
@@ -12,7 +12,7 @@ const hyperleaflet = (function hyperleaflet() {
   }
 
   const mapContainer = document.querySelector('#map');
-  const map = createLeafletMap(mapContainer);
+  const map = createHyperleafletMap(mapContainer);
   const hyperleafletDataContainer = document.querySelector('[hyperleaflet]');
 
   const tileLayerElementList = mapContainer.querySelectorAll('[data-tile]');
