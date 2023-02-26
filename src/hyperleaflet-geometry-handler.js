@@ -25,8 +25,7 @@ function deleteNodeFromHyperleaflet(node) {
   return [leafletObject];
 }
 
-// TODO make a better name for it
-export default function HyperleafletGeometryManager(map, { addCallback = () => {}, removeCallback = () => {} }) {
+export default function hyperleafletGeometryHandler(map, { addCallback = () => {}, removeCallback = () => {} }) {
   const addNoteListToHyperleaflet = (nodes) => {
     nodes.forEach((node) => {
       if (node.nodeType === 1 && node.matches('[data-id]')) {

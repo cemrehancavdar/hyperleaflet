@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import HyperleafletGeometryManager from './hyperleaflet-geometry-manager';
+import hyperleafletGeometryHandler from './hyperleaflet-geometry-handler';
 import createHyperleafletMap, { createHyperleafletTiles } from './map-utils';
 import { addToDebug, deleteFromDebug } from './geometry-debugger';
 import removeGeometryAttributes from './remove-geometry-attribute';
@@ -38,7 +38,7 @@ const hyperleaflet = (function hyperleaflet() {
     };
   }
 
-  const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = HyperleafletGeometryManager(
+  const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = hyperleafletGeometryHandler(
     map,
     callbackFunctions,
   );
