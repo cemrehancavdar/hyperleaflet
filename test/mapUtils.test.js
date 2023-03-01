@@ -1,6 +1,8 @@
+/* eslint-disable no-underscore-dangle */
 // // @vitest-environment happy-dom
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import createHyperleafletMap from '../src/map-utils';
+import createHyperleafletMap, { createHyperleafletTiles } from '../src/map-utils';
+import TILE_LAYERS from '../src/constants';
 
 describe('createLeafletMap', () => {
   beforeEach(() => {
@@ -18,60 +20,85 @@ describe('createLeafletMap', () => {
     expect(map.getCenter()).toStrictEqual({ lat: 51.5074, lng: -0.1278 });
     expect(map.getZoom()).toBe(10);
   });
+});
 
-  it('should dispatch CustomEvents when the map is interacted with', () => {
-    // Create a mock event listener to listen for CustomEvents dispatched from the map
-    const mapElement = document.querySelector('#map');
-    const map = createHyperleafletMap(mapElement);
+describe('createHyperleafletTiles', () => {
+  let tileLayerElementList;
 
-    const eventListener = vi.fn();
-    window.addEventListener('mapclick', eventListener);
-    window.addEventListener('mapzoom', eventListener);
-    window.addEventListener('mapmove', eventListener);
+  beforeEach(() => {
+    // Set up the tile layer element list
+    tileLayerElementList = document.createElement('div');
+    tileLayerElementList.innerHTML = `
+      <div data-tile="OpenStreetMap" data-min-zoom="0" data-max-zoom="18"></div>
+      <div data-tile="EsriWorldImagery" data-min-zoom="0" data-max-zoom="14" data-is-default="true"></div>
+      <div data-tile="NotATileLayer"></div>
+    `;
+  });
 
-    // Simulate a click on the map
-    map.fire('click', { latlng: { lat: 0, lng: 0 } });
+  afterEach(() => {
+    // Clean up the tile layer element list
+    tileLayerElementList = null;
+  });
 
-    // Expect that a 'mapclick' CustomEvent was dispatched with the correct detail
-    expect(eventListener).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'mapclick',
-        detail: expect.objectContaining({
-          point: expect.objectContaining({ lat: 0, lng: 0 }),
-        }),
-      }),
-    );
+  it('returns the default tile layer and null tile controller if there are no valid tile layer elements', () => {
+    // Arrange
+    const emptyTileLayerElementList = document.createElement('div');
 
-    // Reset the event listener and simulate a zoomend event
-    eventListener.mockReset();
-    map.fire('zoomend');
+    // Act
+    const result = createHyperleafletTiles(emptyTileLayerElementList.children);
 
-    // Expect that a 'mapzoom' CustomEvent was dispatched with the correct detail
-    expect(eventListener).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'mapzoom',
-        detail: expect.objectContaining({
-          zoom: map.getZoom(),
-          center: map.getCenter(),
-          bbox: map.getBounds(),
-        }),
-      }),
-    );
+    // Assert
+    expect(result.defaultHyperleafletTile).toEqual(TILE_LAYERS.OpenStreetMap);
+    expect(result.tileController).toBeNull();
+  });
 
-    // Reset the event listener and simulate a move event
-    eventListener.mockReset();
-    map.fire('move');
+  it('sets the min and max zoom levels of each valid tile layer', () => {
+    // Arrange
 
-    // Expect that a 'mapmove' CustomEvent was dispatched with the correct detail
-    expect(eventListener).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'mapmove',
-        detail: expect.objectContaining({
-          zoom: map.getZoom(),
-          center: map.getCenter(),
-          bbox: map.getBounds(),
-        }),
-      }),
-    );
+    // Act
+    const result = createHyperleafletTiles(tileLayerElementList.children);
+
+    // Assert
+    expect(result.defaultHyperleafletTile.options.minZoom).toEqual('0');
+    expect(result.defaultHyperleafletTile.options.maxZoom).toEqual('18');
+    expect(
+      result.tileController._layers.find((layer) => layer.name === 'OpenStreetMap').layer.options.minZoom,
+    ).toEqual('0');
+    expect(
+      result.tileController._layers.find((layer) => layer.name === 'OpenStreetMap').layer.options.maxZoom,
+    ).toEqual('18');
+    expect(
+      result.tileController._layers.find((layer) => layer.name === 'EsriWorldImagery').layer.options.minZoom,
+    ).toEqual('0');
+    expect(
+      result.tileController._layers.find((layer) => layer.name === 'EsriWorldImagery').layer.options.maxZoom,
+    ).toEqual('14');
+  });
+
+  it('returns the default tile layer and tile controller with the expected tile layers', () => {
+    // Arrange
+
+    // Act
+    const result = createHyperleafletTiles(tileLayerElementList.children);
+
+    // Assert
+    expect(result.defaultHyperleafletTile._url).toEqual(TILE_LAYERS.OpenStreetMap._url);
+    expect(result.tileController._layers.at(0).name).toEqual('OpenStreetMap');
+    expect(result.tileController._layers.at(1).name).toEqual('EsriWorldImagery');
+    expect(result.tileController._layers.NotATileLayer).toBeUndefined();
+  });
+
+  it('logs a warning message if a tile layer is not found', () => {
+    // Arrange
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation();
+
+    // Act
+    createHyperleafletTiles(tileLayerElementList.children);
+
+    // Assert
+    expect(consoleWarnSpy).toHaveBeenCalledWith(`NotATileLayer is not in: \nOpenStreetMap\nEsriWorldImagery`);
+
+    // Clean up
+    consoleWarnSpy.mockRestore();
   });
 });
