@@ -2,8 +2,9 @@ import L from 'leaflet';
 import TILE_LAYERS from './constants';
 import setMapEvents from './events';
 
-export function createHyperleafletTiles(tileLayerElementList) {
-  const hyperleafletTiles = Array.from(tileLayerElementList)
+export function createHyperleafletTiles(tileLayerElementNodeList) {
+  const tileLayerElementList = Array.from(tileLayerElementNodeList);
+  const hyperleafletTiles = tileLayerElementList
     .map((tileLayerElement) => {
       const { tile, minZoom, maxZoom } = tileLayerElement.dataset;
 
@@ -15,11 +16,14 @@ export function createHyperleafletTiles(tileLayerElementList) {
       }
       currentTile.options.minZoom = minZoom;
       currentTile.options.maxZoom = maxZoom;
+      currentTile.name = tile;
       return { tile: currentTile };
     })
     .filter(Boolean);
+  const defaultHyperleafletTileName = tileLayerElementList.find((t) => t.dataset.defaultTile).dataset.tile;
+  const defaultHyperleafletTile = TILE_LAYERS[defaultHyperleafletTileName];
   return {
-    defaultHyperleafletTile: hyperleafletTiles.find((t) => t.isDefault)?.tile ?? TILE_LAYERS.OpenStreetMap,
+    defaultHyperleafletTile: defaultHyperleafletTile ?? TILE_LAYERS.OpenStreetMap,
     tileController: hyperleafletTiles.length
       ? L.control.layers(Object.fromEntries(hyperleafletTiles.map((t) => [t.tile.name, t.tile])))
       : null,
