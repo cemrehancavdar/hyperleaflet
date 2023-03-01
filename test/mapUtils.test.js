@@ -30,7 +30,7 @@ describe('createHyperleafletTiles', () => {
     tileLayerElementList = document.createElement('div');
     tileLayerElementList.innerHTML = `
       <div data-tile="OpenStreetMap" data-min-zoom="0" data-max-zoom="18"></div>
-      <div data-tile="EsriWorldImagery" data-min-zoom="0" data-max-zoom="14" data-is-default="true"></div>
+      <div data-tile="EsriWorldImagery" data-min-zoom="0" data-max-zoom="14" data-default-tile="true"></div>
       <div data-tile="NotATileLayer"></div>
     `;
   });
@@ -76,13 +76,11 @@ describe('createHyperleafletTiles', () => {
   });
 
   it('returns the default tile layer and tile controller with the expected tile layers', () => {
-    // Arrange
-
     // Act
     const result = createHyperleafletTiles(tileLayerElementList.children);
 
     // Assert
-    expect(result.defaultHyperleafletTile._url).toEqual(TILE_LAYERS.OpenStreetMap._url);
+    expect(result.defaultHyperleafletTile._url).toEqual(TILE_LAYERS.EsriWorldImagery._url);
     expect(result.tileController._layers.at(0).name).toEqual('OpenStreetMap');
     expect(result.tileController._layers.at(1).name).toEqual('EsriWorldImagery');
     expect(result.tileController._layers.NotATileLayer).toBeUndefined();
