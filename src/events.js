@@ -21,9 +21,9 @@ export default function setMapEvents(map) {
   return map;
 }
 
-export function setGeometryEvents(geometry, id) {
-  geometry.on('click', (e) => {
-    const event = new CustomEvent('pointclick', { detail: { point: e.latlng, rowId: id } });
+export function setGeometryEvents(leafletObject, id) {
+  leafletObject.on('click', () => {
+    const event = new CustomEvent('pointclick', { detail: { point: leafletObject.getLatLng(), rowId: id } });
     window.dispatchEvent(event);
   });
 }
