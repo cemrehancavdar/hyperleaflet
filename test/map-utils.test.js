@@ -83,7 +83,8 @@ describe('createHyperleafletTiles', () => {
     expect(result.defaultHyperleafletTile._url).toEqual(TILE_LAYERS.EsriWorldImagery._url);
     expect(result.tileController._layers.at(0).name).toEqual('OpenStreetMap');
     expect(result.tileController._layers.at(1).name).toEqual('EsriWorldImagery');
-    expect(result.tileController._layers.NotATileLayer).toBeUndefined();
+    const notATileLayer = result.tileController._layers.find((layer) => layer.name === 'NotATileLayer');
+    expect(notATileLayer).toBeUndefined();
   });
 
   it('logs a warning message if a tile layer is not found', () => {
