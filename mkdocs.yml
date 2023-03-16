@@ -1,0 +1,13 @@
+site_name: hyperleaflet
+theme:
+  name: material
+  palette:
+    primary: teal
+    accent: green
+  features:
+    - navigation.instant
+extra_css:
+  - https://unpkg.com/leaflet@1.9.3/dist/leaflet.css
+extra_javascript:
+  - https://unpkg.com/leaflet@1.9.3/dist/leaflet.js
+  - javascripts/hyperleaflet.umd.js
