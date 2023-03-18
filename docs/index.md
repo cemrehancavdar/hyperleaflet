@@ -1,4 +1,4 @@
-# Hyperleaflet
+# Hyperleaflet 
 
 
 <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5" style="width: inherit; height: 40vh; z-index: 1">
@@ -12,7 +12,7 @@
         </dl>
 </div>
 
-```html
+```html hl_lines="1 4"
 <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">
   <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
   <div data-tile="OpenStreetMap"></div>
