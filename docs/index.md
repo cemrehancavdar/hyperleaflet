@@ -1,6 +1,5 @@
 # Hyperleaflet
 
-Milavya selin xd
 
 <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5" style="width: 500px; height: 40vh; z-index: 1">
     <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
@@ -13,6 +12,9 @@ Milavya selin xd
         </dl>
 </div>
 
+
+
+
 ## Commands
 
 - `mkdocs new [dir-name]` - Create a new project.
@@ -20,11 +22,10 @@ Milavya selin xd
 - `mkdocs build` - Build the documentation site.
 - `mkdocs -h` - Print help message and exit.
 
-## Project layout ;))
+## Project layout 
 
     mkdocs.yml    # The configuration file.
     docs/
         index.md  # The documentation homepage.
         ...       # Other markdown pages, images and other files.
 
-[Show a map](https://stackblitz.com/github/seliind/Portfolio-Website?embed=1&file=README.md)

@@ -6,8 +6,16 @@ theme:
     accent: green
   features:
     - navigation.instant
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  icon:
+    repo: fontawesome/brands/github
+
 extra_css:
   - https://unpkg.com/leaflet@1.9.3/dist/leaflet.css
 extra_javascript:
   - https://unpkg.com/leaflet@1.9.3/dist/leaflet.js
   - javascripts/hyperleaflet.umd.js
+
+repo_url: https://github.com/cemrehancavdar/hyperleaflet
+repo_name: cemrehancavdar/hyperleaflet
