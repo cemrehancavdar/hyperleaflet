@@ -6,6 +6,7 @@ theme:
     accent: green
   features:
     - navigation.instant
+    - content.code.copy
   logo: assets/logo.png
   favicon: assets/logo.png
   icon:
@@ -19,3 +20,12 @@ extra_javascript:
 
 repo_url: https://github.com/cemrehancavdar/hyperleaflet
 repo_name: cemrehancavdar/hyperleaflet
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

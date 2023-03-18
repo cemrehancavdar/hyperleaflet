@@ -1,7 +1,7 @@
 # Hyperleaflet
 
 
-<div id="map" class="map" data-center="39.73, 39.99" data-zoom="5" style="width: 500px; height: 40vh; z-index: 1">
+<div id="map" class="map" data-center="39.73, 39.99" data-zoom="5" style="width: inherit; height: 40vh; z-index: 1">
     <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
     <div data-tile="OpenStreetMap"></div>
         <dl hyperleaflet>
@@ -12,7 +12,18 @@
         </dl>
 </div>
 
-
+```html
+<div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">
+  <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
+  <div data-tile="OpenStreetMap"></div>
+      <dl hyperleaflet>
+        <data data-id="1" data-geometry="[41.0,39.72]" data-geometry-type="Point" data-popup="<h1>Trabzon<h1>"
+          data-tooltip="1232" ></data>
+        <data data-id="2" data-geometry="[39.97,32.85]" data-geometry-type="Point" data-popup="<h1>Ankara<h1>">
+        </data>
+      </dl>
+</div>
+```
 
 
 ## Commands
