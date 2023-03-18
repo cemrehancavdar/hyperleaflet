@@ -60,7 +60,7 @@ describe('createHyperleafletTiles', () => {
 
     // Assert
     expect(result.defaultHyperleafletTile.options.minZoom).toEqual('0');
-    expect(result.defaultHyperleafletTile.options.maxZoom).toEqual('18');
+    expect(result.defaultHyperleafletTile.options.maxZoom).toEqual('14');
     expect(
       result.tileController._layers.find((layer) => layer.name === 'OpenStreetMap').layer.options.minZoom,
     ).toEqual('0');
