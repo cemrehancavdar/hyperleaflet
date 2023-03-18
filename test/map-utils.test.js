@@ -40,7 +40,7 @@ describe('createHyperleafletTiles', () => {
     tileLayerElementList = null;
   });
 
-  it('returns the default tile layer and null tile controller if there are no valid tile layer elements', () => {
+  it('returns the Open Street Map and null tile controller if there are no valid tile layer elements', () => {
     // Arrange
     const emptyTileLayerElementList = document.createElement('div');
 
