@@ -2,6 +2,17 @@ import L from 'leaflet';
 import TILE_LAYERS from './constants';
 import setMapEvents from './events';
 
+function getDefaultHyperleafletTile(tileLayerElementList) {
+  const defaultTileLayerElement = tileLayerElementList.find((t) => 'defaultTile' in t.dataset);
+  if (defaultTileLayerElement) {
+    return TILE_LAYERS[defaultTileLayerElement.dataset.tile];
+  }
+  if (tileLayerElementList.length) {
+    return TILE_LAYERS[tileLayerElementList[0].dataset.tile];
+  }
+  return TILE_LAYERS.OpenStreetMap;
+}
+
 export function createHyperleafletTiles(tileLayerElementNodeList) {
   const tileLayerElementList = Array.from(tileLayerElementNodeList);
   const hyperleafletTiles = tileLayerElementList
@@ -20,10 +31,9 @@ export function createHyperleafletTiles(tileLayerElementNodeList) {
       return { tile: currentTile };
     })
     .filter(Boolean);
-  const defaultHyperleafletTileName = tileLayerElementList.find((t) => 'defaultTile' in t.dataset)?.dataset.tile;
-  const defaultHyperleafletTile = TILE_LAYERS[defaultHyperleafletTileName];
+  const defaultHyperleafletTile = getDefaultHyperleafletTile(tileLayerElementList);
   return {
-    defaultHyperleafletTile: defaultHyperleafletTile ?? TILE_LAYERS.OpenStreetMap,
+    defaultHyperleafletTile,
     tileController: hyperleafletTiles.length
       ? L.control.layers(Object.fromEntries(hyperleafletTiles.map((t) => [t.tile.name, t.tile])))
       : null,
