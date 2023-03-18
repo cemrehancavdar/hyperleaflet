@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 // // @vitest-environment happy-dom
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import createHyperleafletMap, { createHyperleafletTiles } from '../src/map-utils';
+import createHyperleafletMap, { createHyperleafletTiles, getDefaultHyperleafletTile } from '../src/map-utils';
 import TILE_LAYERS from '../src/constants';
 
 describe('createLeafletMap', () => {
@@ -99,5 +99,29 @@ describe('createHyperleafletTiles', () => {
 
     // Clean up
     consoleWarnSpy.mockRestore();
+  });
+});
+
+describe('getDefaultHyperleafletTile', () => {
+  const tileLayerElementList = [
+    { dataset: { tile: 'OpenStreetMap', defaultTile: true } },
+    { dataset: { tile: 'EsriWorldImagery' } },
+  ];
+  it('should return the default tile if it exists in the list', () => {
+    expect(getDefaultHyperleafletTile(tileLayerElementList)).toEqual(TILE_LAYERS.OpenStreetMap);
+  });
+
+  it('should return the first tile in the list if no default is found', () => {
+    const noDefaultTileLayerElementList = [{ dataset: { tile: 'EsriWorldImagery' } }];
+    expect(getDefaultHyperleafletTile(noDefaultTileLayerElementList)).toEqual(TILE_LAYERS.EsriWorldImagery);
+  });
+
+  it('should return the OpenStreetMap tile if the list is empty', () => {
+    expect(getDefaultHyperleafletTile([])).toEqual(TILE_LAYERS.OpenStreetMap);
+  });
+
+  it('should return null if no tiles are found', () => {
+    const noTileLayerElementList = [{ dataset: { foo: 'bar' } }];
+    expect(getDefaultHyperleafletTile(noTileLayerElementList)).toBeUndefined();
   });
 });

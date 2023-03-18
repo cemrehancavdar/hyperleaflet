@@ -2,7 +2,7 @@ import L from 'leaflet';
 import TILE_LAYERS from './constants';
 import setMapEvents from './events';
 
-function getDefaultHyperleafletTile(tileLayerElementList) {
+export function getDefaultHyperleafletTile(tileLayerElementList) {
   const defaultTileLayerElement = tileLayerElementList.find((t) => 'defaultTile' in t.dataset);
   if (defaultTileLayerElement) {
     return TILE_LAYERS[defaultTileLayerElement.dataset.tile];
