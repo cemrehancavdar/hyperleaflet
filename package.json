@@ -1,7 +1,7 @@
 {
   "name": "hyperleaflet",
   "version": "0.0.1",
-  "description": "Leaflet for hypertexts",
+  "description": "Leaflet for HTML",
   "author": "cemrehancavdar",
   "license": "MIT",
   "source": "src/hyperleaflet.js",
