@@ -20,7 +20,7 @@ export function createHyperleafletTiles(tileLayerElementNodeList) {
       return { tile: currentTile };
     })
     .filter(Boolean);
-  const defaultHyperleafletTileName = tileLayerElementList.find((t) => 'defaultTile' in t.dataset).dataset.tile;
+  const defaultHyperleafletTileName = tileLayerElementList.find((t) => 'defaultTile' in t.dataset)?.dataset.tile;
   const defaultHyperleafletTile = TILE_LAYERS[defaultHyperleafletTileName];
   return {
     defaultHyperleafletTile: defaultHyperleafletTile ?? TILE_LAYERS.OpenStreetMap,
