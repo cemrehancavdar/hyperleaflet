@@ -1,4 +1,4 @@
-![hyperleaflet-github](https://user-images.githubusercontent.com/50503448/226207528-0cd257c5-abb1-4217-bd0b-6a2286cdd4d1.png)
+![hyperleaflet-github-with-map-background](https://user-images.githubusercontent.com/50503448/226447226-b6e8a43c-a99b-4e3d-8c1f-aabe082a9ccc.png)
 
 ## An HTML-based Leaflet Library
 
