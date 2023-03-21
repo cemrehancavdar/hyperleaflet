@@ -12,6 +12,9 @@ Hyperleaflet designed to be a user-friendly Leaflet library that simplifies the 
 
 Leaflet is a popular JavaScript library by [Vladimir Agafonkin](https://agafonkin.com/) used for creating interactive maps on web pages. Leaflet already has a powerful and intuitive API that makes it easy to work with and customize maps to your specific needs. 
 
+
+## Sample
+
 <div id="map" class="map" data-center="38.5, 37.0" data-zoom="5" style="width: inherit; height: 40vh; z-index: 1">
     <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
     <div data-tile="OpenStreetMap"></div>
@@ -20,36 +23,48 @@ Leaflet is a popular JavaScript library by [Vladimir Agafonkin](https://agafonki
                 data-tooltip="<i>tooltip</i>" ></span>
             <span data-id="2" data-geometry="[39.97,32.85]" data-geometry-type="Point" data-popup="<h3>Ankara</h3>">
             </span>
-        </dl>
+        </div>
 </div>
 
-```html hl_lines="1 4"
-<div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
-  <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
-  <div data-tile="OpenStreetMap"></div>
-      <div hyperleaflet>
-        <span data-id="1" data-geometry="[41.0,39.72]" data-geometry-type="Point" data-popup="<h3>Trabzon</h3>"
-          data-tooltip="1232" ></span>
-        <span data-id="2" data-geometry="[39.97,32.85]" data-geometry-type="Point" data-popup="<h3>Ankara</h1>">
-        </span>
-      </dl>
-</div>
-```
 
-1.  :man_raising_hand: I'm a code annotation! I can contain `code`, __formatted
-    text__, images, ... basically anything that can be written in Markdown.
+
+
+
+=== "İnitialize Map"
+
+    ```html
+    <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
+    </div>
+    ```
+
+=== "Add Tiles"
+
+    ```html hl_lines="2 3"
+    <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
+      <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
+      <div data-tile="OpenStreetMap"></div>
+    </div>
+    ```
+
+=== "Add Geometries"
+
+    ```html hl_lines="4 5 6 7 8 9"
+    <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
+      <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
+      <div data-tile="OpenStreetMap"></div>
+          <div hyperleaflet>
+            <span data-id="1" data-geometry="[41.0,39.72]" data-geometry-type="Point" data-popup="<h3>Trabzon</h3>"
+              data-tooltip="1232" ></span>
+            <span data-id="2" data-geometry="[39.97,32.85]" data-geometry-type="Point" data-popup="<h3>Ankara</h1>">
+            </span>
+          </div>
+    </div>
+    ```
+
 
 ## Commands
 
-- `mkdocs new [dir-name]` - Create a new project.
+- `mkdocs new [dir-name]` - Create a `new` project.
 - `mkdocs serve` - Start the live-reloading docs server.
 - `mkdocs build` - Build the documentation site.
 - `mkdocs -h` - Print help message and exit.
-
-## Project layout 
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
-
