@@ -48,7 +48,7 @@ Leaflet is a popular JavaScript library by [Vladimir Agafonkin](https://agafonki
 
 === "Add Geometries"
 
-    ```html hl_lines="4 5 6 7 8 9"
+    ```html hl_lines="4-9"
     <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
       <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
       <div data-tile="OpenStreetMap"></div>
