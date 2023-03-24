@@ -1,10 +1,10 @@
-import L from 'leaflet';
+import { tileLayer } from 'leaflet';
 
 const TILE_LAYERS = {
-  OpenStreetMap: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  OpenStreetMap: tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }),
-  EsriWorldImagery: L.tileLayer(
+  EsriWorldImagery: tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     {
       attribution:

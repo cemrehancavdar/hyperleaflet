@@ -1,4 +1,4 @@
-import L from 'leaflet';
+import { map, control } from 'leaflet';
 import TILE_LAYERS from './constants';
 import setMapEvents from './events';
 
@@ -35,7 +35,7 @@ export function createHyperleafletTiles(tileLayerElementNodeList) {
   return {
     defaultHyperleafletTile,
     tileController: hyperleafletTiles.length
-      ? L.control.layers(Object.fromEntries(hyperleafletTiles.map((t) => [t.tile.name, t.tile])))
+      ? control.layers(Object.fromEntries(hyperleafletTiles.map((t) => [t.tile.name, t.tile])))
       : null,
   };
 }
@@ -47,6 +47,6 @@ export default function createHyperleafletMap(mapElement) {
     center: center?.split(','),
     zoom: zoom || 1,
   };
-  const map = L.map(mapElement).setView(mapView.center, mapView.zoom);
-  return setMapEvents(map);
+  const leafletMap = map(mapElement).setView(mapView.center, mapView.zoom);
+  return setMapEvents(leafletMap);
 }

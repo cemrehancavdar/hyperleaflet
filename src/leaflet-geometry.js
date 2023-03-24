@@ -1,42 +1,42 @@
-import L from 'leaflet';
+import { marker, polyline, polygon, GeoJSON } from 'leaflet';
 import { setGeometryEvents } from './events';
 
 const createPointGeometry = (parsedGeometry, options) => {
-  const marker = L.marker(parsedGeometry);
+  const geometry = marker(parsedGeometry);
   if (options.popup) {
-    marker.bindPopup(options.popup);
+    geometry.bindPopup(options.popup);
   }
   if (options.tooltip) {
-    marker.bindTooltip(options.tooltip);
+    geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(marker, options.id);
-  return marker;
+  setGeometryEvents(geometry, options.id);
+  return geometry;
 };
 
 const createLineGeometry = (parsedGeometry, options) => {
-  const flippedGeometry = L.GeoJSON.coordsToLatLngs(parsedGeometry, 1);
-  const line = L.polyline(flippedGeometry);
+  const flippedGeometry = GeoJSON.coordsToLatLngs(parsedGeometry, 1);
+  const geometry = polyline(flippedGeometry);
   if (options.popup) {
-    line.bindPopup(options.popup);
+    geometry.bindPopup(options.popup);
   }
   if (options.tooltip) {
-    line.bindTooltip(options.tooltip);
+    geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(line, options.id);
-  return line;
+  setGeometryEvents(geometry, options.id);
+  return geometry;
 };
 
 const createPolygonGeometry = (parsedGeometry, options) => {
-  const flippedGeometry = L.GeoJSON.coordsToLatLngs(parsedGeometry, 1);
-  const polygon = L.polygon(flippedGeometry);
+  const flippedGeometry = GeoJSON.coordsToLatLngs(parsedGeometry, 1);
+  const geometry = polygon(flippedGeometry);
   if (options.popup) {
-    polygon.bindPopup(options.popup);
+    geometry.bindPopup(options.popup);
   }
   if (options.tooltip) {
-    polygon.bindTooltip(options.tooltip);
+    geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(polygon, options.id);
-  return polygon;
+  setGeometryEvents(geometry, options.id);
+  return geometry;
 };
 
 const createGeometry = (geometryType) => (parsedGeometry, options) => {

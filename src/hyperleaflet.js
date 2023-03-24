@@ -1,15 +1,16 @@
-import L from 'leaflet';
+import { geoJSON } from 'leaflet';
 import hyperleafletGeometryHandler from './hyperleaflet-geometry-handler';
 import createHyperleafletMap, { createHyperleafletTiles } from './map-utils';
 import { addToDebug, deleteFromDebug } from './geometry-debugger';
 import removeGeometryAttributes from './remove-geometry-attribute';
 
 const hyperleaflet = (function hyperleaflet() {
-  if (typeof L === 'undefined') {
-    // eslint-disable-next-line no-console
-    console.error('Hyperleaflet can not access Leaflet');
-    return undefined;
-  }
+  // TODO: This is a temporary fix for the issue that the Leaflet library is not loaded
+  // if (typeof L === 'undefined') {
+  //   // eslint-disable-next-line no-console
+  //   console.error('Hyperleaflet can not access Leaflet');
+  //   return undefined;
+  // }
 
   const mapContainer = document.querySelector('#map');
   const map = createHyperleafletMap(mapContainer);
@@ -66,7 +67,7 @@ const hyperleaflet = (function hyperleaflet() {
   });
 
   const addGeoJsonToMap = (geoJson) => {
-    L.geoJSON(geoJson).addTo(map);
+    geoJSON(geoJson).addTo(map);
   };
 
   return { map, addGeoJsonToMap };
