@@ -14,7 +14,8 @@
   "module": "./dist/hyperleaflet.module.js",
   "umd": "./flask-app/app/static/hyperleaflet.umd.js",
   "scripts": {
-    "build": "microbundle",
+    "build": "microbundle --format=umd",
+    "build:nc": "microbundle build --external leaflet -f esm --compress false",
     "dev": "microbundle watch",
     "dev:flask": "microbundle watch --format=umd --output=flask-app/app/static/",
     "test": "vitest"
