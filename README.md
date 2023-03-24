@@ -1,7 +1,6 @@
-## Hyperleaflet <🍃/> - An HTML-based Leaflet Library
+![hyperleaflet-github-with-map-background-black-white](https://user-images.githubusercontent.com/50503448/226453243-27619ebb-b323-4c51-be95-d01bf5b53545.png)
 
-[![Hyperleaflet]](https://user-images.githubusercontent.com/50503448/217046480-e997b33b-fddc-4c6d-af5e-18a6f4899928.mp4)
-
+## An HTML-based Leaflet Library
 
 
 ### Introduction
@@ -52,3 +51,6 @@ With the help of hyperscript interactions, we aim to enhance the library with fe
  Additionally, we are exploring the possibility of adding other geometry types to the library.
 
  We're working towards version 1.0 and will be publishing a roadmap to outline our plans. However, we're not afraid to experiment and try new things on the way. We welcome feedback and suggestions from the HTMX and Leaflet communities.
+ 
+[![Hyperleaflet]](https://user-images.githubusercontent.com/50503448/217046480-e997b33b-fddc-4c6d-af5e-18a6f4899928.mp4)
+
