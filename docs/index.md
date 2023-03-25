@@ -14,60 +14,59 @@ Leaflet is a popular JavaScript library by [Vladimir Agafonkin](https://agafonki
 
 
 ## Sample
+!!! note "Sample"
 
-<div id="map" class="map" data-center="38.5, 37.0" data-zoom="5" style="width: inherit; height: 40vh; z-index: 1">
-    <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
-    <div data-tile="OpenStreetMap"></div>
-        <div hyperleaflet>
-            <span data-id="1" data-geometry="[41.0,39.72]" data-geometry-type="Point" data-popup="<h3>Trabzon</h3>"
-                data-tooltip="<i>tooltip</i>" ></span>
-            <span data-id="2" data-geometry="[39.97,32.85]" data-geometry-type="Point" data-popup="<h3>Ankara</h3>">
-            </span>
+    <div id="map" class="map" data-center="38.5, 37.0" data-zoom="5" style="width: inherit; height: 40vh; z-index: 1">
+        <div data-tile="OpenStreetMap" data-default-tile></div>
+        <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" ></div>
+            <div hyperleaflet>
+                <span data-id="1" data-geometry="[41.0,39.72]" data-geometry-type="Point" data-popup="<h3>Trabzon</h3>"
+                    data-tooltip="<i>tooltip</i>" ></span>
+                <span data-id="2" data-geometry="[39.97,32.85]" data-geometry-type="Point" data-popup="<h3>Ankara</h3>">
+                </span>
+            </div>
+    </div>
+
+
+
+    === "İnitialize Map"
+
+        ```html
+        <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
         </div>
-</div>
+        ```
 
+    === "Add Tiles"
 
+        ```html hl_lines="2 3"
+        <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
+        <div data-tile="OpenStreetMap" data-default-tile></div>
+        <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" ></div>
+        </div>
+        ```
 
+    === "Add Geometries"
 
-
-=== "İnitialize Map"
-
-    ```html
-    <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
-    </div>
-    ```
-
-=== "Add Tiles"
-
-    ```html hl_lines="2 3"
-    <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
-      <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
-      <div data-tile="OpenStreetMap"></div>
-    </div>
-    ```
-
-=== "Add Geometries"
-
-    ```html hl_lines="4-9"
-    <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
-      <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
-      <div data-tile="OpenStreetMap"></div>
-          <div hyperleaflet>
-            <span data-id="1" data-geometry="[41.0,39.72]" data-geometry-type="Point" data-popup="<h3>Trabzon</h3>"
-              data-tooltip="1232" ></span>
-            <span data-id="2" data-geometry="[39.97,32.85]" data-geometry-type="Point" data-popup="<h3>Ankara</h1>">
-            </span>
-          </div>
-    </div>
-    ```
+        ```html hl_lines="4-13"
+        <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
+        <div data-tile="OpenStreetMap" data-default-tile></div>
+        <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" ></div>
+            <div hyperleaflet>
+                <span data-id="1"
+                data-geometry="[41.0,39.72]" data-geometry-type="Point"
+                data-popup="<h3>Trabzon</h3>" data-tooltip="1232" >
+                </span>
+                <span data-id="2"
+                data-geometry="[39.97,32.85]" data-geometry-type="Point"
+                data-popup="<h3>Ankara</h1>">
+                </span>
+            </div>
+        </div>
+        ```
 
 ## Try it yourself
 
- <iframe src="https://stackblitz.com/edit/web-platform-gfgegc?file=index.html" title="stackblitz" style="width: 100%; height: 500px" ></iframe> 
+ <iframe src="https://stackblitz.com/edit/hyperleaflet-demo?embed=1&file=index.html&hideExplorer=1&hideNavigation=1&view=preview" title="stackblitz" style="width: 100%; height: 500px" ></iframe> 
 
-## Commands
 
-- `mkdocs new [dir-name]` - Create a `new` project.
-- `mkdocs serve` - Start the live-reloading docs server.
-- `mkdocs build` - Build the documentation site.
-- `mkdocs -h` - Print help message and exit.
+
