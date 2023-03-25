@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 // // @vitest-environment happy-dom
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import createHyperleafletMap, { createHyperleafletTiles, getDefaultHyperleafletTile } from '../src/map-utils';
-import TILE_LAYERS from '../src/constants';
+import createHyperleafletMap, { createHyperleafletTiles, getDefaultHyperleafletTile } from '../src/Map/map-utils';
+import TILE_LAYERS from '../src/Map/tiles';
 
 describe('createLeafletMap', () => {
   beforeEach(() => {

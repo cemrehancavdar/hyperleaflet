@@ -2,7 +2,7 @@
 // // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
 import L from 'leaflet';
-import createLeafletObject from '../src/leaflet-geometry';
+import createLeafletObject from '../src/Geometry/leaflet-geometry';
 
 describe('createLeafletObject', () => {
   it('should create a Leaflet marker object for a point geometry', () => {

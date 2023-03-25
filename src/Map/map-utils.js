@@ -1,5 +1,5 @@
 import { map, control } from 'leaflet';
-import TILE_LAYERS from './constants';
+import TILE_LAYERS from './tiles';
 import setMapEvents from './events';
 
 export function getDefaultHyperleafletTile(tileLayerElementList) {

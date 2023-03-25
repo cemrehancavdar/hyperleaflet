@@ -1,8 +1,8 @@
 // // @vitest-environment happy-dom
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import L from 'leaflet';
-import createHyperleafletMap from '../src/map-utils';
-import { setGeometryEvents } from '../src/events';
+import createHyperleafletMap from '../src/Map/map-utils';
+import setGeometryEvents from '../src/Geometry/events';
 
 describe('events', () => {
   beforeEach(() => {

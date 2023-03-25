@@ -1,5 +1,5 @@
 import { marker, polyline, polygon, GeoJSON } from 'leaflet';
-import { setGeometryEvents } from './events';
+import setGeometryEvents from './events';
 
 const createPointGeometry = (parsedGeometry, options) => {
   const geometry = marker(parsedGeometry);
