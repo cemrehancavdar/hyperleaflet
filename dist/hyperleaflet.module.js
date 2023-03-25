@@ -1,19 +1,13 @@
-import { marker, GeoJSON, polyline, polygon, tileLayer, map, control, geoJSON } from 'leaflet';
+import { tileLayer, map, control, marker, GeoJSON, polyline, polygon, geoJSON } from 'leaflet';
 
-function _extends() {
-  _extends = Object.assign ? Object.assign.bind() : function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends.apply(this, arguments);
-}
+var TILE_LAYERS = {
+  OpenStreetMap: tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }),
+  EsriWorldImagery: tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+  })
+};
 
 function setMapEvents(map) {
   map.on('click', function (e) {
@@ -46,6 +40,120 @@ function setMapEvents(map) {
   });
   return map;
 }
+
+function getDefaultHyperleafletTile(tileLayerElementList) {
+  var defaultTileLayerElement = tileLayerElementList.find(function (t) {
+    return 'defaultTile' in t.dataset;
+  });
+  if (defaultTileLayerElement) {
+    return TILE_LAYERS[defaultTileLayerElement.dataset.tile];
+  }
+  if (tileLayerElementList.length) {
+    return TILE_LAYERS[tileLayerElementList[0].dataset.tile];
+  }
+  return TILE_LAYERS.OpenStreetMap;
+}
+function createHyperleafletTiles(tileLayerElementNodeList) {
+  var tileLayerElementList = Array.from(tileLayerElementNodeList);
+  var hyperleafletTiles = tileLayerElementList.map(function (tileLayerElement) {
+    var _tileLayerElement$dat = tileLayerElement.dataset,
+      tile = _tileLayerElement$dat.tile,
+      minZoom = _tileLayerElement$dat.minZoom,
+      maxZoom = _tileLayerElement$dat.maxZoom;
+    var currentTile = TILE_LAYERS[tile];
+    if (!currentTile) {
+      // eslint-disable-next-line no-console
+      console.warn(tile + " is not in: \n" + Object.keys(TILE_LAYERS).join('\n'));
+      return null;
+    }
+    currentTile.options.minZoom = minZoom;
+    currentTile.options.maxZoom = maxZoom;
+    currentTile.name = tile;
+    return {
+      tile: currentTile
+    };
+  }).filter(Boolean);
+  var defaultHyperleafletTile = getDefaultHyperleafletTile(tileLayerElementList);
+  return {
+    defaultHyperleafletTile: defaultHyperleafletTile,
+    tileController: hyperleafletTiles.length ? control.layers(Object.fromEntries(hyperleafletTiles.map(function (t) {
+      return [t.tile.name, t.tile];
+    }))) : null
+  };
+}
+function createHyperleafletMap(mapElement) {
+  var _mapElement$dataset = mapElement.dataset,
+    center = _mapElement$dataset.center,
+    zoom = _mapElement$dataset.zoom;
+  var mapView = {
+    center: center == null ? void 0 : center.split(','),
+    zoom: zoom || 1
+  };
+  var leafletMap = map(mapElement).setView(mapView.center, mapView.zoom);
+  return setMapEvents(leafletMap);
+}
+
+/**
+ *Creates a map
+ * @returns {L.Map}
+ */
+function createMap() {
+  var mapContainer = document.querySelector('#map');
+  var map = createHyperleafletMap(mapContainer);
+  var tileLayerElementList = mapContainer.querySelectorAll('[data-tile]');
+  var _createHyperleafletTi = createHyperleafletTiles(tileLayerElementList),
+    defaultHyperleafletTile = _createHyperleafletTi.defaultHyperleafletTile,
+    tileController = _createHyperleafletTi.tileController;
+  if (tileController) {
+    tileController.addTo(map);
+  }
+  defaultHyperleafletTile.addTo(map);
+  return map;
+}
+
+var debugMode = document.createElement('script');
+debugMode.type = 'application/json';
+debugMode.setAttribute('data-testid', 'debug');
+debugMode.innerText = '{}';
+document.body.appendChild(debugMode);
+var debugObject = JSON.parse(debugMode.text);
+function addToDebug(node) {
+  var _node$dataset = node.dataset,
+    id = _node$dataset.id,
+    geometry = _node$dataset.geometry,
+    geometryType = _node$dataset.geometryType;
+  node.removeAttribute('data-geometry');
+  debugObject[id] = {
+    type: geometryType,
+    coordinates: JSON.parse(geometry)
+  };
+  debugMode.text = JSON.stringify(debugObject, null, 2);
+}
+function deleteFromDebug(node) {
+  var id = node.dataset.id;
+  delete debugObject[id];
+  debugMode.text = JSON.stringify(debugObject, null, 2);
+}
+
+function utils(node) {
+  node.removeAttribute('data-geometry');
+}
+
+function _extends() {
+  _extends = Object.assign ? Object.assign.bind() : function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
+  return _extends.apply(this, arguments);
+}
+
 function setGeometryEvents(leafletObject, id) {
   leafletObject.on('click', function () {
     var event = new CustomEvent('pointclick', {
@@ -59,39 +167,39 @@ function setGeometryEvents(leafletObject, id) {
 }
 
 var createPointGeometry = function createPointGeometry(parsedGeometry, options) {
-  var point = marker(parsedGeometry);
+  var geometry = marker(parsedGeometry);
   if (options.popup) {
-    point.bindPopup(options.popup);
+    geometry.bindPopup(options.popup);
   }
   if (options.tooltip) {
-    point.bindTooltip(options.tooltip);
+    geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(point, options.id);
-  return point;
+  setGeometryEvents(geometry, options.id);
+  return geometry;
 };
 var createLineGeometry = function createLineGeometry(parsedGeometry, options) {
   var flippedGeometry = GeoJSON.coordsToLatLngs(parsedGeometry, 1);
-  var line = polyline(flippedGeometry);
+  var geometry = polyline(flippedGeometry);
   if (options.popup) {
-    line.bindPopup(options.popup);
+    geometry.bindPopup(options.popup);
   }
   if (options.tooltip) {
-    line.bindTooltip(options.tooltip);
+    geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(line, options.id);
-  return line;
+  setGeometryEvents(geometry, options.id);
+  return geometry;
 };
 var createPolygonGeometry = function createPolygonGeometry(parsedGeometry, options) {
   var flippedGeometry = GeoJSON.coordsToLatLngs(parsedGeometry, 1);
-  var _polygon = polygon(flippedGeometry);
+  var geometry = polygon(flippedGeometry);
   if (options.popup) {
-    _polygon.bindPopup(options.popup);
+    geometry.bindPopup(options.popup);
   }
   if (options.tooltip) {
-    _polygon.bindTooltip(options.tooltip);
+    geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(_polygon, options.id);
-  return _polygon;
+  setGeometryEvents(geometry, options.id);
+  return geometry;
 };
 var createGeometry = function createGeometry(geometryType) {
   return function (parsedGeometry, options) {
@@ -174,113 +282,15 @@ function hyperleafletGeometryHandler(map, _ref) {
   };
 }
 
-var TILE_LAYERS = {
-  OpenStreetMap: tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }),
-  EsriWorldImagery: tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-  })
-};
+/**
+ * Adds the data from the hyperleaflet container to the map.
+ @param {L.Map} map
+ @param map
+ */
 
-function getDefaultHyperleafletTile(tileLayerElementList) {
-  var defaultTileLayerElement = tileLayerElementList.find(function (t) {
-    return 'defaultTile' in t.dataset;
-  });
-  if (defaultTileLayerElement) {
-    return TILE_LAYERS[defaultTileLayerElement.dataset.tile];
-  }
-  if (tileLayerElementList.length) {
-    return TILE_LAYERS[tileLayerElementList[0].dataset.tile];
-  }
-  return TILE_LAYERS.OpenStreetMap;
-}
-function createHyperleafletTiles(tileLayerElementNodeList) {
-  var tileLayerElementList = Array.from(tileLayerElementNodeList);
-  var hyperleafletTiles = tileLayerElementList.map(function (tileLayerElement) {
-    var _tileLayerElement$dat = tileLayerElement.dataset,
-      tile = _tileLayerElement$dat.tile,
-      minZoom = _tileLayerElement$dat.minZoom,
-      maxZoom = _tileLayerElement$dat.maxZoom;
-    var currentTile = TILE_LAYERS[tile];
-    if (!currentTile) {
-      // eslint-disable-next-line no-console
-      console.warn(tile + " is not in: \n" + Object.keys(TILE_LAYERS).join('\n'));
-      return null;
-    }
-    currentTile.options.minZoom = minZoom;
-    currentTile.options.maxZoom = maxZoom;
-    currentTile.name = tile;
-    return {
-      tile: currentTile
-    };
-  }).filter(Boolean);
-  var defaultHyperleafletTile = getDefaultHyperleafletTile(tileLayerElementList);
-  return {
-    defaultHyperleafletTile: defaultHyperleafletTile,
-    tileController: hyperleafletTiles.length ? control.layers(Object.fromEntries(hyperleafletTiles.map(function (t) {
-      return [t.tile.name, t.tile];
-    }))) : null
-  };
-}
-function createHyperleafletMap(mapElement) {
-  var _mapElement$dataset = mapElement.dataset,
-    center = _mapElement$dataset.center,
-    zoom = _mapElement$dataset.zoom;
-  var mapView = {
-    center: center == null ? void 0 : center.split(','),
-    zoom: zoom || 1
-  };
-  var map_ = map(mapElement).setView(mapView.center, mapView.zoom);
-  return setMapEvents(map_);
-}
-
-var debugMode = document.createElement('script');
-debugMode.type = 'application/json';
-debugMode.setAttribute('data-testid', 'debug');
-debugMode.innerText = '{}';
-document.body.appendChild(debugMode);
-var debugObject = JSON.parse(debugMode.text);
-function addToDebug(node) {
-  var _node$dataset = node.dataset,
-    id = _node$dataset.id,
-    geometry = _node$dataset.geometry,
-    geometryType = _node$dataset.geometryType;
-  node.removeAttribute('data-geometry');
-  debugObject[id] = {
-    type: geometryType,
-    coordinates: JSON.parse(geometry)
-  };
-  debugMode.text = JSON.stringify(debugObject, null, 2);
-}
-function deleteFromDebug(node) {
-  var id = node.dataset.id;
-  delete debugObject[id];
-  debugMode.text = JSON.stringify(debugObject, null, 2);
-}
-
-function removeGeometryAttribute(node) {
-  node.removeAttribute('data-geometry');
-}
-
-var hyperleaflet = function hyperleaflet() {
-  // if (typeof L === 'undefined') {
-  //   // eslint-disable-next-line no-console
-  //   console.error('Hyperleaflet can not access Leaflet');
-  //   return undefined;
-  // }
-
-  var mapContainer = document.querySelector('#map');
-  var map = createHyperleafletMap(mapContainer);
+function hyperleafletDataToMap(map) {
   var hyperleafletDataContainer = document.querySelector('[hyperleaflet]');
-  var tileLayerElementList = mapContainer.querySelectorAll('[data-tile]');
-  var _createHyperleafletTi = createHyperleafletTiles(tileLayerElementList),
-    defaultHyperleafletTile = _createHyperleafletTi.defaultHyperleafletTile,
-    tileController = _createHyperleafletTi.tileController;
-  if (tileController) {
-    tileController.addTo(map);
-  }
-  defaultHyperleafletTile.addTo(map);
+  if (!hyperleafletDataContainer) return;
   var geometryDisplayStrategy = hyperleafletDataContainer.dataset.geometryDisplay || 'object';
   var callbackFunctions = {};
   if (geometryDisplayStrategy === 'object') {
@@ -290,7 +300,7 @@ var hyperleaflet = function hyperleaflet() {
     };
   } else if (geometryDisplayStrategy === 'remove') {
     callbackFunctions = {
-      addCallback: removeGeometryAttribute,
+      addCallback: utils,
       removeCallback: function removeCallback() {}
     };
   }
@@ -317,8 +327,20 @@ var hyperleaflet = function hyperleaflet() {
     // and lower descendants too
     attributeFilter: ['data-id']
   });
-  var addGeoJsonToMap = function addGeoJsonToMap(geoJson) {
-    geoJSON(geoJson).addTo(map);
+}
+
+var hyperleaflet = function hyperleaflet() {
+  var map = createMap();
+  hyperleafletDataToMap(map);
+
+  // TODO - move this to a separate file
+  /**
+   Adds a GeoJSON object to the map.
+   @param {Object} geoJSON - The GeoJSON object to add to the map.
+   @returns {void}
+   */
+  var addGeoJsonToMap = function addGeoJsonToMap(geoJSON$1) {
+    geoJSON(geoJSON$1).addTo(map);
   };
   return {
     map: map,
