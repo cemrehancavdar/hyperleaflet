@@ -21,7 +21,7 @@ Leaflet is a popular JavaScript library by [Vladimir Agafonkin](https://agafonki
 
         ![hyperleaflet](assets/t1.png)
 
-        ```html
+        ```html hl_lines="1 2"
         <div id="map">   
         </div>
         ```
