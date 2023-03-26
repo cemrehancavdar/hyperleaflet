@@ -13,42 +13,63 @@ Hyperleaflet designed to be a user-friendly Leaflet library that simplifies the 
 Leaflet is a popular JavaScript library by [Vladimir Agafonkin](https://agafonkin.com/) used for creating interactive maps on web pages. Leaflet already has a powerful and intuitive API that makes it easy to work with and customize maps to your specific needs. 
 
 
-## Sample
-!!! note "Sample"
-
-    <div id="map" class="map" data-center="38.5, 37.0" data-zoom="5" style="width: inherit; height: 40vh; z-index: 1">
-        <div data-tile="OpenStreetMap" data-default-tile></div>
-        <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" ></div>
-            <div hyperleaflet>
-                <span data-id="1" data-geometry="[41.0,39.72]" data-geometry-type="Point" data-popup="<h3>Trabzon</h3>"
-                    data-tooltip="<i>tooltip</i>" ></span>
-                <span data-id="2" data-geometry="[39.97,32.85]" data-geometry-type="Point" data-popup="<h3>Ankara</h3>">
-                </span>
-            </div>
-    </div>
+## Simple to use
+!!! note "basic hyperleaflet steps"
 
 
+    === "Add Map"
 
-    === "İnitialize Map"
+        ![hyperleaflet](assets/t1.png)
 
         ```html
-        <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
+        <div id="map">   
+        </div>
+        ```
+
+    === "Add Center and Zoom"
+
+        ![hyperleaflet](assets/t2.png)
+
+        ```html hl_lines="1"
+        <div id="map" data-center="38.5, 37.0" data-zoom="5">   
         </div>
         ```
 
     === "Add Tiles"
 
+        ![hyperleaflet](assets/t3.png)
+
         ```html hl_lines="2 3"
-        <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
-        <div data-tile="OpenStreetMap" data-default-tile></div>
-        <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" ></div>
+        <div id="map" data-center="38.5, 37.0" data-zoom="5">   
+        <div data-tile="OpenStreetMap" ></div>
+        <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" data-default-tile></div>
         </div>
         ```
 
     === "Add Geometries"
 
-        ```html hl_lines="4-13"
-        <div id="map" class="map" data-center="39.73, 39.99" data-zoom="5">   
+        ![hyperleaflet](assets/t4.png)
+
+        ```html hl_lines="4-11"
+        <div id="map" data-center="38.5, 37.0" data-zoom="5">   
+        <div data-tile="OpenStreetMap" data-default-tile></div>
+        <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" ></div>
+            <div hyperleaflet>
+                <span data-id="1"
+                data-geometry="[41.0,39.72]" data-geometry-type="Point">
+                </span>
+                <span data-id="2"
+                data-geometry="[39.97,32.85]" data-geometry-type="Point">
+                </span>
+            </div>
+        </div>
+        ```
+    === "Add Tooltip and Popups"
+
+        ![hyperleaflet](assets/t5.png)
+
+        ```html hl_lines="7 11"
+        <div id="map" data-center="38.5, 37.0" data-zoom="5">   
         <div data-tile="OpenStreetMap" data-default-tile></div>
         <div data-tile="EsriWorldImagery" data-max-zoom="19" data-min-zoom="5" ></div>
             <div hyperleaflet>
@@ -58,7 +79,7 @@ Leaflet is a popular JavaScript library by [Vladimir Agafonkin](https://agafonki
                 </span>
                 <span data-id="2"
                 data-geometry="[39.97,32.85]" data-geometry-type="Point"
-                data-popup="<h3>Ankara</h1>">
+                data-popup="<h>Ankara</h>">
                 </span>
             </div>
         </div>
@@ -66,7 +87,7 @@ Leaflet is a popular JavaScript library by [Vladimir Agafonkin](https://agafonki
 
 ## Try it yourself
 
- <iframe src="https://stackblitz.com/edit/hyperleaflet-demo?embed=1&file=index.html&hideExplorer=1&hideNavigation=1&view=preview" title="stackblitz" style="width: 100%; height: 500px" ></iframe> 
+ <iframe src="https://stackblitz.com/edit/hyperleaflet-demo?ctl=1&embed=1&file=index.html&hideDevTools=1&hideExplorer=1&hideNavigation=1" title="stackblitz" style="width: 100%; height: 500px" ></iframe> 
 
 
 
