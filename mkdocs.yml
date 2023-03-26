@@ -8,6 +8,7 @@ theme:
     - navigation.instant
     - content.code.copy
     - content.tabs.link
+    - content.code.annotate
   logo: assets/logo.png
   favicon: assets/logo.png
   icon:
