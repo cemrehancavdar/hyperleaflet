@@ -82,11 +82,12 @@ function createHyperleafletTiles(tileLayerElementNodeList) {
   };
 }
 function createHyperleafletMap(mapElement) {
+  var _center$split;
   var _mapElement$dataset = mapElement.dataset,
     center = _mapElement$dataset.center,
     zoom = _mapElement$dataset.zoom;
   var mapView = {
-    center: center == null ? void 0 : center.split(','),
+    center: (_center$split = center == null ? void 0 : center.split(',')) != null ? _center$split : [0, 0],
     zoom: zoom || 1
   };
   var leafletMap = map(mapElement).setView(mapView.center, mapView.zoom);
@@ -233,6 +234,12 @@ function createLeafletObject(row) {
 }
 
 var leafletObjectMap = new Map();
+
+/**
+ * Creates a new leaflet object and adds it to the leaflet object map with the given row ID.
+ * @param {HTMLElement} node - The HTML element containing the row ID in its dataset.
+ * @returns {Array} An array containing the newly created leaflet object.
+ */
 function addNodeToHyperleaflet(node) {
   var dataset = node.dataset;
   var rowId = dataset.id;
@@ -245,17 +252,35 @@ function addNodeToHyperleaflet(node) {
   leafletObjectMap.set(rowId, leafletObject);
   return [leafletObject];
 }
+/**
+ * Removes the leaflet object associated with the given HTML element from the leaflet object map.
+ * @param {HTMLElement} node - The HTML element containing the row ID in its dataset.
+ * @returns {Array} An array containing the removed leaflet object.
+ */
 function deleteNodeFromHyperleaflet(node) {
   var rowId = node.dataset.id;
   var leafletObject = leafletObjectMap.get(rowId);
   leafletObjectMap["delete"](rowId);
   return [leafletObject];
 }
+
+/**
+ * Initializes the hyperleaflet geometry handler with the given map and callbacks.
+ * @param {Object} map - The leaflet map instance to be used.
+ * @param {Object} callbacks - An object containing the add and remove callbacks to be called when elements are added or removed from the map.
+ * @param {Function} callbacks.addCallback - The function to be called when an element is added to the map.
+ * @param {Function} callbacks.removeCallback - The function to be called when an element is removed from the map.
+ * @returns {Object} An object containing the addNoteListToHyperleaflet and removeNodeListToHyperleaflet functions.
+ */
 function hyperleafletGeometryHandler(map, _ref) {
   var _ref$addCallback = _ref.addCallback,
     addCallback = _ref$addCallback === void 0 ? function () {} : _ref$addCallback,
     _ref$removeCallback = _ref.removeCallback,
     removeCallback = _ref$removeCallback === void 0 ? function () {} : _ref$removeCallback;
+  /**
+   * Adds a list of nodes to the map as Leaflet objects.
+   * @param {Array} nodes - An array of nodes to be added to the map.
+   */
   var addNoteListToHyperleaflet = function addNoteListToHyperleaflet(nodes) {
     nodes.forEach(function (node) {
       if (node.nodeType === 1 && node.matches('[data-id]')) {
@@ -266,6 +291,11 @@ function hyperleafletGeometryHandler(map, _ref) {
       }
     });
   };
+
+  /**
+   * Removes a list of nodes from the map.
+   * @param {Array} nodes - An array of nodes to be removed from the map.
+   */
   function removeNodeListToHyperleaflet(nodes) {
     nodes.forEach(function (node) {
       if (node.nodeType === 1 && node.matches('[data-id]')) {
