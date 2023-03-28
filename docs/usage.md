@@ -1,9 +1,9 @@
 ## Installing
 
+Hyperleaflet is browser-oriented library. This means you can simply add it as `#!html <script>` tag to your document. 
+
 ```html
-<div id="map" data-center="38.5, 37.0" data-zoom="5">   <!-- (1)! -->
-</div>
+<script src="https://www.unpkg.com/hyperleaflet@0.2.3" integrity="sha384-hJcYnhFwc9+OUe4q7GsQz3cYn5tXKOzO6pl/wjSc2FKofcAfN/nsQg5Il+jCiFN+" crossorigin="anonymous"></script>
 ```
 
-1.  Testing on gh 🌑
 
