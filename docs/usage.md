@@ -14,3 +14,10 @@ Hyperleaflet is built on top of Leaflet, so you must include Leaflet in your pro
 Once you have Leaflet included, add the Hyperleaflet script tag to your HTML document. Make sure to include the defer attribute in the script tag to ensure it runs after the document has finished parsing.
 
 
+??? warning "Don't forget to style your map"
+
+    Make sure to add a minimum height to the container element that defines your Leaflet map, otherwise it may not appear in your document.
+
+    ```css
+    #map { height: 180px; }
+    ```
