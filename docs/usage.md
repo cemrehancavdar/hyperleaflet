@@ -7,7 +7,7 @@ Hyperleaflet is browser-oriented library. To install simply add the following `#
 ```
 
 
-## Adding Hyperleaflet to Project
+### Adding Hyperleaflet to Project
 
 Hyperleaflet is built on top of Leaflet, so you must include Leaflet in your project first. Refer to the Leaflet Quick Start guide [here](https://leafletjs.com/examples/quick-start/) to learn how to add Leaflet to your project.
 
@@ -21,3 +21,9 @@ Once you have Leaflet included, add the Hyperleaflet script tag to your HTML doc
     ```css
     #map { height: 180px; }
     ```
+## Creating Map
+
+All you need to do is add a div element with the id "map" to your HTML document, and a Leaflet map will be rendered automatically.
+
+`#!html <div id="map">`
+
