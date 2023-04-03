@@ -41,12 +41,17 @@ export function createHyperleafletTiles(tileLayerElementNodeList) {
 }
 
 export default function createHyperleafletMap(mapElement) {
-  const { center, zoom } = mapElement.dataset;
+  const { center, zoom, minZoom, maxZoom } = mapElement.dataset;
 
   const mapView = {
     center: center?.split(',') ?? [0, 0],
     zoom: zoom || 1,
   };
-  const leafletMap = map(mapElement).setView(mapView.center, mapView.zoom);
+  const leafletMap = map(mapElement, {
+    center: mapView.center,
+    zoom: mapView.zoom,
+    minZoom: minZoom || 0,
+    maxZoom: maxZoom || 18,
+  });
   return setMapEvents(leafletMap);
 }
