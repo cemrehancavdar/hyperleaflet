@@ -39,23 +39,35 @@ Hyperleaflet leverages Leaflet's functionality by reading predefined data-\* att
 
 ##### Map Attributes
 
+
+```html 
+<div id="map" 
+  data-center="38.5, 37.0"
+  data-zoom="5"
+  data-min-zoom="4"
+  data-max-zoom="11">
+  ...   
+</div>
+```
+
 `#!css data-center`
 
 : The center point of the map.<br>
  Valid format: latitude, longitude. <br>
-`#!js data-center="38.5, 37.0"`
+<!-- `#!js data-center="38.5, 37.0"` -->
 
 `#!css data-zoom`
 : The zoom level of the map.<br>
 Valid values: integer 1-18. <br>
-`#!js data-zoom="5"`
+<!-- `#!js data-zoom="5"` -->
 
 `#!css data-min-zoom`
 : The minimum zoom level of the map. <br>
-Valid values: integer 1-22.<br>
-`#!js data-min-zoom="4"`
+Valid values: integer 1-18.<br>
+<!-- `#!js data-min-zoom="4"` -->
 
 `#!css data-max-zoom`:
 : The maximum zoom level of the map. <br>
-Valid values: integer 1-22.<br>
-`#!js data-max-zoom="11"`
+Valid values: integer 1-18.<br>
+<!-- `#!js data-max-zoom="11"` -->
+
