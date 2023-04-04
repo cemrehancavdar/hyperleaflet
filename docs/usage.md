@@ -39,38 +39,67 @@ Hyperleaflet leverages Leaflet's functionality by reading predefined data-\* att
 
 ##### Map Attributes
 
-
-```html 
-<div id="map" 
-  data-center="38.5, 37.0"
-  data-zoom="5"
-  data-min-zoom="4"
-  data-max-zoom="11">
-  ...   
-</div>
+```html
+  <div
+    id="map"
+    data-center="38.5, 37.0"
+    data-zoom="5"
+    data-min-zoom="4"
+    data-max-zoom="11"
+  >
+    ...
+  </div>
 ```
 
 `#!css data-center`
 
 : The center point of the map.<br>
- Valid format: latitude, longitude. <br>
-<!-- `#!js data-center="38.5, 37.0"` -->
+Valid values: [latitude, longitude]. <br>
 
 `#!css data-zoom`
 : The zoom level of the map.<br>
 Valid values: integer 1-18. <br>
-<!-- `#!js data-zoom="5"` -->
 
 `#!css data-min-zoom`
 : The minimum zoom level of the map. <br>
 Valid values: integer 1-18.<br>
-<!-- `#!js data-min-zoom="4"` -->
 
-`#!css data-max-zoom`:
+`#!css data-max-zoom`
 : The maximum zoom level of the map. <br>
 Valid values: integer 1-18.<br>
-<!-- `#!js data-max-zoom="11"` -->
 
-??? info "Your default basemap is OSM"
+##### Tile Layers Attributes
 
-    [Open Street Map (OSM)](https://www.openstreetmap.org/){:target="_blank"} as the primary tile layer by default. However, users have the option to specify other tile layers that are further described below.
+```html
+<div id="map" ...>
+  <div
+    data-tile="EsriWorldImagery"
+    data-max-zoom="19"
+    data-min-zoom="5"
+    data-default-tile
+  ></div>
+  <div data-tile="OpenStreetMap"></div>
+</div>
+```
+
+`#!css data-tile`
+: The tile layer to be displayed on the map.<br>
+Valid values: string: [ OpenStreetMap, EsriWorldImagery ]
+
+`#!css data-min-zoom`
+: The minimum zoom level of the tile layer. <br>
+Valid values: integer 1-18.<br>
+
+`#!css data-max-zoom`
+: The maximum zoom level of the tile layer. <br>
+Valid values: integer 1-18.<br>
+
+`#!css data-default-tile`
+: If present, tile layer will be set as the default tile. <br>
+Valid values: none <br>
+
+??? info "Primary Tile"
+
+    When no tile layer is specified, the primary tile layer for a map is [Open Street Map (OSM)](https://www.openstreetmap.org/){:target="\_blank"} by default.
+    However, if one or more layers are specified, the first one listed will be the primary tile layer unless data-default-tile is specified for a different layer.
+    In that case, the layer specified with data-default-tile will be set as the default tile layer.
