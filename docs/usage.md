@@ -40,15 +40,15 @@ Hyperleaflet leverages Leaflet's functionality by reading predefined data-\* att
 ##### Map Attributes
 
 ```html
-  <div
-    id="map"
-    data-center="38.5, 37.0"
-    data-zoom="5"
-    data-min-zoom="4"
-    data-max-zoom="11"
-  >
-    ...
-  </div>
+<div
+  id="map"
+  data-center="38.5, 37.0"
+  data-zoom="5"
+  data-min-zoom="4"
+  data-max-zoom="11"
+>
+  ...
+</div>
 ```
 
 `#!css data-center`
@@ -79,12 +79,26 @@ Valid values: integer 1-18.<br>
     data-default-tile
   ></div>
   <div data-tile="OpenStreetMap"></div>
+  <div
+    data-tile="OpenTopoMap"
+    data-tile-url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+  ></div>
+  <div
+    data-tile="ExampleTmsTile"
+    data-tile="http://example.com/{z}/{x}/{y}.png"
+    tms="true"
+  ></div>
 </div>
 ```
 
 `#!css data-tile`
 : The tile layer to be displayed on the map.<br>
-Valid values: string: [ OpenStreetMap, EsriWorldImagery ]
+Valid values: string, one of: "OpenStreetMap", "EsriWorldImagery", or the custom tile layer name.
+If a custom tile layer is used, it can be defined using data-tile-url.
+
+`#!css data-tile-url`
+: The URL template for the custom tile layer. The placeholders {s}, {z}, {x}, and {y} will be replaced with the appropriate values for each tile.<br>
+Valid format: string, URL template.
 
 `#!css data-min-zoom`
 : The minimum zoom level of the tile layer. <br>
@@ -97,6 +111,10 @@ Valid values: integer 1-18.<br>
 `#!css data-default-tile`
 : If present, tile layer will be set as the default tile. <br>
 Valid values: none <br>
+
+`#!css data-tms`
+: Indicates that the tile layer is a TMS (Tiled Map Service) layer. This is only necessary if using a custom tile layer that is in TMS format.<br>
+Valid values: true/false. Default: false
 
 ??? info "Primary Tile"
 
