@@ -1,4 +1,4 @@
-import createHyperleafletMap, { createHyperleafletTiles } from './map-utils';
+import createHyperleafletMap, { createHyperleafletTiles } from './map';
 
 /**
  *Creates a map

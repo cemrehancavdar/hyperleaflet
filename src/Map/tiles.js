@@ -1,6 +1,6 @@
 import { tileLayer } from 'leaflet';
 
-const TILE_LAYERS = {
+const tileLayers = {
   OpenStreetMap: tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }),
@@ -13,4 +13,12 @@ const TILE_LAYERS = {
   ),
 };
 
-export default TILE_LAYERS;
+export function addTileLayer(newTileLayer) {
+  if (tileLayers[newTileLayer.name]) {
+    console.warn(`Tile layer ${newTileLayer.name} already exists. Skipping.`);
+    return;
+  }
+  tileLayers[newTileLayer.name] = newTileLayer.tile;
+}
+
+export default tileLayers;
