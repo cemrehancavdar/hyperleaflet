@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 // // @vitest-environment happy-dom
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import createHyperleafletMap, { createHyperleafletTiles, getDefaultHyperleafletTile } from '../src/Map/map-utils';
-import TILE_LAYERS from '../src/Map/tiles';
+import createHyperleafletMap, { createHyperleafletTiles, getDefaultHyperleafletTile } from '../map';
+import TILE_LAYERS from '../tiles';
 
 describe('createLeafletMap', () => {
   beforeEach(() => {
@@ -32,6 +32,7 @@ describe('createHyperleafletTiles', () => {
       <div data-tile="OpenStreetMap" data-min-zoom="0" data-max-zoom="18"></div>
       <div data-tile="EsriWorldImagery" data-min-zoom="0" data-max-zoom="14" data-default-tile="true"></div>
       <div data-tile="NotATileLayer"></div>
+      <div data-tile="OpenTopoMap" data-tile-url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"></div>
     `;
   });
 
@@ -83,8 +84,17 @@ describe('createHyperleafletTiles', () => {
     expect(result.defaultHyperleafletTile._url).toEqual(TILE_LAYERS.EsriWorldImagery._url);
     expect(result.tileController._layers.at(0).name).toEqual('OpenStreetMap');
     expect(result.tileController._layers.at(1).name).toEqual('EsriWorldImagery');
+    expect(result.tileController._layers.at(2).name).toEqual('OpenTopoMap');
     const notATileLayer = result.tileController._layers.find((layer) => layer.name === 'NotATileLayer');
     expect(notATileLayer).toBeUndefined();
+  });
+
+  it('return tile layer if a tile layer url is provided', () => {
+    // Act
+    const result = createHyperleafletTiles(tileLayerElementList.children);
+
+    // Assert
+    expect(result.tileController._layers.at(2).layer._url).toEqual('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png');
   });
 
   it('logs a warning message if a tile layer is not found', () => {
@@ -95,7 +105,9 @@ describe('createHyperleafletTiles', () => {
     createHyperleafletTiles(tileLayerElementList.children);
 
     // Assert
-    expect(consoleWarnSpy).toHaveBeenCalledWith(`NotATileLayer is not in: \nOpenStreetMap\nEsriWorldImagery`);
+    expect(consoleWarnSpy).toHaveBeenCalledWith(
+      `NotATileLayer is not in: \nOpenStreetMap\nEsriWorldImagery\nOpenTopoMap`,
+    );
 
     // Clean up
     consoleWarnSpy.mockRestore();
@@ -122,6 +134,6 @@ describe('getDefaultHyperleafletTile', () => {
 
   it('should return null if no tiles are found', () => {
     const noTileLayerElementList = [{ dataset: { foo: 'bar' } }];
-    expect(getDefaultHyperleafletTile(noTileLayerElementList)).toBeUndefined();
+    expect(getDefaultHyperleafletTile(noTileLayerElementList)).toEqual(TILE_LAYERS.OpenStreetMap);
   });
 });
