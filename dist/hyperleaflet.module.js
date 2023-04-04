@@ -1,6 +1,6 @@
-import { tileLayer, map, control, marker, GeoJSON, polyline, polygon, geoJSON } from 'leaflet';
+import { tileLayer, control, TileLayer, map, marker, GeoJSON, polyline, polygon, geoJSON } from 'leaflet';
 
-var TILE_LAYERS = {
+var tileLayers = {
   OpenStreetMap: tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }),
@@ -8,6 +8,13 @@ var TILE_LAYERS = {
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
   })
 };
+function addTileLayer(newTileLayer) {
+  if (tileLayers[newTileLayer.name]) {
+    console.warn("Tile layer " + newTileLayer.name + " already exists. Skipping.");
+    return;
+  }
+  tileLayers[newTileLayer.name] = newTileLayer.tile;
+}
 
 function setMapEvents(map) {
   map.on('click', function (e) {
@@ -41,44 +48,75 @@ function setMapEvents(map) {
   return map;
 }
 
+function createCustomTileLayer(url, _temp) {
+  var _ref = _temp === void 0 ? {} : _temp,
+    minZoom = _ref.minZoom,
+    maxZoom = _ref.maxZoom,
+    tms = _ref.tms;
+  return new TileLayer(url, {
+    minZoom: minZoom || 0,
+    maxZoom: maxZoom || 18,
+    tms: !!tms
+  });
+}
+function createTileController(tiles) {
+  return tiles.length ? control.layers(Object.fromEntries(tiles.map(function (_ref2) {
+    var name = _ref2.name,
+      tile = _ref2.tile;
+    return [name, tile];
+  }))) : null;
+}
+function parseTileLayerElement(tileLayerElement) {
+  var _tileLayerElement$dat = tileLayerElement.dataset,
+    tile = _tileLayerElement$dat.tile,
+    tileUrl = _tileLayerElement$dat.tileUrl,
+    tms = _tileLayerElement$dat.tms,
+    minZoom = _tileLayerElement$dat.minZoom,
+    maxZoom = _tileLayerElement$dat.maxZoom;
+  if (tileUrl) {
+    var newTile = createCustomTileLayer(tileUrl, {
+      minZoom: minZoom,
+      maxZoom: maxZoom,
+      tms: tms === 'true'
+    });
+    addTileLayer({
+      name: tile,
+      tile: newTile
+    });
+  }
+  var currentTile = tileLayers[tile];
+  if (!currentTile) {
+    console.warn(tile + " is not in: \n" + Object.keys(tileLayers).join('\n'));
+    return null;
+  }
+  currentTile.options.minZoom = minZoom;
+  currentTile.options.maxZoom = maxZoom;
+  return {
+    tile: currentTile,
+    name: tile
+  };
+}
+
 function getDefaultHyperleafletTile(tileLayerElementList) {
   var defaultTileLayerElement = tileLayerElementList.find(function (t) {
     return 'defaultTile' in t.dataset;
   });
-  if (defaultTileLayerElement) {
-    return TILE_LAYERS[defaultTileLayerElement.dataset.tile];
+  if (defaultTileLayerElement && defaultTileLayerElement.dataset.tile in tileLayers) {
+    return tileLayers[defaultTileLayerElement.dataset.tile];
   }
-  if (tileLayerElementList.length) {
-    return TILE_LAYERS[tileLayerElementList[0].dataset.tile];
+  if (tileLayerElementList.length && tileLayerElementList[0].dataset.tile in tileLayers) {
+    return tileLayers[tileLayerElementList[0].dataset.tile];
   }
-  return TILE_LAYERS.OpenStreetMap;
+  return tileLayers.OpenStreetMap;
 }
 function createHyperleafletTiles(tileLayerElementNodeList) {
   var tileLayerElementList = Array.from(tileLayerElementNodeList);
-  var hyperleafletTiles = tileLayerElementList.map(function (tileLayerElement) {
-    var _tileLayerElement$dat = tileLayerElement.dataset,
-      tile = _tileLayerElement$dat.tile,
-      minZoom = _tileLayerElement$dat.minZoom,
-      maxZoom = _tileLayerElement$dat.maxZoom;
-    var currentTile = TILE_LAYERS[tile];
-    if (!currentTile) {
-      // eslint-disable-next-line no-console
-      console.warn(tile + " is not in: \n" + Object.keys(TILE_LAYERS).join('\n'));
-      return null;
-    }
-    currentTile.options.minZoom = minZoom;
-    currentTile.options.maxZoom = maxZoom;
-    currentTile.name = tile;
-    return {
-      tile: currentTile
-    };
-  }).filter(Boolean);
+  var hyperleafletTiles = tileLayerElementList.map(parseTileLayerElement).filter(Boolean);
   var defaultHyperleafletTile = getDefaultHyperleafletTile(tileLayerElementList);
+  var tileController = createTileController(hyperleafletTiles);
   return {
     defaultHyperleafletTile: defaultHyperleafletTile,
-    tileController: hyperleafletTiles.length ? control.layers(Object.fromEntries(hyperleafletTiles.map(function (t) {
-      return [t.tile.name, t.tile];
-    }))) : null
+    tileController: tileController
   };
 }
 function createHyperleafletMap(mapElement) {
