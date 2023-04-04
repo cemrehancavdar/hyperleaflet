@@ -71,3 +71,6 @@ Valid values: integer 1-18.<br>
 Valid values: integer 1-18.<br>
 <!-- `#!js data-max-zoom="11"` -->
 
+??? info "Your default basemap is OSM"
+
+    [Open Street Map (OSM)](https://www.openstreetmap.org/){:target="_blank"} as the primary tile layer by default. However, users have the option to specify other tile layers that are further described below.

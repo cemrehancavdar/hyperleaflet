@@ -10,7 +10,7 @@ Hyperleaflet designed to be a user-friendly Leaflet library that simplifies the 
 
 ### What is Leaflet?
 
-Leaflet is a popular JavaScript library by [Vladimir Agafonkin](https://agafonkin.com/) used for creating interactive maps on web pages. Leaflet already has a powerful and intuitive API that makes it easy to work with and customize maps to your specific needs. 
+Leaflet is a popular JavaScript library by [Vladimir Agafonkin](https://agafonkin.com/){:target="_blank"} used for creating interactive maps on web pages. Leaflet already has a powerful and intuitive API that makes it easy to work with and customize maps to your specific needs. 
 
 
 ## Simple to use
