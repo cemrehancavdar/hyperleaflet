@@ -335,9 +335,9 @@ function hyperleafletGeometryHandler(map, _ref) {
  */
 
 function hyperleafletDataToMap(map) {
-  var hyperleafletDataContainer = document.querySelector('[hyperleaflet]');
-  if (!hyperleafletDataContainer) return;
-  var geometryDisplayStrategy = hyperleafletDataContainer.dataset.geometryDisplay || 'object';
+  var hyperleafletDataSource = document.querySelector('[data-hyperleaflet-source]');
+  if (!hyperleafletDataSource) return;
+  var geometryDisplayStrategy = hyperleafletDataSource.dataset.geometryDisplay || 'object';
   var callbackFunctions = {};
   if (geometryDisplayStrategy === 'object') {
     callbackFunctions = {
@@ -354,7 +354,7 @@ function hyperleafletDataToMap(map) {
     addNoteListToHyperleaflet = _hyperleafletGeometry.addNoteListToHyperleaflet,
     removeNodeListToHyperleaflet = _hyperleafletGeometry.removeNodeListToHyperleaflet;
   map.whenReady(function () {
-    var nodes = hyperleafletDataContainer.querySelectorAll('[data-id]');
+    var nodes = hyperleafletDataSource.querySelectorAll('[data-id]');
     addNoteListToHyperleaflet(nodes);
   });
   function callback(mutations) {
@@ -366,7 +366,7 @@ function hyperleafletDataToMap(map) {
     });
   }
   var observer = new MutationObserver(callback);
-  observer.observe(hyperleafletDataContainer, {
+  observer.observe(hyperleafletDataSource, {
     childList: true,
     // observe direct children
     subtree: true,

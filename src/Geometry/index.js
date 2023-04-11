@@ -9,11 +9,11 @@ import hyperleafletGeometryHandler from './hyperleaflet-geometry-handler';
  */
 
 function hyperleafletDataToMap(map) {
-  const hyperleafletDataContainer = document.querySelector('[hyperleaflet]');
+  const hyperleafletDataSource = document.querySelector('[data-hyperleaflet-source]');
 
-  if (!hyperleafletDataContainer) return;
+  if (!hyperleafletDataSource) return;
 
-  const geometryDisplayStrategy = hyperleafletDataContainer.dataset.geometryDisplay || 'object';
+  const geometryDisplayStrategy = hyperleafletDataSource.dataset.geometryDisplay || 'object';
 
   let callbackFunctions = {};
   if (geometryDisplayStrategy === 'object') {
@@ -34,7 +34,7 @@ function hyperleafletDataToMap(map) {
   );
 
   map.whenReady(() => {
-    const nodes = hyperleafletDataContainer.querySelectorAll('[data-id]');
+    const nodes = hyperleafletDataSource.querySelectorAll('[data-id]');
     addNoteListToHyperleaflet(nodes);
   });
 
@@ -49,7 +49,7 @@ function hyperleafletDataToMap(map) {
 
   const observer = new MutationObserver(callback);
 
-  observer.observe(hyperleafletDataContainer, {
+  observer.observe(hyperleafletDataSource, {
     childList: true, // observe direct children
     subtree: true, // and lower descendants too
     attributeFilter: ['data-id'],
