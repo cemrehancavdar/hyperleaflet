@@ -1,0 +1,39 @@
+site_name: hyperleaflet
+theme:
+  name: material
+  palette:
+    primary: teal
+    accent: green
+  features:
+    - navigation.instant
+    - content.code.copy
+    - content.tabs.link
+    - content.code.annotate
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  icon:
+    repo: fontawesome/brands/github
+
+extra_css:
+  - https://unpkg.com/leaflet@1.9.3/dist/leaflet.css
+extra_javascript:
+  - https://unpkg.com/leaflet@1.9.3/dist/leaflet.js
+  - javascripts/hyperleaflet.umd.js
+
+repo_url: https://github.com/cemrehancavdar/hyperleaflet
+repo_name: cemrehancavdar/hyperleaflet
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true 
+  - def_list
+  - attr_list
