@@ -14,7 +14,7 @@ const createPointGeometry = (parsedGeometry, options) => {
 };
 
 const createLineGeometry = (parsedGeometry, options) => {
-  const flippedGeometry = GeoJSON.coordsToLatLngs(parsedGeometry, 1);
+  const flippedGeometry = GeoJSON.coordsToLatLngs(parsedGeometry, 0);
   const geometry = polyline(flippedGeometry);
   if (options.popup) {
     geometry.bindPopup(options.popup);
