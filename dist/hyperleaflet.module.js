@@ -224,7 +224,7 @@ var createPointGeometry = function createPointGeometry(parsedGeometry, options) 
   return geometry;
 };
 var createLineGeometry = function createLineGeometry(parsedGeometry, options) {
-  var flippedGeometry = GeoJSON.coordsToLatLngs(parsedGeometry, 1);
+  var flippedGeometry = GeoJSON.coordsToLatLngs(parsedGeometry, 0);
   var geometry = polyline(flippedGeometry);
   if (options.popup) {
     geometry.bindPopup(options.popup);
