@@ -1,9 +1,11 @@
-name: ci 
+name: docs
 on:
   push:
     branches:
       - master 
       - main
+  paths:
+    - dist/**
 permissions:
   contents: write
 jobs:
