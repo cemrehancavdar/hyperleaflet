@@ -11,19 +11,19 @@ describe('events', () => {
     document.body.innerHTML = '';
   });
 
-  it('should zoomend return valid mapzoom', () => {
+  it('should click return valid map:click', () => {
     // Create a mock event listener to listen for CustomEvents dispatched from the map
     const mapElement = document.querySelector('#map');
     const map = createHyperleafletMap(mapElement);
 
     const eventListener = vi.fn();
-    window.addEventListener('mapclick', eventListener);
+    window.addEventListener('map:click', eventListener);
 
     map.fire('click', { latlng: { lat: 0, lng: 0 } });
 
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({
-        type: 'mapclick',
+        type: 'map:click',
         detail: expect.objectContaining({
           point: expect.objectContaining({ lat: 0, lng: 0 }),
         }),
@@ -31,17 +31,17 @@ describe('events', () => {
     );
   });
 
-  it('should zoomend return valid mapzoom', () => {
+  it('should zoomend return valid map:zoom', () => {
     const mapElement = document.querySelector('#map');
     const map = createHyperleafletMap(mapElement);
 
     const eventListener = vi.fn();
-    window.addEventListener('mapzoom', eventListener);
+    window.addEventListener('map:zoom', eventListener);
     map.fire('zoomend');
 
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({
-        type: 'mapzoom',
+        type: 'map:zoom',
         detail: expect.objectContaining({
           zoom: map.getZoom(),
           center: map.getCenter(),
@@ -50,18 +50,18 @@ describe('events', () => {
       }),
     );
   });
-  it('should move return valid mapmove', () => {
+  it('should move return valid map:move', () => {
     const mapElement = document.querySelector('#map');
     const map = createHyperleafletMap(mapElement);
 
     const eventListener = vi.fn();
 
-    window.addEventListener('mapmove', eventListener);
+    window.addEventListener('map:move', eventListener);
     map.fire('move');
 
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({
-        type: 'mapmove',
+        type: 'map:move',
         detail: expect.objectContaining({
           zoom: map.getZoom(),
           center: map.getCenter(),
