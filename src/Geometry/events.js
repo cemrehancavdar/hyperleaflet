@@ -1,6 +1,13 @@
-export default function setGeometryEvents(leafletObject, id) {
-  leafletObject.on('click', () => {
-    const event = new CustomEvent('pointclick', { detail: { point: leafletObject.getLatLng(), rowId: id } });
+export function setPointEvents(leafletObject, id) {
+  leafletObject.on('click', (e) => {
+    const event = new CustomEvent('geomclick', { detail: { clickedPoint: e.latlng, geometry: leafletObject.getLatLng(), rowId: id } });
+    window.dispatchEvent(event);
+  });
+}
+
+export function setPolyGeometryEvents(leafletObject, id) {
+  leafletObject.on('click', (e) => {
+    const event = new CustomEvent('geomclick', { detail: { clickedPoint: e.latlng, geometry: leafletObject.getLatLngs(), rowId: id } });
     window.dispatchEvent(event);
   });
 }
