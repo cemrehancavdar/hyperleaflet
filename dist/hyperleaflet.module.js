@@ -18,7 +18,7 @@ function addTileLayer(newTileLayer) {
 
 function setMapEvents(map) {
   map.on('click', function (e) {
-    var event = new CustomEvent('mapclick', {
+    var event = new CustomEvent('map:click', {
       detail: {
         point: e.latlng
       }
@@ -26,7 +26,7 @@ function setMapEvents(map) {
     window.dispatchEvent(event);
   });
   map.on('zoomend', function () {
-    var event = new CustomEvent('mapzoom', {
+    var event = new CustomEvent('map:zoom', {
       detail: {
         zoom: map.getZoom(),
         center: map.getCenter(),
@@ -36,7 +36,7 @@ function setMapEvents(map) {
     window.dispatchEvent(event);
   });
   map.on('move', function () {
-    var event = new CustomEvent('mapmove', {
+    var event = new CustomEvent('map:move', {
       detail: {
         zoom: map.getZoom(),
         center: map.getCenter(),
@@ -200,11 +200,24 @@ function _extends() {
   return _extends.apply(this, arguments);
 }
 
-function setGeometryEvents(leafletObject, id) {
-  leafletObject.on('click', function () {
-    var event = new CustomEvent('pointclick', {
+function setPointEvents(leafletObject, id) {
+  leafletObject.on('click', function (e) {
+    var event = new CustomEvent('geometry:click', {
       detail: {
-        point: leafletObject.getLatLng(),
+        clickedPoint: e.latlng,
+        geometry: leafletObject.getLatLng(),
+        rowId: id
+      }
+    });
+    window.dispatchEvent(event);
+  });
+}
+function setPolyGeometryEvents(leafletObject, id) {
+  leafletObject.on('click', function (e) {
+    var event = new CustomEvent('geometry:click', {
+      detail: {
+        clickedPoint: e.latlng,
+        geometry: leafletObject.getLatLngs(),
         rowId: id
       }
     });
@@ -220,7 +233,7 @@ var createPointGeometry = function createPointGeometry(parsedGeometry, options) 
   if (options.tooltip) {
     geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(geometry, options.id);
+  setPointEvents(geometry, options.id);
   return geometry;
 };
 var createLineGeometry = function createLineGeometry(parsedGeometry, options) {
@@ -232,7 +245,7 @@ var createLineGeometry = function createLineGeometry(parsedGeometry, options) {
   if (options.tooltip) {
     geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(geometry, options.id);
+  setPolyGeometryEvents(geometry, options.id);
   return geometry;
 };
 var createPolygonGeometry = function createPolygonGeometry(parsedGeometry, options) {
@@ -244,7 +257,7 @@ var createPolygonGeometry = function createPolygonGeometry(parsedGeometry, optio
   if (options.tooltip) {
     geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(geometry, options.id);
+  setPolyGeometryEvents(geometry, options.id);
   return geometry;
 };
 var createGeometry = function createGeometry(geometryType) {
