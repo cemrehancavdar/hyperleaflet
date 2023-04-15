@@ -11,18 +11,18 @@ describe('setGeometryEvents', () => {
   afterEach(() => {
     document.body.innerHTML = '';
   });
-  it('should dispatch a "geomclick" event when the point is clicked', () => {
+  it('should dispatch a "geometry:click" event when the point is clicked', () => {
     const geometry = new L.Marker([51, 0]);
     setPointEvents(geometry, '1');
 
     const eventListener = vi.fn();
-    window.addEventListener('geomclick', eventListener);
+    window.addEventListener('geometry:click', eventListener);
 
     geometry.fire('click');
 
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({
-        type: 'geomclick',
+        type: 'geometry:click',
         detail: expect.objectContaining({
           geometry: L.latLng(51, 0),
           rowId: '1',
@@ -30,18 +30,18 @@ describe('setGeometryEvents', () => {
       }),
     );
   });
-  it('should dispatch a "geomclick" event when the geometry is clicked', () => {
+  it('should dispatch a "geometry:click" event when the geometry is clicked', () => {
     const geometry = new L.Polyline([[51, 0],[52,2]]);
     setPolyGeometryEvents(geometry, '2');
 
     const eventListener = vi.fn();
-    window.addEventListener('geomclick', eventListener);
+    window.addEventListener('geometry:click', eventListener);
 
     geometry.fire('click');
 
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({
-        type: 'geomclick',
+        type: 'geometry:click',
         detail: expect.objectContaining({
           geometry: [L.latLng(51, 0),L.latLng(52,2)],
           rowId: '2',
