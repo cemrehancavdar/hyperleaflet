@@ -159,3 +159,45 @@ Valid values: string: [ Point, LineString, Polygon ].<br>
 `#!css data-geometry`
 : Specifies the geometry data for each feature. <br>
 Valid format: array of coordinates for Point and LineString, array of arrays of coordinates for Polygon.
+
+`#!css data-geometry-display`
+
+: The data-geometry-display attribute is used to control the display of geometries in a HTML element. It can take one of two valid options: <br>
+   `#!css json`: Removes the data-geometry attributes from the containing elements and creates a new script tag with application/json type that contains the geometries in a GeoJSON-like syntax.
+   ``` html 
+    <div data-hyperleaflet-source data-geometry-display="json">
+      <!-- Elements with data-geometry attributes here -->
+    </div>
+   ```
+   A new `#!html <script type="application/json" data-testid="json">` element will be genereated with removed geometry attributes and corresponding data-id's and atteached to end of document.
+   ``` html 
+    <script type="application/json" data-testid="json">{
+    "1": {
+      "type": "Point",
+      "coordinates": [
+        38.5,
+        37
+      ]
+      },
+      ...
+    }
+    </script>
+   ``` 
+   `#!css remove`: Removes the data-geometry attributes from the containing elements.
+   ``` html 
+    <div data-hyperleaflet-source data-geometry-display="remove">
+      <!-- Elements with data-geometry attributes here -->
+    </div>
+   ```
+
+??? info "Why do data-geometry-display exists"
+
+    When using only points, data-geometry can be a simple and convenient way to include geometry information in HTML. However, as more complex geometries are added, the HTML can quickly become cluttered with lengthy geometry representations.
+
+    The data-geometry-display attribute addresses this by providing two options. The remove option removes the geometry attributes from the HTML entirely, which can make it cleaner and easier to read in browser dev tools. However, it also removes the ability to check the coordinates of the geometry directly in the HTML.
+
+    The json option extracts the geometries to a newly created script tag with a type of application/json, which allows you to inspect the geometries as a JSON object. This can be useful if you need to verify or debug the geometry data.
+
+    **TL;DR**: Long geometries got you down? Use data-geometry-display to clean up your HTML and make it more manageable. <br>
+    remove: remove data-geometry attributes <br>
+    json: remove them and add to end of the document <br>
