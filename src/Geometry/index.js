@@ -1,27 +1,22 @@
-import { addToDebug, deleteFromDebug } from './geometry-debugger';
+import geometryObjectHandler from './geometry-object-handler';
 import removeGeometryAttributes from './utils';
 import hyperleafletGeometryHandler from './hyperleaflet-geometry-handler';
-
-/**
- * Adds the data from the hyperleaflet container to the map.
- @param {L.Map} map
- @param map
- */
 
 function hyperleafletDataToMap(map) {
   const hyperleafletDataSource = document.querySelector('[data-hyperleaflet-source]');
 
   if (!hyperleafletDataSource) return;
 
-  const geometryDisplayStrategy = hyperleafletDataSource.dataset.geometryDisplay || 'object';
+  const geometryDisplay = hyperleafletDataSource.dataset.geometryDisplay || 'none';
 
   let callbackFunctions = {};
-  if (geometryDisplayStrategy === 'object') {
+  if (geometryDisplay === 'json') {
+    const {addToGeometryObject, removeFromGeometryObject } = geometryObjectHandler()
     callbackFunctions = {
-      addCallback: addToDebug,
-      removeCallback: deleteFromDebug,
+      addCallback: addToGeometryObject,
+      removeCallback: removeFromGeometryObject,
     };
-  } else if (geometryDisplayStrategy === 'remove') {
+  } else if (geometryDisplay === 'remove') {
     callbackFunctions = {
       addCallback: removeGeometryAttributes,
       removeCallback: () => {},
