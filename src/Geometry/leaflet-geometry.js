@@ -1,5 +1,5 @@
 import { marker, polyline, polygon, GeoJSON } from 'leaflet';
-import setGeometryEvents from './events';
+import {setPointEvents, setPolyGeometryEvents} from './events';
 
 const createPointGeometry = (parsedGeometry, options) => {
   const geometry = marker(parsedGeometry);
@@ -9,7 +9,7 @@ const createPointGeometry = (parsedGeometry, options) => {
   if (options.tooltip) {
     geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(geometry, options.id);
+  setPointEvents(geometry, options.id);
   return geometry;
 };
 
@@ -22,7 +22,7 @@ const createLineGeometry = (parsedGeometry, options) => {
   if (options.tooltip) {
     geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(geometry, options.id);
+  setPolyGeometryEvents(geometry, options.id);
   return geometry;
 };
 
@@ -35,7 +35,7 @@ const createPolygonGeometry = (parsedGeometry, options) => {
   if (options.tooltip) {
     geometry.bindTooltip(options.tooltip);
   }
-  setGeometryEvents(geometry, options.id);
+  setPolyGeometryEvents(geometry, options.id);
   return geometry;
 };
 

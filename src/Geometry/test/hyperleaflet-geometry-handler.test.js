@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 // // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
 import L from 'leaflet';

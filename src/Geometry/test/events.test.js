@@ -1,7 +1,7 @@
 // // @vitest-environment happy-dom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import L from 'leaflet';
-import setGeometryEvents from '../events';
+import {setPointEvents, setPolyGeometryEvents} from '../events';
 
 describe('setGeometryEvents', () => {
   beforeEach(() => {
@@ -11,21 +11,40 @@ describe('setGeometryEvents', () => {
   afterEach(() => {
     document.body.innerHTML = '';
   });
-  it('should dispatch a "pointclick" event when the geometry is clicked', () => {
+  it('should dispatch a "geometry:click" event when the point is clicked', () => {
     const geometry = new L.Marker([51, 0]);
-    setGeometryEvents(geometry, '1');
+    setPointEvents(geometry, '1');
 
     const eventListener = vi.fn();
-    window.addEventListener('pointclick', eventListener);
+    window.addEventListener('geometry:click', eventListener);
 
     geometry.fire('click');
 
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({
-        type: 'pointclick',
+        type: 'geometry:click',
         detail: expect.objectContaining({
-          point: L.latLng(51, 0),
+          geometry: L.latLng(51, 0),
           rowId: '1',
+        }),
+      }),
+    );
+  });
+  it('should dispatch a "geometry:click" event when the geometry is clicked', () => {
+    const geometry = new L.Polyline([[51, 0],[52,2]]);
+    setPolyGeometryEvents(geometry, '2');
+
+    const eventListener = vi.fn();
+    window.addEventListener('geometry:click', eventListener);
+
+    geometry.fire('click');
+
+    expect(eventListener).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'geometry:click',
+        detail: expect.objectContaining({
+          geometry: [L.latLng(51, 0),L.latLng(52,2)],
+          rowId: '2',
         }),
       }),
     );
