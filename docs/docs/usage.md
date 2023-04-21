@@ -162,7 +162,7 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
 
 `#!css data-geometry-display`
 
-: The data-geometry-display attribute is used to control the display of geometries in a HTML element. It can take one of two valid options: <br>
+: The data-geometry-display attribute is used to control the display of geometries in a HTML element. It can take one of two valid options: <br><br>
    `#!css json`: Removes the data-geometry attributes from the containing elements and creates a new script tag with application/json type that contains the geometries in a GeoJSON-like syntax.
    ``` html 
     <div data-hyperleaflet-source data-geometry-display="json">
@@ -201,3 +201,39 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
     **TL;DR**: Long geometries got you down? Use data-geometry-display to clean up your HTML and make it more manageable. <br>
     remove: remove data-geometry attributes <br>
     json: remove them and add to end of the document <br>
+
+### Event Handling
+  Hyperleaflet provides an event system for interacting with the map and geometries. It sends custom events to the **window** object, which can be listened to and handled by JavaScript. We recommend using either [_hyperscript](https://hyperscript.org/) or [alpine.js](https://alpinejs.dev/) to handle the events. The custom events contain a **detail** object with useful attributes, such as the clicked point on the map.
+
+  Events use the **`target:event`** syntax, separated by a colon.
+#### Map Events :
+
+`#!css map:click`
+
+: Triggered when the user clicks on the map. <br>
+  Event detail attributes <br>
+  point: the geographic coordinates of the clicked point. { lat: number, lng: number }. <br>
+
+  ```js title="Example"
+    window.addEventListener('map:click', (event) => {
+      const { point } = event.detail;
+      console.log(`Map clicked at: (${point.lat}, ${point.lng})`);
+    });
+  ```
+
+`#!css map:zoom`
+
+: Triggered when the map's zoom level changes. <br>
+  Event detail attributes <br>
+  zoom: the new zoom level. number <br>
+  center: the geographic coordinates of the center of the map, in the form { lat: number, lng: number }. <br>
+  bbox: [LatLngBounds](image.png) object from Leaflet. [^1]
+
+  ```js title="Example"
+      will be implemented
+  ```
+
+
+[^1]: The parts that are directly offered as Leaflet objects will be modified (e.g., LatLngBounds), and basic properties will be provided, and the Leaflet object will be presented like a private attribute.
+
+
