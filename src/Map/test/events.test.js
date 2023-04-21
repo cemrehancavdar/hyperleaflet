@@ -38,14 +38,20 @@ describe('events', () => {
     const eventListener = vi.fn();
     window.addEventListener('map:zoom', eventListener);
     map.fire('zoomend');
-
+      
+    const center = map.getCenter();
+    const bounds = map.getBounds()
+    const min = bounds.getSouthWest();
+    const max = bounds.getNorthEast();
+    const bboxString = bounds.toBBoxString()
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({
         type: 'map:zoom',
         detail: expect.objectContaining({
           zoom: map.getZoom(),
-          center: map.getCenter(),
-          bbox: map.getBounds(),
+          center: {lat: center.lat, lng: center.lng},
+          bbox: {min,max},
+          bboxString
         }),
       }),
     );
@@ -59,13 +65,20 @@ describe('events', () => {
     window.addEventListener('map:move', eventListener);
     map.fire('move');
 
+    const center = map.getCenter();
+    const bounds = map.getBounds()
+    const min = bounds.getSouthWest();
+    const max = bounds.getNorthEast();
+    const bboxString = bounds.toBBoxString()
+
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({
         type: 'map:move',
         detail: expect.objectContaining({
           zoom: map.getZoom(),
-          center: map.getCenter(),
-          bbox: map.getBounds(),
+          center: {lat: center.lat, lng: center.lng},
+          bbox: {min, max},
+          bboxString
         }),
       }),
     );
