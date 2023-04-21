@@ -18,7 +18,7 @@ describe('setGeometryEvents', () => {
     const eventListener = vi.fn();
     window.addEventListener('geometry:click', eventListener);
 
-    geometry.fire('click');
+    geometry.fire('click', { latlng: { lat: 51, lng: 0 } });
 
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -37,7 +37,7 @@ describe('setGeometryEvents', () => {
     const eventListener = vi.fn();
     window.addEventListener('geometry:click', eventListener);
 
-    geometry.fire('click');
+    geometry.fire('click',{ latlng: { lat: 52, lng: 2 } });
 
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({

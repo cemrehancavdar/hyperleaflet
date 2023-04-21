@@ -5,15 +5,24 @@ export default function setMapEvents(map) {
   });
 
   map.on('zoomend', () => {
+
+    const bounds = map.getBounds()
+    const min = bounds.getSouthWest();
+    const max = bounds.getNorthEast();
+    const bboxString = bounds.toBBoxString()
     const event = new CustomEvent('map:zoom', {
-      detail: { zoom: map.getZoom(), center: map.getCenter(), bbox: map.getBounds() },
+      detail: { zoom: map.getZoom(), center: map.getCenter(), bbox: { min, max }, bboxString },
     });
     window.dispatchEvent(event);
   });
 
   map.on('move', () => {
+    const bounds = map.getBounds()
+    const min = bounds.getSouthWest();
+    const max = bounds.getNorthEast();
+    const bboxString = bounds.toBBoxString()
     const event = new CustomEvent('map:move', {
-      detail: { zoom: map.getZoom(), center: map.getCenter(), bbox: map.getBounds() },
+      detail: { zoom: map.getZoom(), center: map.getCenter(), bbox: { min, max }, bboxString },
     });
     window.dispatchEvent(event);
   });
