@@ -2,7 +2,8 @@ import { marker, polyline, polygon, GeoJSON } from 'leaflet';
 import {setPointEvents, setPolyGeometryEvents} from './events';
 
 const createPointGeometry = (parsedGeometry, options) => {
-  const geometry = marker(parsedGeometry);
+  const flippedGeometry = [...parsedGeometry].reverse()
+  const geometry = marker(flippedGeometry);
   if (options.popup) {
     geometry.bindPopup(options.popup);
   }
