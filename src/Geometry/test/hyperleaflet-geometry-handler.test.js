@@ -14,7 +14,7 @@ describe('createLeafletObject', () => {
     };
     const marker = createLeafletObject(row);
     expect(marker).toBeInstanceOf(L.Marker);
-    expect(marker.getLatLng()).toEqual(L.latLng(-122.414, 37.776));
+    expect(marker.getLatLng()).toEqual(L.latLng(37.776, -122.414));
     expect(marker.getPopup().getContent()).toEqual('Hello, world!');
     expect(marker.getTooltip().getContent()).toEqual('I am a point');
   });
