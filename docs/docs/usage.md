@@ -206,13 +206,13 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
   Hyperleaflet provides an event system for interacting with the map and geometries. It sends custom events to the **window** object, which can be listened to and handled by JavaScript. We recommend using either [_hyperscript](https://hyperscript.org/) or [alpine.js](https://alpinejs.dev/) to handle the events. The custom events contain a **detail** object with useful attributes, such as the clicked point on the map.
 
   Events use the **`target:event`** syntax, separated by a colon.
-#### Map Events :
+#### Map Events
 
 `#!css map:click`
 
 : Triggered when the user clicks on the map. <br>
   Event detail attributes <br>
-  <span style="color: var(--md-code-hl-keyword-color)">point</span>: the geographic coordinates of the clicked point, in the form: { lat: number, lng: number }. <br>
+  <span style="color: var(--md-code-hl-keyword-color)">point</span>: the geographic coordinates of the clicked point, in the form: { lat: number, lng: number } <br>
 
   ```js title="Example"
     window.addEventListener('map:click', (event) => {
@@ -226,9 +226,9 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
 : Triggered when the map's zoom level changes. <br>
   Event detail attributes <br>
   <span style="color: var(--md-code-hl-keyword-color)">zoom</span>: the new zoom level, in the form: number<br>
-  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form: { lat: number, lng: number }. <br>
-  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form: { min: { lat: number, lng: number }, max: { lat: number, lng: number } }. <br>
-  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat".
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form: { lat: number, lng: number } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form: { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat"
 
   ```js title="Example"
     window.addEventListener('map:zoom', (e) => {
@@ -245,9 +245,9 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
 : Triggered when the user moves the map. <br>
   Event detail attributes <br>
   <span style="color: var(--md-code-hl-keyword-color)">zoom</span>:  the current zoom level, in the form: number <br>
-  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form { lat: number, lng: number }. <br>
-  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form { min: { lat: number, lng: number }, max: { lat: number, lng: number } }. <br>
-  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat".
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form { lat: number, lng: number } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat"
 
   ```js title="Example"
     window.addEventListener('map:move', (e) => {
@@ -259,6 +259,22 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
     });
   ```
 
+#### Geometry Events
 
+`#!css geometry:click`
 
-  
+: Triggered when the user clicks on a geometry. <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">clickedPoint</span>: the geographic coordinates of the clicked point, in the form { lat: number, lng: number }<br>
+  <span style="color: var(--md-code-hl-keyword-color)">geometry</span>: the geographic coordinates of the geometry, in the form { lat: number, lng: number } or list of { lat: number, lng: number }  <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form: { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">rowId</span>: the unique identifier of the geometry, which is stored in the 'data-id' attribute, in the form of string
+
+  ```js title="Example"
+    window.addEventListener('geometry:click', (e) => {
+      const { clickedPoint, geometry, rowId } = e.detail;
+      console.log(`Clicked on row with ID ${rowId}`);
+      console.log(`Geometry: ${JSON.stringify(geometry)}`);
+      console.log(`Clicked at (${clickedPoint.lat}, ${clickedPoint.lng})`);
+    });
+  ```
