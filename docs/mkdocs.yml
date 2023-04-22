@@ -37,3 +37,4 @@ markdown_extensions:
       alternate_style: true 
   - def_list
   - attr_list
+  - footnotes
