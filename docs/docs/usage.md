@@ -212,7 +212,7 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
 
 : Triggered when the user clicks on the map. <br>
   Event detail attributes <br>
-  point: the geographic coordinates of the clicked point. { lat: number, lng: number }. <br>
+  <span style="color: var(--md-code-hl-keyword-color)">point</span>: the geographic coordinates of the clicked point, in the form: { lat: number, lng: number }. <br>
 
   ```js title="Example"
     window.addEventListener('map:click', (event) => {
@@ -225,15 +225,40 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
 
 : Triggered when the map's zoom level changes. <br>
   Event detail attributes <br>
-  zoom: the new zoom level. number <br>
-  center: the geographic coordinates of the center of the map, in the form { lat: number, lng: number }. <br>
-  bbox: [LatLngBounds](image.png) object from Leaflet. [^1]
+  <span style="color: var(--md-code-hl-keyword-color)">zoom</span>: the new zoom level, in the form: number<br>
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form: { lat: number, lng: number }. <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form: { min: { lat: number, lng: number }, max: { lat: number, lng: number } }. <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat".
 
   ```js title="Example"
-      will be implemented
+    window.addEventListener('map:zoom', (e) => {
+      const { zoom, center, bbox, bboxString } = e.detail;
+      console.log(`Map zoomed to level ${zoom}`);
+      console.log(`Centered at (${center.lat}, ${center.lng})`);
+      console.log(`Bounded by (${bbox.min.lat}, ${bbox.min.lng}) and (${bbox.max.lat}, ${bbox.max.lng})`);
+      console.log(`Bounding box string: ${bboxString}`);
+    });
+  ```
+
+`#!css map:move`
+
+: Triggered when the user moves the map. <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">zoom</span>:  the current zoom level, in the form: number <br>
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form { lat: number, lng: number }. <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form { min: { lat: number, lng: number }, max: { lat: number, lng: number } }. <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat".
+
+  ```js title="Example"
+    window.addEventListener('map:move', (e) => {
+      const { zoom, center, bbox, bboxString } = e.detail;
+      console.log(`Map zoom at level ${zoom}`);
+      console.log(`Centered at (${center.lat}, ${center.lng})`);
+      console.log(`Bounded by (${bbox.min.lat}, ${bbox.min.lng}) and (${bbox.max.lat}, ${bbox.max.lng})`);
+      console.log(`Bounding box string: ${bboxString}`);
+    });
   ```
 
 
-[^1]: The parts that are directly offered as Leaflet objects will be modified (e.g., LatLngBounds), and basic properties will be provided, and the Leaflet object will be presented like a private attribute.
 
-
+  
