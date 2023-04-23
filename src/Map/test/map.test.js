@@ -17,7 +17,7 @@ describe('createLeafletMap', () => {
     const mapElement = document.querySelector('#map');
     const map = createHyperleafletMap(mapElement);
 
-    expect(map.getCenter()).toStrictEqual({ lat: 51.5074, lng: -0.1278 });
+    expect(map.getCenter()).toStrictEqual({ lat:-0.1278 , lng: 51.5074 });
     expect(map.getZoom()).toBe(10);
   });
 });
