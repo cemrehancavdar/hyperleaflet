@@ -87,7 +87,13 @@ Leaflet is a popular JavaScript library by [Vladimir Agafonkin](https://agafonki
 
 ## Try it yourself
 
- <iframe src="https://stackblitz.com/edit/hyperleaflet-demo?ctl=1&embed=1&file=index.html&hideDevTools=1&hideExplorer=1&hideNavigation=1" title="stackblitz" style="width: 100%; height: 500px" ></iframe> 
+<iframe src="https://codesandbox.io/embed/hyperleaflet-ooxo0z?fontsize=14&hidenavigation=1&theme=dark&view=split&codemirror=1&hidedevtools=1&runonclick=1"
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="hyperleaflet"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"     
+   ></iframe>
+
+
 
 
 
