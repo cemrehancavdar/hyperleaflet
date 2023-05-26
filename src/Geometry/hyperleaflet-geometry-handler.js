@@ -33,6 +33,9 @@ export default function hyperleafletGeometryHandler(map, { addCallback = () => {
         leafletObject.addTo(map);
         addCallback(node);
       }
+      if (node.childNodes.length > 0) {
+        addNoteListToHyperleaflet(node.childNodes);
+      }
     });
   };
 
@@ -42,6 +45,9 @@ export default function hyperleafletGeometryHandler(map, { addCallback = () => {
         const [leafletObject] = deleteNodeFromHyperleaflet(node);
         leafletObject.remove();
         removeCallback(node);
+      }
+      if (node.childNodes.length > 0) {
+        removeNodeListToHyperleaflet(node.childNodes);
       }
     });
   }

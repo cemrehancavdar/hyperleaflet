@@ -11,7 +11,7 @@ function hyperleafletDataToMap(map) {
 
   let callbackFunctions = {};
   if (geometryDisplay === 'json') {
-    const {addToGeometryObject, removeFromGeometryObject } = geometryObjectHandler()
+    const { addToGeometryObject, removeFromGeometryObject } = geometryObjectHandler();
     callbackFunctions = {
       addCallback: addToGeometryObject,
       removeCallback: removeFromGeometryObject,
