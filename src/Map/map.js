@@ -29,7 +29,7 @@ export default function createHyperleafletMap(mapElement) {
   const { center, zoom, minZoom, maxZoom } = mapElement.dataset;
 
   const mapView = {
-    center: center?.split(',').slice().reverse() ?? [0, 0],
+    center: JSON.parse(center).reverse() ?? [0, 0],
     zoom: zoom || 1,
   };
   const leafletMap = map(mapElement, {
