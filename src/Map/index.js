@@ -1,5 +1,6 @@
 import createHyperleafletMap, { createHyperleafletTiles } from './map';
 import hyperleafletDataToMap from '../Geometry/index';
+import { sendHyperleafletReady } from './events';
 
 function createMap() {
   let initialized = false;
@@ -18,6 +19,7 @@ function createMap() {
       defaultHyperleafletTile.addTo(map);
       hyperleafletDataToMap(map);
       window.hyperleaflet = { map };
+      sendHyperleafletReady(map);
     }
   }
 
