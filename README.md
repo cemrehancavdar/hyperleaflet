@@ -42,7 +42,7 @@ We're working on adding new features and functionality.
 
 With the help of hyperscript interactions, we aim to enhance the library with features like map interaction on click, data interaction on click, and the ability to retrieve map click coordinates to input elements.
 
- We're working towards version 1.0 and will be publishing a roadmap to outline our plans. However, we're not afraid to experiment and try new things on the way. We welcome feedback and suggestions from the HTMX and Leaflet communities.
+ We're working towards version 1.0 and will be publishing a roadmap to outline our plans. However, we're not afraid to experiment and try new things on the way. We welcome feedback and suggestions from the all map loving communities.
 
  
 [![Hyperleaflet]](https://user-images.githubusercontent.com/50503448/217046480-e997b33b-fddc-4c6d-af5e-18a6f4899928.mp4)
