@@ -6,7 +6,7 @@ import TILE_LAYERS from '../tiles';
 
 describe('createLeafletMap', () => {
   beforeEach(() => {
-    document.body.innerHTML = `<div id="map" class="map" data-center="51.5074,-0.1278" data-zoom="10"> </div>`;
+    document.body.innerHTML = `<div id="map" class="map" data-center="[51.5074,-0.1278]" data-zoom="10"> </div>`;
   });
 
   afterEach(() => {
@@ -17,7 +17,7 @@ describe('createLeafletMap', () => {
     const mapElement = document.querySelector('#map');
     const map = createHyperleafletMap(mapElement);
 
-    expect(map.getCenter()).toStrictEqual({ lat:-0.1278 , lng: 51.5074 });
+    expect(map.getCenter()).toStrictEqual({ lng: -0.1278, lat: 51.5074 });
     expect(map.getZoom()).toBe(10);
   });
 });

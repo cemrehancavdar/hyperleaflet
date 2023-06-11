@@ -17,10 +17,24 @@ export function parseTileLayerElement(tileLayerElement) {
   }
   const currentTile = tileLayers[tile];
   if (!currentTile) {
+    // eslint-disable-next-line no-console
     console.warn(`${tile} is not in: \n${Object.keys(tileLayers).join('\n')}`);
     return null;
   }
   currentTile.options.minZoom = minZoom;
   currentTile.options.maxZoom = maxZoom;
   return { tile: currentTile, name: tile };
+}
+
+function reverseCoordinates(point) {
+  return point.reverse();
+}
+
+export function safeParsePoint(pointJson, reverse = false) {
+  try {
+    const point = JSON.parse(pointJson);
+    return reverse ? reverseCoordinates(point) : point;
+  } catch (_) {
+    return [0, 0];
+  }
 }

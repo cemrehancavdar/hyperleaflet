@@ -1,7 +1,8 @@
 import { map } from 'leaflet';
 import TILE_LAYERS from './tiles';
 import setMapEvents from './events';
-import { createTileController, parseTileLayerElement } from './util';
+import { createTileController, parseTileLayerElement, safeParsePoint } from './util';
+import hyperleafletConfig from '../config';
 
 export function getDefaultHyperleafletTile(tileLayerElementList) {
   const defaultTileLayerElement = tileLayerElementList.find((t) => 'defaultTile' in t.dataset);
@@ -27,9 +28,9 @@ export function createHyperleafletTiles(tileLayerElementNodeList) {
 
 export default function createHyperleafletMap(mapElement) {
   const { center, zoom, minZoom, maxZoom } = mapElement.dataset;
-
+  const reverse = hyperleafletConfig.reverseCoords;
   const mapView = {
-    center: center?.split(',').slice().reverse() ?? [0, 0],
+    center: safeParsePoint(center, reverse),
     zoom: zoom || 1,
   };
   const leafletMap = map(mapElement, {
