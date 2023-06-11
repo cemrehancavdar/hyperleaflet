@@ -4,7 +4,7 @@ import createHyperleafletMap from '../map';
 
 describe('events', () => {
   beforeEach(() => {
-    document.body.innerHTML = `<div id="map" class="map" data-center="51.5074,-0.1278" data-zoom="10"> </div>`;
+    document.body.innerHTML = `<div id="map" class="map" data-center="[51.5074,-0.1278]" data-zoom="10"> </div>`;
   });
 
   afterEach(() => {
@@ -38,20 +38,20 @@ describe('events', () => {
     const eventListener = vi.fn();
     window.addEventListener('map:zoom', eventListener);
     map.fire('zoomend');
-      
+
     const center = map.getCenter();
-    const bounds = map.getBounds()
+    const bounds = map.getBounds();
     const min = bounds.getSouthWest();
     const max = bounds.getNorthEast();
-    const bboxString = bounds.toBBoxString()
+    const bboxString = bounds.toBBoxString();
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({
         type: 'map:zoom',
         detail: expect.objectContaining({
           zoom: map.getZoom(),
-          center: {lat: center.lat, lng: center.lng},
-          bbox: {min,max},
-          bboxString
+          center: { lat: center.lat, lng: center.lng },
+          bbox: { min, max },
+          bboxString,
         }),
       }),
     );
@@ -66,19 +66,19 @@ describe('events', () => {
     map.fire('move');
 
     const center = map.getCenter();
-    const bounds = map.getBounds()
+    const bounds = map.getBounds();
     const min = bounds.getSouthWest();
     const max = bounds.getNorthEast();
-    const bboxString = bounds.toBBoxString()
+    const bboxString = bounds.toBBoxString();
 
     expect(eventListener).toHaveBeenCalledWith(
       expect.objectContaining({
         type: 'map:move',
         detail: expect.objectContaining({
           zoom: map.getZoom(),
-          center: {lat: center.lat, lng: center.lng},
-          bbox: {min, max},
-          bboxString
+          center: { lat: center.lat, lng: center.lng },
+          bbox: { min, max },
+          bboxString,
         }),
       }),
     );
