@@ -1,6 +1,7 @@
 import createHyperleafletMap, { createHyperleafletTiles } from './map';
 import hyperleafletDataToMap from '../Geometry/index';
 import { sendHyperleafletReady } from './events';
+import hyperleafletConfig from '../config';
 
 function createMap() {
   let initialized = false;
@@ -8,6 +9,11 @@ function createMap() {
     const mapContainer = document.querySelector('#map');
     if (mapContainer && !initialized) {
       initialized = true;
+      const { reverseCoords } = mapContainer.dataset;
+      if (reverseCoords !== undefined) {
+        hyperleafletConfig.reverseCoords = true;
+      }
+
       const map = createHyperleafletMap(mapContainer);
 
       const tileLayerElementList = mapContainer.querySelectorAll('[data-tile]');
