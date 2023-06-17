@@ -28,9 +28,9 @@ export function createHyperleafletTiles(tileLayerElementNodeList) {
 
 export default function createHyperleafletMap(mapElement) {
   const { center, zoom, minZoom, maxZoom } = mapElement.dataset;
-  const reverse = hyperleafletConfig.reverseOrderAll;
+  const { reverseOrderAll } = hyperleafletConfig;
   const mapView = {
-    center: safeParsePoint(center, reverse),
+    center: safeParsePoint(center, reverseOrderAll),
     zoom: zoom || 1,
   };
   const leafletMap = map(mapElement, {
