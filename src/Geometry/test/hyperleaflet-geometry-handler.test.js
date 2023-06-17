@@ -6,7 +6,7 @@ import hyperleafletConfig from '../../config';
 
 describe('createLeafletObject', () => {
   beforeEach(() => {
-    hyperleafletConfig.reverseCoords = false;
+    hyperleafletConfig.reverseOrderAll = false;
   });
   it('should create a Leaflet marker object for a point geometry', () => {
     const row = {
@@ -30,7 +30,7 @@ describe('createLeafletObject', () => {
       geometryType: 'Point',
       id: '123',
     };
-    hyperleafletConfig.reverseCoords = true;
+    hyperleafletConfig.reverseOrderAll = true;
     const marker = createLeafletObject(row);
     expect(marker).toBeInstanceOf(L.Marker);
     expect(marker.getLatLng()).toEqual(L.latLng(37.776, -122.414));
@@ -81,5 +81,23 @@ describe('createLeafletObject', () => {
 
     const result = createLeafletObject(row);
     expect(result).toBeNull();
+  });
+
+  it('should create a Leaflet polygon object for a polygon geometry reverse order', () => {
+    const row = {
+      geometry: '[[[-122.414,37.776],[-122.413,37.775],[-122.413,37.776],[-122.414,37.776]]]',
+      popup: 'Hello, world!',
+      tooltip: 'I am a polygon',
+      geometryType: 'Polygon',
+      id: '123',
+      reverseOrder: ""
+    };
+    const polygon = createLeafletObject(row);
+    expect(polygon).toBeInstanceOf(L.Polygon);
+    expect(polygon.getLatLngs()).toEqual([
+      [L.latLng(37.776, -122.414), L.latLng(37.775, -122.413, ), L.latLng( 37.776, -122.413,)],
+    ]);
+    expect(polygon.getPopup().getContent()).toEqual('Hello, world!');
+    expect(polygon.getTooltip().getContent()).toEqual('I am a polygon');
   });
 });

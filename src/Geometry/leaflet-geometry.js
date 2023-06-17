@@ -3,8 +3,9 @@ import { setPointEvents, setPolyGeometryEvents } from './events';
 import hyperleafletConfig from '../config';
 
 const createPointGeometry = (parsedGeometry, options) => {
-  const { reverse } = options;
-  const geometry = reverse ? [...parsedGeometry].reverse() : parsedGeometry;
+  const { reverseOrderAll, reverseOrder } = options;
+  const isLonLat = reverseOrderAll || (reverseOrder !== undefined)
+  const geometry = isLonLat ? [...parsedGeometry].reverse() : parsedGeometry;
   const leafletGeometry = marker(geometry);
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
@@ -17,8 +18,9 @@ const createPointGeometry = (parsedGeometry, options) => {
 };
 
 const createLineGeometry = (parsedGeometry, options) => {
-  const { reverse } = options;
-  const geometry = reverse ? GeoJSON.coordsToLatLngs(parsedGeometry, 0) : parsedGeometry;
+  const { reverseOrderAll, reverseOrder } = options;
+  const isLonLat = reverseOrderAll || (reverseOrder !== undefined)
+  const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 0) : parsedGeometry;
   const leafletGeometry = polyline(geometry);
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
@@ -31,8 +33,9 @@ const createLineGeometry = (parsedGeometry, options) => {
 };
 
 const createPolygonGeometry = (parsedGeometry, options) => {
-  const { reverse } = options;
-  const geometry = reverse ? GeoJSON.coordsToLatLngs(parsedGeometry, 1) : parsedGeometry;
+  const { reverseOrderAll, reverseOrder } = options;
+  const isLonLat = reverseOrderAll || (reverseOrder !== undefined)
+  const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 1) : parsedGeometry;
   const leafletGeometry = polygon(geometry);
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
@@ -60,9 +63,9 @@ const createGeometry = (geometryType) => (parsedGeometry, options) => {
 };
 
 export default function createLeafletObject(row) {
-  const { geometry, popup, tooltip, geometryType, id } = row;
+  const { geometry, popup, tooltip, geometryType, id, reverseOrder } = row;
   const parsedGeometry = JSON.parse(geometry);
-  const reverse = hyperleafletConfig.reverseCoords;
+  const {reverseOrderAll} = hyperleafletConfig;
   const createGeometryFn = createGeometry(geometryType);
-  return createGeometryFn(parsedGeometry, { popup, tooltip, id, reverse });
+  return createGeometryFn(parsedGeometry, { popup, tooltip, id, reverseOrderAll, reverseOrder });
 }

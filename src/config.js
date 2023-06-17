@@ -1,4 +1,4 @@
 const hyperleafletConfig = {
-  reverseCoords: false,
+  reverseOrderAll: false,
 };
 export default hyperleafletConfig;
