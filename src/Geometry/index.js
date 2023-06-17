@@ -1,6 +1,6 @@
 import geometryObjectHandler from './geometry-object-handler';
 import removeGeometryAttributes from './utils';
-import hyperleafletGeometryHandler from './hyperleaflet-geometry-handler';
+import hyperleafletGeometryHandler, { diffNodesWithMap } from './hyperleaflet-geometry-handler';
 
 function hyperleafletDataToMap(map) {
   const hyperleafletDataSource = document.querySelector('[data-hyperleaflet-source]');
@@ -11,7 +11,7 @@ function hyperleafletDataToMap(map) {
 
   let callbackFunctions = {};
   if (geometryDisplay === 'json') {
-    const {addToGeometryObject, removeFromGeometryObject } = geometryObjectHandler()
+    const { addToGeometryObject, removeFromGeometryObject } = geometryObjectHandler();
     callbackFunctions = {
       addCallback: addToGeometryObject,
       removeCallback: removeFromGeometryObject,
@@ -34,12 +34,9 @@ function hyperleafletDataToMap(map) {
   });
 
   function callback(mutations) {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'childList') {
-        addNoteListToHyperleaflet(mutation.addedNodes);
-        removeNodeListToHyperleaflet(mutation.removedNodes);
-      }
-    });
+    const { addedNodes, removedNodes } = diffNodesWithMap(mutations, map);
+    addNoteListToHyperleaflet(addedNodes);
+    removeNodeListToHyperleaflet(removedNodes);
   }
 
   const observer = new MutationObserver(callback);

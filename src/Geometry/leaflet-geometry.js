@@ -1,42 +1,47 @@
 import { marker, polyline, polygon, GeoJSON } from 'leaflet';
-import {setPointEvents, setPolyGeometryEvents} from './events';
+import { setPointEvents, setPolyGeometryEvents } from './events';
+import hyperleafletConfig from '../config';
 
 const createPointGeometry = (parsedGeometry, options) => {
-  const geometry = marker(parsedGeometry);
+  const { reverse } = options;
+  const geometry = reverse ? [...parsedGeometry].reverse() : parsedGeometry;
+  const leafletGeometry = marker(geometry);
   if (options.popup) {
-    geometry.bindPopup(options.popup);
+    leafletGeometry.bindPopup(options.popup);
   }
   if (options.tooltip) {
-    geometry.bindTooltip(options.tooltip);
+    leafletGeometry.bindTooltip(options.tooltip);
   }
-  setPointEvents(geometry, options.id);
-  return geometry;
+  setPointEvents(leafletGeometry, options.id);
+  return leafletGeometry;
 };
 
 const createLineGeometry = (parsedGeometry, options) => {
-  const flippedGeometry = GeoJSON.coordsToLatLngs(parsedGeometry, 0);
-  const geometry = polyline(flippedGeometry);
+  const { reverse } = options;
+  const geometry = reverse ? GeoJSON.coordsToLatLngs(parsedGeometry, 0) : parsedGeometry;
+  const leafletGeometry = polyline(geometry);
   if (options.popup) {
-    geometry.bindPopup(options.popup);
+    leafletGeometry.bindPopup(options.popup);
   }
   if (options.tooltip) {
-    geometry.bindTooltip(options.tooltip);
+    leafletGeometry.bindTooltip(options.tooltip);
   }
-  setPolyGeometryEvents(geometry, options.id);
-  return geometry;
+  setPolyGeometryEvents(leafletGeometry, options.id);
+  return leafletGeometry;
 };
 
 const createPolygonGeometry = (parsedGeometry, options) => {
-  const flippedGeometry = GeoJSON.coordsToLatLngs(parsedGeometry, 1);
-  const geometry = polygon(flippedGeometry);
+  const { reverse } = options;
+  const geometry = reverse ? GeoJSON.coordsToLatLngs(parsedGeometry, 1) : parsedGeometry;
+  const leafletGeometry = polygon(geometry);
   if (options.popup) {
-    geometry.bindPopup(options.popup);
+    leafletGeometry.bindPopup(options.popup);
   }
   if (options.tooltip) {
-    geometry.bindTooltip(options.tooltip);
+    leafletGeometry.bindTooltip(options.tooltip);
   }
-  setPolyGeometryEvents(geometry, options.id);
-  return geometry;
+  setPolyGeometryEvents(leafletGeometry, options.id);
+  return leafletGeometry;
 };
 
 const createGeometry = (geometryType) => (parsedGeometry, options) => {
@@ -57,7 +62,7 @@ const createGeometry = (geometryType) => (parsedGeometry, options) => {
 export default function createLeafletObject(row) {
   const { geometry, popup, tooltip, geometryType, id } = row;
   const parsedGeometry = JSON.parse(geometry);
-
+  const reverse = hyperleafletConfig.reverseCoords;
   const createGeometryFn = createGeometry(geometryType);
-  return createGeometryFn(parsedGeometry, { popup, tooltip, id });
+  return createGeometryFn(parsedGeometry, { popup, tooltip, id, reverse });
 }
