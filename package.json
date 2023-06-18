@@ -1,6 +1,6 @@
 {
   "name": "hyperleaflet",
-  "version": "0.2.6",
+  "version": "0.4.0",
   "description": "Leaflet for HTML",
   "author": "cemrehancavdar",
   "license": "MIT",
@@ -10,13 +10,11 @@
     "default": "./dist/hyperleaflet.js"
   },
   "main": "./dist/hyperleaflet.js",
-  "module": "./dist/hyperleaflet.module.js",
-  "umd:main": "./flask-app/app/static/hyperleaflet.js",
+  "module": "./dist/hyperleaflet.esm.js",
   "scripts": {
     "build": "microbundle --format=umd",
-    "build:docs": "microbundle build --format=umd --output=docs/docs/javascripts/",
+    "build:esm": "microbundle --external leaflet -f esm --compress false",
     "dev": "microbundle watch --external leaflet -f esm --compress false",
-    "dev:flask": "microbundle watch --format=umd --output=flask-app/app/static/",
     "test": "vitest"
   },
   "devDependencies": {
