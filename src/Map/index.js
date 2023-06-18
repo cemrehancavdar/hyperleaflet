@@ -9,8 +9,8 @@ function createMap() {
     const mapContainer = document.querySelector('#map');
     if (mapContainer && !initialized) {
       initialized = true;
-      const { reverseCoords } = mapContainer.dataset;
-      if (reverseCoords !== undefined) {
+      const { reverseOrderAll } = mapContainer.dataset;
+      if (reverseOrderAll !== undefined) {
         hyperleafletConfig.reverseOrderAll = true;
       }
 
