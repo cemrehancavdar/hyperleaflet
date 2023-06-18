@@ -5,7 +5,7 @@ Hyperleaflet is browser-oriented library. To install simply add the following `#
 ```html
 <script
   defer
-  src="https://www.unpkg.com/hyperleaflet@0.2.3"
+  src="https://www.unpkg.com/hyperleaflet"
   integrity="sha384-hJcYnhFwc9+OUe4q7GsQz3cYn5tXKOzO6pl/wjSc2FKofcAfN/nsQg5Il+jCiFN+"
   crossorigin="anonymous"
 ></script>
@@ -22,7 +22,10 @@ Once you have Leaflet included, add the Hyperleaflet script tag to your HTML doc
     Make sure to add a minimum height to the container element that defines your Leaflet map, otherwise it may not appear in your document.
 
     ```css
-    #map { height: 180px; }
+    #map { 
+      height: 500px;
+      width: 500px;
+       }
     ```
 
 ## Creating Hyperleaflet Map
@@ -43,7 +46,7 @@ Map attributes define the characteristics of a map, including the tile layer, zo
 ```html
 <div
   id="map"
-  data-center="38.5, 37.0"
+  data-center="[38.5, 37.0]"
   data-zoom="5"
   data-min-zoom="4"
   data-max-zoom="11"
@@ -68,6 +71,11 @@ Valid values: integer 1-18.<br>
 `#!css data-max-zoom`
 : The maximum zoom level of the map. <br>
 Valid values: integer 1-18.<br>
+
+`#!css data-reverse-order-all`
+:  If present, all geometries added will be expected longitude, latitude (as geojson)  <br>
+Hyperleaflet by default takes all geometries as latitude, longitude (as leaflet). <br>
+[Further reading](https://macwright.com/lonlat/){:target="_blank"} on coordinate orders.
 
 ##### Tile Layers Attributes
 
@@ -131,12 +139,12 @@ The "data-hyperleaflet-source" attribute is used to specify the data source for 
   <span
     data-id="1"
     data-geometry-type="Point"
-    data-geometry="[38.5,37.0]"
+    data-geometry="[38.5, 37.0]"
   ></span>
   <span
     data-id="2"
     data-geometry-type="LineString"
-    data-geometry="[[32.77822034494639,38.525007119850045],[39.90320643125176,39.62905366797489],[41.246286762679176,38.90892858721929]]"
+    data-geometry="[[32.7782,38.5250],[39.9032,39.6290],[41.2462,38.9089]]"
   ></span>
   <span
     data-id="3"
@@ -146,7 +154,7 @@ The "data-hyperleaflet-source" attribute is used to specify the data source for 
 </div>
 ```
 `#!css data-hyperleaflet-source`
-: Identifies the container elem`nt that holds the geoJSON data.<br>
+: Identifies the container element that holds the geometry data.<br>
 
 `#!css data-id`
 : Identifies each feature by its unique ID.<br>
@@ -159,6 +167,11 @@ Valid values: string: [ Point, LineString, Polygon ].<br>
 `#!css data-geometry`
 : Specifies the geometry data for each feature. <br>
 Valid format: array of coordinates for Point and LineString, array of arrays of coordinates for Polygon.
+
+`#!css data-reverse-order-all`
+:  If present, the geometry added will be expected longitude, latitude (as geojson)  <br>
+Hyperleaflet by default takes all geometries as latitude, longitude (as leaflet). <br>
+[Further reading](https://macwright.com/lonlat/){:target="_blank"} on coordinate orders.
 
 `#!css data-geometry-display`
 
@@ -203,9 +216,29 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
     json: remove them and add to end of the document <br>
 
 ### Event Handling
-  Hyperleaflet provides an event system for interacting with the map and geometries. It sends custom events to the **window** object, which can be listened to and handled by JavaScript. We recommend using either [_hyperscript](https://hyperscript.org/) or [alpine.js](https://alpinejs.dev/) to handle the events. The custom events contain a **detail** object with useful attributes, such as the clicked point on the map.
+  Hyperleaflet provides an event system for interacting with the map and geometries. It sends custom events to the **window** object, which can be listened to and handled by JavaScript. We recommend using either [_hyperscript](https://hyperscript.org/){:target="_blank"} or [alpine.js](https://alpinejs.dev/){:target="_blank"} etc. to handle the events. The custom events contain a **detail** object with useful attributes, such as the clicked point on the map.
 
   Events use the **`target:event`** syntax, separated by a colon.
+#### Hyperleaflet Events
+
+`#!css hyperleaflet:ready`
+: Triggered when hyperleaflet successfuly initialized <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">zoom</span>:  the current zoom level, in the form: number <br>
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form { lat: number, lng: number } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat"
+
+  ```js title="Example"
+    window.addEventListener('map:move', (e) => {
+      const { zoom, center, bbox, bboxString } = e.detail;
+      console.log(`Map zoom at level ${zoom}`);
+      console.log(`Centered at (${center.lat}, ${center.lng})`);
+      console.log(`Bounded by (${bbox.min.lat}, ${bbox.min.lng}) and (${bbox.max.lat}, ${bbox.max.lng})`);
+      console.log(`Bounding box string: ${bboxString}`);
+    });
+  ```
+
 #### Map Events
 
 `#!css map:click`
