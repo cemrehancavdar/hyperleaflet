@@ -471,9 +471,9 @@ function createMap() {
     var mapContainer = document.querySelector('#map');
     if (mapContainer && !initialized) {
       initialized = true;
-      var reverseCoords = mapContainer.dataset.reverseCoords;
-      if (reverseCoords !== undefined) {
-        hyperleafletConfig.reverseCoords = true;
+      var reverseOrderAll = mapContainer.dataset.reverseOrderAll;
+      if (reverseOrderAll !== undefined) {
+        hyperleafletConfig.reverseOrderAll = true;
       }
       var map = createHyperleafletMap(mapContainer);
       var tileLayerElementList = mapContainer.querySelectorAll('[data-tile]');
