@@ -11,7 +11,7 @@ function createMap() {
       initialized = true;
       const { reverseCoords } = mapContainer.dataset;
       if (reverseCoords !== undefined) {
-        hyperleafletConfig.reverseCoords = true;
+        hyperleafletConfig.reverseOrderAll = true;
       }
 
       const map = createHyperleafletMap(mapContainer);
