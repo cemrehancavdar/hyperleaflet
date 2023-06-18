@@ -124,11 +124,6 @@ Valid values: integer 1-18.<br>
 : Indicates that the tile layer is a TMS (Tiled Map Service) layer. This is only necessary if using a custom tile layer that is in TMS format.<br>
 Valid values: true/false. Default: false
 
-`#!css data-reverse-order-all`
-:  If present, the geometry added will be expected longitude, latitude (as geojson)  <br>
-Hyperleaflet by default takes all geometries as latitude, longitude (as leaflet). <br>
-[Further reading](https://macwright.com/lonlat/){:target="_blank"} on coordinate orders.
-
 ??? info "Primary Tile"
 
     When no tile layer is specified, the primary tile layer for a map is [Open Street Map (OSM)](https://www.openstreetmap.org/){:target="\_blank"} by default.
