@@ -4,7 +4,6 @@ Hyperleaflet is browser-oriented library. To install simply add the following `#
 
 ```html
 <script
-  defer
   src="https://www.unpkg.com/hyperleaflet"
   integrity="sha384-hJcYnhFwc9+OUe4q7GsQz3cYn5tXKOzO6pl/wjSc2FKofcAfN/nsQg5Il+jCiFN+"
   crossorigin="anonymous"
@@ -105,6 +104,7 @@ Hyperleaflet by default takes all geometries as latitude, longitude (as leaflet)
 Valid values: string, one of: "OpenStreetMap", "EsriWorldImagery", or the custom tile layer name.
 If a custom tile layer is used, it can be defined using data-tile-url.
 
+
 `#!css data-tile-url`
 : The URL template for the custom tile layer. The placeholders {s}, {z}, {x}, and {y} will be replaced with the appropriate values for each tile.<br>
 Valid format: string, URL template.
@@ -123,6 +123,11 @@ Valid values: integer 1-18.<br>
 `#!css data-tms`
 : Indicates that the tile layer is a TMS (Tiled Map Service) layer. This is only necessary if using a custom tile layer that is in TMS format.<br>
 Valid values: true/false. Default: false
+
+`#!css data-reverse-order-all`
+:  If present, the geometry added will be expected longitude, latitude (as geojson)  <br>
+Hyperleaflet by default takes all geometries as latitude, longitude (as leaflet). <br>
+[Further reading](https://macwright.com/lonlat/){:target="_blank"} on coordinate orders.
 
 ??? info "Primary Tile"
 
@@ -167,11 +172,6 @@ Valid values: string: [ Point, LineString, Polygon ].<br>
 `#!css data-geometry`
 : Specifies the geometry data for each feature. <br>
 Valid format: array of coordinates for Point and LineString, array of arrays of coordinates for Polygon.
-
-`#!css data-reverse-order-all`
-:  If present, the geometry added will be expected longitude, latitude (as geojson)  <br>
-Hyperleaflet by default takes all geometries as latitude, longitude (as leaflet). <br>
-[Further reading](https://macwright.com/lonlat/){:target="_blank"} on coordinate orders.
 
 `#!css data-geometry-display`
 
