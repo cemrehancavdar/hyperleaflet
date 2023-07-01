@@ -1,9 +1,12 @@
 import geometryObjectHandler from './geometry-object-handler';
 import removeGeometryAttributes from './utils';
-import hyperleafletGeometryHandler, { diffNodesWithMap } from './hyperleaflet-geometry-handler';
+import hyperleafletGeometryHandler from './hyperleaflet-geometry-handler';
+import pubsub from '../HtmlTrack/index';
+
+const HYPERLEAFLET_DATA_SOURCE = '[data-hyperleaflet-source]';
 
 function hyperleafletDataToMap(map) {
-  const hyperleafletDataSource = document.querySelector('[data-hyperleaflet-source]');
+  const hyperleafletDataSource = document.querySelector(HYPERLEAFLET_DATA_SOURCE);
 
   if (!hyperleafletDataSource) return;
 
@@ -23,7 +26,7 @@ function hyperleafletDataToMap(map) {
     };
   }
 
-  const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = hyperleafletGeometryHandler(
+  const { addNoteListToHyperleaflet, removeNodeListFromHyperleaflet } = hyperleafletGeometryHandler(
     map,
     callbackFunctions,
   );
@@ -33,18 +36,17 @@ function hyperleafletDataToMap(map) {
     addNoteListToHyperleaflet(nodes);
   });
 
-  function callback(mutations) {
-    const { addedNodes, removedNodes } = diffNodesWithMap(mutations, map);
-    addNoteListToHyperleaflet(addedNodes);
-    removeNodeListToHyperleaflet(removedNodes);
-  }
+  pubsub.observe({
+    targetSelector: HYPERLEAFLET_DATA_SOURCE,
+    uniqueAttribute: 'data-id',
+    attributeFilter: ['data-geometry'],
+  });
 
-  const observer = new MutationObserver(callback);
-
-  observer.observe(hyperleafletDataSource, {
-    childList: true, // observe direct children
-    subtree: true, // and lower descendants too
-    attributeFilter: ['data-id'],
+  pubsub.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_adds', (data) => {
+    addNoteListToHyperleaflet(data);
+  });
+  pubsub.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_removes', (data) => {
+    removeNodeListFromHyperleaflet(data);
   });
 }
 

@@ -41,7 +41,7 @@ export default function hyperleafletGeometryHandler(map, { addCallback = () => {
     });
   }
 
-  return { addNoteListToHyperleaflet, removeNodeListToHyperleaflet };
+  return { addNoteListToHyperleaflet, removeNodeListFromHyperleaflet: removeNodeListToHyperleaflet };
 }
 
 export function diffNodesWithMap(mutations, map) {
