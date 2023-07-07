@@ -1,6 +1,6 @@
 ![hyperleaflet-github-with-map-background-black-white](https://user-images.githubusercontent.com/50503448/226453243-27619ebb-b323-4c51-be95-d01bf5b53545.png)
 
-## An HTML-based Leaflet Library
+## A HTML-based Leaflet Library
 
 ### Introduction
 
