@@ -1,7 +1,7 @@
 // // @vitest-environment happy-dom
-import { describe, expect, it, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import L from 'leaflet';
-import createLeafletObject from '../leaflet-geometry';
+import { changeLeafletObject, createLeafletObject } from '../leaflet-geometry';
 import hyperleafletConfig from '../../config';
 
 describe('createLeafletObject', () => {
@@ -22,6 +22,27 @@ describe('createLeafletObject', () => {
     expect(marker.getPopup().getContent()).toEqual('Hello, world!');
     expect(marker.getTooltip().getContent()).toEqual('I am a point');
   });
+  it('should change Leaflet marker object for a point geometry', () => {
+    const row = {
+      geometry: '[-122.414,37.776]',
+      geometryType: 'Point',
+      id: '123',
+    };
+    const marker = createLeafletObject(row);
+    expect(marker).toBeInstanceOf(L.Marker);
+    expect(marker.getLatLng()).toEqual(L.latLng(-122.414, 37.776));
+
+    changeLeafletObject(marker, {
+      from: '[-122.414,37.776]',
+      to: '[-110.414,30.776]',
+      attribute: 'data-geometry',
+      'data-id': 123,
+      dataset: { geometry: '[-122.414,37.776]', geometryType: 'Point', id: '123' },
+    });
+    expect(marker).toBeInstanceOf(L.Marker);
+    expect(marker.getLatLng()).toEqual(L.latLng(-110.414, 30.776));
+  });
+
   it('should create a Leaflet marker object for a point geometry reversed', () => {
     const row = {
       geometry: '[-122.414,37.776]',
@@ -90,12 +111,12 @@ describe('createLeafletObject', () => {
       tooltip: 'I am a polygon',
       geometryType: 'Polygon',
       id: '123',
-      reverseOrder: ""
+      reverseOrder: '',
     };
     const polygon = createLeafletObject(row);
     expect(polygon).toBeInstanceOf(L.Polygon);
     expect(polygon.getLatLngs()).toEqual([
-      [L.latLng(37.776, -122.414), L.latLng(37.775, -122.413, ), L.latLng( 37.776, -122.413,)],
+      [L.latLng(37.776, -122.414), L.latLng(37.775, -122.413), L.latLng(37.776, -122.413)],
     ]);
     expect(polygon.getPopup().getContent()).toEqual('Hello, world!');
     expect(polygon.getTooltip().getContent()).toEqual('I am a polygon');
