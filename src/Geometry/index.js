@@ -1,9 +1,12 @@
 import geometryObjectHandler from './geometry-object-handler';
 import removeGeometryAttributes from './utils';
-import hyperleafletGeometryHandler, { diffNodesWithMap } from './hyperleaflet-geometry-handler';
+import hyperleafletGeometryHandler from './hyperleaflet-geometry-handler';
+import hyperChangeDetection from '../Hyperchange/index';
+
+const HYPERLEAFLET_DATA_SOURCE = '[data-hyperleaflet-source]';
 
 function hyperleafletDataToMap(map) {
-  const hyperleafletDataSource = document.querySelector('[data-hyperleaflet-source]');
+  const hyperleafletDataSource = document.querySelector(HYPERLEAFLET_DATA_SOURCE);
 
   if (!hyperleafletDataSource) return;
 
@@ -23,28 +26,28 @@ function hyperleafletDataToMap(map) {
     };
   }
 
-  const { addNoteListToHyperleaflet, removeNodeListToHyperleaflet } = hyperleafletGeometryHandler(
-    map,
-    callbackFunctions,
-  );
+  const { addNoteListToHyperleaflet, removeNodeListFromHyperleaflet, changeNodesInHyperleaflet } =
+    hyperleafletGeometryHandler(map, callbackFunctions);
 
   map.whenReady(() => {
     const nodes = hyperleafletDataSource.querySelectorAll('[data-id]');
     addNoteListToHyperleaflet(nodes);
   });
 
-  function callback(mutations) {
-    const { addedNodes, removedNodes } = diffNodesWithMap(mutations, map);
-    addNoteListToHyperleaflet(addedNodes);
-    removeNodeListToHyperleaflet(removedNodes);
-  }
+  hyperChangeDetection.observe({
+    targetSelector: HYPERLEAFLET_DATA_SOURCE,
+    uniqueAttribute: 'data-id',
+    attributeFilter: ['data-geometry'],
+  });
 
-  const observer = new MutationObserver(callback);
-
-  observer.observe(hyperleafletDataSource, {
-    childList: true, // observe direct children
-    subtree: true, // and lower descendants too
-    attributeFilter: ['data-id'],
+  hyperChangeDetection.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_adds', (data) => {
+    addNoteListToHyperleaflet(data);
+  });
+  hyperChangeDetection.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_removes', (data) => {
+    removeNodeListFromHyperleaflet(data);
+  });
+  hyperChangeDetection.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_changes', (data) => {
+    changeNodesInHyperleaflet(data);
   });
 }
 
