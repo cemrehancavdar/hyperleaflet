@@ -1,7 +1,7 @@
 import geometryObjectHandler from './geometry-object-handler';
 import removeGeometryAttributes from './utils';
 import hyperleafletGeometryHandler from './hyperleaflet-geometry-handler';
-import pubsub from '../HtmlTrack/index';
+import hyperChangeDetection from '../Hyperchange/index';
 
 const HYPERLEAFLET_DATA_SOURCE = '[data-hyperleaflet-source]';
 
@@ -26,27 +26,28 @@ function hyperleafletDataToMap(map) {
     };
   }
 
-  const { addNoteListToHyperleaflet, removeNodeListFromHyperleaflet } = hyperleafletGeometryHandler(
-    map,
-    callbackFunctions,
-  );
+  const { addNoteListToHyperleaflet, removeNodeListFromHyperleaflet, changeNodesInHyperleaflet } =
+    hyperleafletGeometryHandler(map, callbackFunctions);
 
   map.whenReady(() => {
     const nodes = hyperleafletDataSource.querySelectorAll('[data-id]');
     addNoteListToHyperleaflet(nodes);
   });
 
-  pubsub.observe({
+  hyperChangeDetection.observe({
     targetSelector: HYPERLEAFLET_DATA_SOURCE,
     uniqueAttribute: 'data-id',
     attributeFilter: ['data-geometry'],
   });
 
-  pubsub.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_adds', (data) => {
+  hyperChangeDetection.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_adds', (data) => {
     addNoteListToHyperleaflet(data);
   });
-  pubsub.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_removes', (data) => {
+  hyperChangeDetection.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_removes', (data) => {
     removeNodeListFromHyperleaflet(data);
+  });
+  hyperChangeDetection.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_changes', (data) => {
+    changeNodesInHyperleaflet(data);
   });
 }
 

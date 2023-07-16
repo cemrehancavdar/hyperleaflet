@@ -1,4 +1,4 @@
-import createLeafletObject from './leaflet-geometry';
+import { createLeafletObject, changeLeafletObject } from './leaflet-geometry';
 
 function addNodeToHyperleaflet(node, map) {
   const { dataset } = node;
@@ -26,6 +26,14 @@ function deleteNodeFromHyperleaflet(node, map) {
   leafletObject?.remove();
 }
 
+function changeNodeInHyperleaflet(change, map) {
+  const rowId = change.changes['data-id'];
+  // eslint-disable-next-line no-underscore-dangle
+  const leafletLayers = Object.values(map._layers);
+  const leafletObject = leafletLayers.find((layer) => layer.hlID === rowId);
+  changeLeafletObject(leafletObject, change);
+}
+
 export default function hyperleafletGeometryHandler(map, { addCallback = () => {}, removeCallback = () => {} }) {
   const addNoteListToHyperleaflet = (nodes) => {
     nodes.forEach((node) => {
@@ -34,56 +42,18 @@ export default function hyperleafletGeometryHandler(map, { addCallback = () => {
     });
   };
 
-  function removeNodeListToHyperleaflet(nodes) {
+  function removeNodeListFromHyperleaflet(nodes) {
     nodes.forEach((node) => {
       deleteNodeFromHyperleaflet(node, map);
       removeCallback(node);
     });
   }
 
-  return { addNoteListToHyperleaflet, removeNodeListFromHyperleaflet: removeNodeListToHyperleaflet };
-}
-
-export function diffNodesWithMap(mutations, map) {
-  // eslint-disable-next-line no-underscore-dangle
-  const leafletLayers = Object.values(map._layers);
-  const addList = [];
-  const removeList = [];
-
-  function getAddedNodes(nodes) {
-    nodes.forEach((node) => {
-      if (node.nodeType === 1 && node.matches('[data-id]')) {
-        addList.push(node);
-      }
-      if (node.childNodes.length > 0) {
-        getAddedNodes(node.childNodes);
-      }
+  function changeNodesInHyperleaflet(changes) {
+    changes.forEach((change) => {
+      changeNodeInHyperleaflet(change, map);
     });
   }
 
-  function getRemovedNodes(nodes) {
-    nodes.forEach((node) => {
-      if (node.nodeType === 1 && node.matches('[data-id]')) {
-        removeList.push(node);
-      }
-      if (node.childNodes.length > 0) {
-        getRemovedNodes(node.childNodes);
-      }
-    });
-  }
-
-  mutations.forEach((mutation) => {
-    if (mutation.type === 'childList') {
-      getAddedNodes(mutation.addedNodes);
-      getRemovedNodes(mutation.removedNodes);
-    }
-  });
-
-  const filteredRemoveList =
-    removeList.filter((node) => !addList.some((addNode) => addNode.dataset.id === node.dataset.id)) ?? [];
-
-  const filteredAddList =
-    addList.filter((node) => !leafletLayers.some((leafletNode) => leafletNode.hlID === node.dataset.id)) ?? [];
-
-  return { addedNodes: filteredAddList, removedNodes: filteredRemoveList };
+  return { addNoteListToHyperleaflet, removeNodeListFromHyperleaflet, changeNodesInHyperleaflet };
 }
