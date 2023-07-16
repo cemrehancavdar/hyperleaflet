@@ -56,7 +56,6 @@ window.pubsub = hyperChangeDetection;
  */
 function observeChangesInTarget(targetSelector, uniqueAttribute, attributeFilter) {
   const observer = new MutationObserver((mutationsList) => {
-    const t0 = performance.now();
     const removedNodes = [];
     const addedNodes = [];
     // Iterate through the mutations
@@ -117,8 +116,6 @@ function observeChangesInTarget(targetSelector, uniqueAttribute, attributeFilter
     if (reallyRemovedNodes.length) {
       hyperChangeDetection.publish(targetSelector, 'node_removes', reallyRemovedNodes);
     }
-    const t1 = performance.now();
-    console.log(` ${t1 - t0} milliseconds.`);
   });
 
   const isEqualNode = (oldNode, newNode, attributes) =>

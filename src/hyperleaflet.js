@@ -1,8 +1,7 @@
 import createMap from './Map';
-import { getGlobalObject} from "./utils";
-import {defaultHyperlaefletObject} from './config';
+import hyperleafletConfig from './config';
 
-const hyperleaflet = (function hyperleaflet() {
+(function hyperleaflet() {
   const { initMap, observeMap } = createMap();
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -10,8 +9,5 @@ const hyperleaflet = (function hyperleaflet() {
     observeMap();
   });
 })();
-getGlobalObject().hl = "defaultHyperlaefletObject"
 
-getGlobalObject().hyperleafletCfg = defaultHyperlaefletObject
-
-export default hyperleaflet;
+window.hyperleaflet = hyperleafletConfig;
