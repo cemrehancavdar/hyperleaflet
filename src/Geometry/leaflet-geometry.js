@@ -3,10 +3,12 @@ import { setPointEvents, setPolyGeometryEvents } from './events';
 import hyperleafletConfig from '../config';
 
 const createPointGeometry = (parsedGeometry, options) => {
-  const { reverseOrderAll, reverseOrder } = options;
-  const isLonLat = reverseOrderAll || (reverseOrder !== undefined)
+  const { hyperleafletOptions, reverseOrder, style } = options;
+  const {reverseCoordinateOrder} = hyperleafletOptions;
+  const styles = hyperleafletOptions;
+  const isLonLat = reverseCoordinateOrder || (reverseOrder !== undefined)
   const geometry = isLonLat ? [...parsedGeometry].reverse() : parsedGeometry;
-  const leafletGeometry = marker(geometry);
+  const leafletGeometry = marker(geometry, styles?.point?.[style]);
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
   }
@@ -18,8 +20,9 @@ const createPointGeometry = (parsedGeometry, options) => {
 };
 
 const createLineGeometry = (parsedGeometry, options) => {
-  const { reverseOrderAll, reverseOrder } = options;
-  const isLonLat = reverseOrderAll || (reverseOrder !== undefined)
+  const { hyperleafletOptions, reverseOrder } = options;
+  const {reverseCoordinateOrder} = hyperleafletOptions;
+  const isLonLat = reverseCoordinateOrder || (reverseOrder !== undefined)
   const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 0) : parsedGeometry;
   const leafletGeometry = polyline(geometry);
   if (options.popup) {
@@ -33,8 +36,9 @@ const createLineGeometry = (parsedGeometry, options) => {
 };
 
 const createPolygonGeometry = (parsedGeometry, options) => {
-  const { reverseOrderAll, reverseOrder } = options;
-  const isLonLat = reverseOrderAll || (reverseOrder !== undefined)
+  const { hyperleafletOptions, reverseOrder } = options;
+  const {reverseCoordinateOrder} = hyperleafletOptions;
+  const isLonLat = reverseCoordinateOrder || (reverseOrder !== undefined)
   const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 1) : parsedGeometry;
   const leafletGeometry = polygon(geometry);
   if (options.popup) {
@@ -63,9 +67,9 @@ const createGeometry = (geometryType) => (parsedGeometry, options) => {
 };
 
 export default function createLeafletObject(row) {
-  const { geometry, popup, tooltip, geometryType, id, reverseOrder } = row;
+  const { geometry,  geometryType } = row;
   const parsedGeometry = JSON.parse(geometry);
-  const {reverseOrderAll} = hyperleafletConfig;
+  const hyperleafletOptions = hyperleafletConfig.options;
   const createGeometryFn = createGeometry(geometryType);
-  return createGeometryFn(parsedGeometry, { popup, tooltip, id, reverseOrderAll, reverseOrder });
+  return createGeometryFn(parsedGeometry, { ...row, hyperleafletOptions });
 }

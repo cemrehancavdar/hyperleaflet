@@ -9,9 +9,9 @@ function createMap() {
     const mapContainer = document.querySelector('#map');
     if (mapContainer && !initialized) {
       initialized = true;
-      const { reverseOrderAll } = mapContainer.dataset;
-      if (reverseOrderAll !== undefined) {
-        hyperleafletConfig.reverseOrderAll = true;
+      const { reverseCoordinateOrder } = mapContainer.dataset;
+      if (reverseCoordinateOrder !== undefined) {
+        hyperleafletConfig.reverseOrreverseCoordinateOrderderAll = true;
       }
 
       const map = createHyperleafletMap(mapContainer);
@@ -24,7 +24,7 @@ function createMap() {
       }
       defaultHyperleafletTile.addTo(map);
       hyperleafletDataToMap(map);
-      window.hyperleaflet = { map };
+      hyperleafletConfig.map = map
       sendHyperleafletReady(map);
     }
   }

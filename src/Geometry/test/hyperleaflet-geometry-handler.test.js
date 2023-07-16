@@ -6,7 +6,7 @@ import hyperleafletConfig from '../../config';
 
 describe('createLeafletObject', () => {
   beforeEach(() => {
-    hyperleafletConfig.reverseOrderAll = false;
+    hyperleafletConfig.options.reverseCoordinateOrder = false;
   });
   it('should create a Leaflet marker object for a point geometry', () => {
     const row = {
@@ -30,7 +30,7 @@ describe('createLeafletObject', () => {
       geometryType: 'Point',
       id: '123',
     };
-    hyperleafletConfig.reverseOrderAll = true;
+    hyperleafletConfig.options.reverseCoordinateOrder = true;
     const marker = createLeafletObject(row);
     expect(marker).toBeInstanceOf(L.Marker);
     expect(marker.getLatLng()).toEqual(L.latLng(37.776, -122.414));
