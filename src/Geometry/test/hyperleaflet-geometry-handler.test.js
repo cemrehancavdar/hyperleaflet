@@ -39,6 +39,7 @@ describe('createLeafletObject', () => {
       'data-id': 123,
       dataset: { geometry: '[-122.414,37.776]', geometryType: 'Point', id: '123' },
     });
+
     expect(marker).toBeInstanceOf(L.Marker);
     expect(marker.getLatLng()).toEqual(L.latLng(-110.414, 30.776));
   });

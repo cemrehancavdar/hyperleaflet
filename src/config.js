@@ -1,6 +1,4 @@
-import {mergeDeep} from "./utils";
-
-export const defaultHyperlaefletObject = {
+const hyperleafletConfig = {
   options: {
     reverseCoordinateOrder: false,
     events: {
@@ -23,18 +21,4 @@ export const defaultHyperlaefletObject = {
   },
 };
 
-const hyperleafletProxyHandler = {
-  set(target, property, value) {
-    // Perform deep merge when resetting the options object
-    if (property === 'options') {
-      target.options = mergeDeep(target.options, value);
-    } else {
-      target[property] = value;
-    }
-    return true;
-  },
-};
-
-const hyperleafletConfig = new Proxy(defaultHyperlaefletObject, hyperleafletProxyHandler);
-
-export default hyperleafletConfig
+export default hyperleafletConfig;
