@@ -30,6 +30,16 @@ export default function setMapEvents(map) {
     window.dispatchEvent(event);
   });
 
+  map.on('moveend', () => {
+    const event = createGenericMapEvent(map, 'map:moveend');
+    window.dispatchEvent(event);
+  });
+
+  map.on('movestart', () => {
+    const event = createGenericMapEvent(map, 'map:movestart');
+    window.dispatchEvent(event);
+  });
+
   return map;
 }
 

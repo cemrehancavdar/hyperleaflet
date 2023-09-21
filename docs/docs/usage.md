@@ -286,6 +286,42 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
       console.log(`Bounding box string: ${bboxString}`);
     });
   ```
+`#!css map:move`
+
+: Triggered when the user starts to move the map. <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">zoom</span>:  the current zoom level, in the form: number <br>
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form { lat: number, lng: number } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat"
+
+  ```js title="Example"
+    window.addEventListener('map:movestart', (e) => {
+      const { zoom, center, bbox, bboxString } = e.detail;
+      console.log(`Map zoom at level ${zoom}`);
+      console.log(`Centered at (${center.lat}, ${center.lng})`);
+      console.log(`Bounded by (${bbox.min.lat}, ${bbox.min.lng}) and (${bbox.max.lat}, ${bbox.max.lng})`);
+      console.log(`Bounding box string: ${bboxString}`);
+    });
+  ```
+`#!css map:move`
+
+: Triggered when the user ends moving the map. <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">zoom</span>:  the current zoom level, in the form: number <br>
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form { lat: number, lng: number } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat"
+
+  ```js title="Example"
+    window.addEventListener("map:moveend", (e) => {
+      const { zoom, center, bbox, bboxString } = e.detail;
+      console.log(`Map zoom at level ${zoom}`);
+      console.log(`Centered at (${center.lat}, ${center.lng})`);
+      console.log(`Bounded by (${bbox.min.lat}, ${bbox.min.lng}) and (${bbox.max.lat}, ${bbox.max.lng})`);
+      console.log(`Bounding box string: ${bboxString}`);
+    });
+  ```
 
 #### Geometry Events
 
