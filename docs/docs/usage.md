@@ -286,7 +286,7 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
       console.log(`Bounding box string: ${bboxString}`);
     });
   ```
-`#!css map:move`
+`#!css map:movestart`
 
 : Triggered when the user starts to move the map. <br>
   Event detail attributes <br>
@@ -304,7 +304,7 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
       console.log(`Bounding box string: ${bboxString}`);
     });
   ```
-`#!css map:move`
+`#!css map:moveend`
 
 : Triggered when the user ends moving the map. <br>
   Event detail attributes <br>
