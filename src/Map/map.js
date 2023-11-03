@@ -1,43 +1,38 @@
-import { map } from 'leaflet';
-import TILE_LAYERS from './tiles';
-import setMapEvents from './events';
-import { createTileController, parseTileLayerElement, safeParsePoint } from './util';
-import hyperleafletConfig from '../config';
+import * as L from 'leaflet';
+import { setMapEvents } from './events';
+import { Config } from '../config';
 
-export function getDefaultHyperleafletTile(tileLayerElementList) {
-  const defaultTileLayerElement = tileLayerElementList.find((t) => 'defaultTile' in t.dataset);
-  if (defaultTileLayerElement && defaultTileLayerElement.dataset.tile in TILE_LAYERS) {
-    return TILE_LAYERS[defaultTileLayerElement.dataset.tile];
+function reverseCoordinates(point) {
+  return point.reverse();
+}
+
+function safeParsePoint(pointJson, reverse = false) {
+  try {
+    const point = JSON.parse(pointJson);
+    return reverse ? reverseCoordinates(point) : point;
+  } catch (_) {
+    return [0, 0];
   }
-  if (tileLayerElementList.length && tileLayerElementList[0].dataset.tile in TILE_LAYERS) {
-    return TILE_LAYERS[tileLayerElementList[0].dataset.tile];
-  }
-  return TILE_LAYERS.OpenStreetMap;
 }
 
-export function createHyperleafletTiles(tileLayerElementNodeList) {
-  const tileLayerElementList = Array.from(tileLayerElementNodeList);
-  const hyperleafletTiles = tileLayerElementList.map(parseTileLayerElement).filter(Boolean);
-  const defaultHyperleafletTile = getDefaultHyperleafletTile(tileLayerElementList);
-  const tileController = createTileController(hyperleafletTiles);
-  return {
-    defaultHyperleafletTile,
-    tileController,
-  };
-}
-
-export default function createHyperleafletMap(mapElement) {
-  const { center, zoom, minZoom, maxZoom } = mapElement.dataset;
-  const { reverseOrderAll } = hyperleafletConfig;
-  const mapView = {
-    center: safeParsePoint(center, reverseOrderAll),
-    zoom: zoom || 1,
-  };
-  const leafletMap = map(mapElement, {
-    center: mapView.center,
-    zoom: mapView.zoom,
-    minZoom: minZoom || 0,
-    maxZoom: maxZoom || 18,
-  });
-  return setMapEvents(leafletMap);
-}
+export const Map = {
+  map: null,
+  create(mapContainer) {
+    const config = Config;
+    const { center, zoom, minZoom, maxZoom } = mapContainer.dataset;
+    const { reverseCoordinateOrder } = config.options;
+    const mapView = {
+      center: safeParsePoint(center, reverseCoordinateOrder),
+      zoom: zoom || 1,
+    };
+    const leafletMap = L.map(mapContainer, {
+      center: mapView.center,
+      zoom: mapView.zoom,
+      minZoom: minZoom || 0,
+      maxZoom: maxZoom || 18,
+    });
+    setMapEvents(leafletMap);
+    this.map = leafletMap;
+    return leafletMap;
+  },
+};

@@ -18,7 +18,7 @@ extra_css:
   - https://unpkg.com/leaflet@1.9.3/dist/leaflet.css
 extra_javascript:
   - https://unpkg.com/leaflet@1.9.3/dist/leaflet.js
-  - javascripts/hyperleaflet.js
+  - javascripts/index.js
 
 repo_url: https://github.com/cemrehancavdar/hyperleaflet
 repo_name: cemrehancavdar/hyperleaflet

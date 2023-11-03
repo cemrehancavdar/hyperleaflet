@@ -4,7 +4,7 @@ Hyperleaflet is browser-oriented library. To install simply add the following `#
 
 ```html
 <script
-  src="https://www.unpkg.com/hyperleaflet"
+  src="https://www.unpkg.com/index"
   integrity="sha384-hJcYnhFwc9+OUe4q7GsQz3cYn5tXKOzO6pl/wjSc2FKofcAfN/nsQg5Il+jCiFN+"
   crossorigin="anonymous"
 ></script>
@@ -132,10 +132,10 @@ Valid values: true/false. Default: false
 
 ##### Geometry Attributes
 
-The "data-hyperleaflet-source" attribute is used to specify the data source for the map, including the type of geometry and the coordinates for each feature.
+The "data-index-source" attribute is used to specify the data source for the map, including the type of geometry and the coordinates for each feature.
 
 ``` html
-<div data-hyperleaflet-source>
+<div data-index-source>
   <span
     data-id="1"
     data-geometry-type="Point"
@@ -153,7 +153,7 @@ The "data-hyperleaflet-source" attribute is used to specify the data source for 
   ></span>
 </div>
 ```
-`#!css data-hyperleaflet-source`
+`#!css data-index-source`
 : Identifies the container element that holds the geometry data.<br>
 
 `#!css data-id`
@@ -173,7 +173,7 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
 : The data-geometry-display attribute is used to control the display of geometries in a HTML element. It can take one of two valid options: <br><br>
    `#!css json`: Removes the data-geometry attributes from the containing elements and creates a new script tag with application/json type that contains the geometries in a GeoJSON-like syntax.
    ``` html 
-    <div data-hyperleaflet-source data-geometry-display="json">
+    <div data-index-source data-geometry-display="json">
       <!-- Elements with data-geometry attributes here -->
     </div>
    ```
@@ -193,7 +193,7 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
    ``` 
    `#!css remove`: Removes the data-geometry attributes from the containing elements.
    ``` html 
-    <div data-hyperleaflet-source data-geometry-display="remove">
+    <div data-index-source data-geometry-display="remove">
       <!-- Elements with data-geometry attributes here -->
     </div>
    ```
@@ -216,8 +216,8 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
   Events use the **`target:event`** syntax, separated by a colon.
 #### Hyperleaflet Events
 
-`#!css hyperleaflet:ready`
-: Triggered when hyperleaflet successfuly initialized <br>
+`#!css index:ready`
+: Triggered when index successfuly initialized <br>
   Event detail attributes <br>
   <span style="color: var(--md-code-hl-keyword-color)">zoom</span>:  the current zoom level, in the form: number <br>
   <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form { lat: number, lng: number } <br>
