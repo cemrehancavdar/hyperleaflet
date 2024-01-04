@@ -53,7 +53,7 @@ export function createGeometryHandler(map, layerModule) {
         return Geometry.updateGeometry(leafletObject, change.dataset);
       }
       default: {
-        throw new Error('Parameter is not a number!');
+        throw new Error('Unsupported attribute change!');
       }
     }
   }
