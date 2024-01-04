@@ -13,11 +13,11 @@ export const TileLayers = {
       },
     ),
   },
-  _addTileLayer(name, { url, minZoom, maxZoom, tms } = {}) {
+  _addTileLayer(name, { url, minZoom = 0, maxZoom = 18, tms } = {}) {
     if (this._tileLayers[name]) {
       return;
     }
-    const newTileLayer = new L.TileLayer(url, { minZoom: minZoom || 0, maxZoom: maxZoom || 18, tms: !!tms });
+    const newTileLayer = new L.TileLayer(url, { minZoom, maxZoom, tms: !!tms });
     this._tileLayers[name] = newTileLayer.tile;
   },
 

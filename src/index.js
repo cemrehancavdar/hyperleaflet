@@ -8,5 +8,4 @@ import { Config } from './config';
 })();
 
 window.hyperleaflet = Hyperleaflet;
-const hyperleaflet = Hyperleaflet;
-export { hyperleaflet };
+export { Hyperleaflet as hyperleaflet };
