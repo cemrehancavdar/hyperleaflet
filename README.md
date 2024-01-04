@@ -1,4 +1,4 @@
-![index-github-with-map-background-black-white](https://user-images.githubusercontent.com/50503448/226453243-27619ebb-b323-4c51-be95-d01bf5b53545.png)
+![hyperleaflet-github-with-map-background-black-white](https://user-images.githubusercontent.com/50503448/226453243-27619ebb-b323-4c51-be95-d01bf5b53545.png)
 
 ## A HTML-based Leaflet Library
 
@@ -18,9 +18,9 @@ Hyperleaflet uses HTML dataset attributes as inputs. For example:
 ```
 
 ### Showing Data
-Hyperleaflet listens to HTML elements marked with data-index-source":
+Hyperleaflet listens to HTML elements marked with data-hyperleaflet-source":
 ```html
-    <table data-index-source >
+    <table data-hyperleaflet-source >
         <tr data-id="1" data-geometry="[32.85,39.97]" data-geometry-type="Point">
             <td>39.97</td>
             <td>32.85</td>
