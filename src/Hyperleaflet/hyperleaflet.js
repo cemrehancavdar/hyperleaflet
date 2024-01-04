@@ -1,6 +1,6 @@
 import hyperChangeDetection from '../Hyperchange/hyperchange';
 
-import { Map } from '../Map/map';
+import { Map_ } from '../Map/map';
 import { createGeometryHandler } from './hyperleafletGeometryHandler';
 import { sendHyperleafletReady } from './events';
 import { Geometry } from '../Geometry/geometry';
@@ -22,7 +22,7 @@ export const Hyperleaflet = {
   changeNode: [],
 
   initialize(mapContainer) {
-    this.map = Map.create(mapContainer);
+    this.map = Map_.create(mapContainer);
     this.initializeLayerControl(mapContainer, this.map);
     this.initializeHyperleafletDataSource();
     sendHyperleafletReady(this.map);

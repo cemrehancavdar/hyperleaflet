@@ -15,7 +15,7 @@ function safeParsePoint(pointJson, reverse = false) {
   }
 }
 
-export const Map = {
+export const Map_ = {
   map: null,
   create(mapContainer) {
     const config = Config;
