@@ -77,7 +77,7 @@ export const Geometry = {
   createGeometry(dataset) {
     const { reverseOrder, ...extraOptions } = dataset;
     const { reverseCoordinateOrder } = Config.options;
-    const { geometry, geometryType, options } = createHyperleafletGeometryParams(dataset, Config.options);
+    const { geometry, geometryType, options } = createHyperleafletGeometryParams(dataset);
 
     const geometryCreator = this.types[geometryType.toLowerCase()];
 
