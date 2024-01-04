@@ -33,42 +33,23 @@ export const Hyperleaflet = {
       Layers.control.addOverlay(extension.layer);
     }
 
-    if (extension.addNode && typeof extension.addNode === 'function') {
-      this.addNode.push((node) => extension.addNode(node));
-    }
+    const functionNames = [
+      'addNode',
+      'removeNode',
+      'changeNode',
+      'beforeNodeAdd',
+      'afterNodeAdd',
+      'beforeNodeRemove',
+      'afterNodeRemove',
+      'beforeNodeChange',
+      'afterNodeChange',
+    ];
 
-    if (extension.removeNode && typeof extension.removeNode === 'function') {
-      this.removeNode.push((node) => extension.removeNode(node));
-    }
-
-    if (extension.changeNode && typeof extension.changeNode === 'function') {
-      this.changeNode.push((node) => extension.changeNode(node));
-    }
-
-    // If the extension has a custom onNodeAdded hook, add it to the list
-    if (extension.beforeNodeAdd && typeof extension.beforeNodeAdd === 'function') {
-      this.beforeNodeAdd.push((node) => extension.beforeNodeAdd(node));
-    }
-
-    if (extension.afterNodeAdd && typeof extension.afterNodeAdd === 'function') {
-      this.afterNodeAdd.push(extension.afterNodeAdd);
-    }
-
-    if (extension.beforeNodeRemove && typeof extension.beforeNodeRemove === 'function') {
-      this.beforeNodeRemove.push(extension.beforeNodeRemove);
-    }
-
-    if (extension.afterNodeRemove && typeof extension.afterNodeRemove === 'function') {
-      this.afterNodeRemove.push(extension.afterNodeRemove);
-    }
-
-    if (extension.beforeNodeChange && typeof extension.beforeNodeChange === 'function') {
-      this.beforeNodeChange.push(extension.beforeNodeChange);
-    }
-
-    if (extension.afterNodeChange && typeof extension.afterNodeChange === 'function') {
-      this.afterNodeChange.push(extension.afterNodeChange);
-    }
+    functionNames.forEach((functionName) => {
+      if (extension[functionName] && typeof extension[functionName] === 'function') {
+        this[functionName].push((node) => extension[functionName](node));
+      }
+    });
   },
 
   initializeHyperleafletDataSource() {
