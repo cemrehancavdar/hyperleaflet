@@ -19,7 +19,13 @@ export const Map_ = {
   map: null,
   create(mapContainer) {
     const config = Config;
-    const { center, zoom, minZoom, maxZoom } = mapContainer.dataset;
+    const { mapConfig } = mapContainer.dataset;
+    const target = mapConfig ? document.querySelector(mapConfig) : mapContainer;
+
+    if (!target) throw new Error('No map config found');
+
+    const { center, zoom, minZoom, maxZoom } = target.dataset;
+
     const { reverseCoordinateOrder } = config.options;
     const mapView = {
       center: safeParsePoint(center, reverseCoordinateOrder),
