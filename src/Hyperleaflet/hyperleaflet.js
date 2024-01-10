@@ -131,6 +131,36 @@ export const Hyperleaflet = {
 
     defaultTile.addTo(this.map);
   },
+
+  getZoom() {
+    return this.map.getZoom();
+  },
+
+  setZoom(zoom) {
+    this.map.setZoom(zoom);
+  },
+  getCenter() {
+    return this.map.getCenter();
+  },
+  fitBounds(bounds) {
+    this.map.fitBounds(bounds);
+  },
+  getBounds() {
+    return this.map.getBounds();
+  },
+  getBBoxString() {
+    return this.map.getBounds().toBBoxString();
+  },
+  panTo(center) {
+    this.map.panTo(center);
+  },
+  fltTo(center, zoom = undefined) {
+    zoom = zoom || this.map.getZoom();
+    this.map.flyTo(center, zoom);
+  },
+  flyToBounds(bounds) {
+    this.map.flyToBounds(bounds);
+  },
 };
 
 Hyperleaflet.addGeometryType = (type, customGeometryType) => {
