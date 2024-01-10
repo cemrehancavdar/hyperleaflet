@@ -33,6 +33,10 @@ export const Hyperleaflet = {
       Layers.control.addOverlay(extension.layer);
     }
 
+    if (extension.handleMap) {
+      extension.handleMap(this.map, Map_.target);
+    }
+
     const functionNames = [
       'addNode',
       'removeNode',
