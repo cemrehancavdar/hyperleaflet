@@ -17,15 +17,13 @@ function safeParsePoint(pointJson, reverse = false) {
 
 export const Map_ = {
   map: null,
-  target: null,
   create(mapContainer) {
     const config = Config;
     const { mapConfig } = mapContainer.dataset;
-    this.target = mapConfig ? document.querySelector(mapConfig) : mapContainer;
+    const target = mapConfig ? document.querySelector(mapConfig) : mapContainer;
+    if (!target) throw new Error('No map config found');
 
-    if (!this.target) throw new Error('No map config found');
-
-    const { center, zoom, minZoom, maxZoom } = this.target.dataset;
+    const { center, zoom, minZoom, maxZoom } = target.dataset;
 
     const { reverseCoordinateOrder } = config.options;
     const mapView = {
@@ -39,7 +37,6 @@ export const Map_ = {
       maxZoom: maxZoom || 18,
     });
     setMapEvents(leafletMap);
-    this.map = leafletMap;
-    return leafletMap;
+    return [leafletMap, target];
   },
 };

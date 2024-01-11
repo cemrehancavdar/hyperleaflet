@@ -20,11 +20,15 @@ export const Hyperleaflet = {
   addNode: [],
   removeNode: [],
   changeNode: [],
+  customMapEvents: [],
 
   initialize(mapContainer) {
-    this.map = Map_.create(mapContainer);
+    const [map, target] = Map_.create(mapContainer);
+    this.map = map;
+    this.target = target;
     this.initializeLayerControl(mapContainer, this.map);
     this.initializeHyperleafletDataSource();
+    this.customMapEvents.forEach((hook) => hook);
     sendHyperleafletReady(this.map);
   },
 
@@ -34,7 +38,7 @@ export const Hyperleaflet = {
     }
 
     if (extension.handleMap) {
-      extension.handleMap(this.map, Map_.target);
+      this.customMapEvents.push((map, mapTarget) => extension.handleMap(map, mapTarget));
     }
 
     const functionNames = [
