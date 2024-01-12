@@ -10,25 +10,32 @@ function createStateEvent(map, eventName, _leafletEvent) {
   });
 }
 
+const stateEvents = ['zoomstart', 'zoomend', 'movestart', 'moveend', 'zoom', 'move'];
+const mouseEvents = ['click', 'dblclick', 'mousedown', 'mouseover', 'mouseout', 'mousemove', 'contextmenu', 'preclick'];
+
 export function setMapEvents(map) {
   const eventTarget = Config.getTarget('map');
-  const { mouse, state, extra } = Config.options.events.map;
+  const mapEvents = Config.options.events.map;
 
-  state.forEach((eventName) => {
-    map.on(eventName, (e) => {
-      const event = createStateEvent(map, `map:${eventName}`, e);
-      eventTarget.dispatchEvent(event);
-    });
+  Object.entries(mapEvents).forEach(([eventName, value]) => {
+    if (value) {
+      if (stateEvents.includes(eventName)) {
+        map.on(eventName, (e) => {
+          const event = createStateEvent(map, `map:${eventName}`, e);
+          eventTarget.dispatchEvent(event);
+        });
+      }
+      if (mouseEvents.includes(eventName)) {
+        map.on(eventName, (e) => {
+          const event = new CustomEvent(`map:${eventName}`, { detail: { point: e.latlng }, _leafletEvent: e });
+          eventTarget.dispatchEvent(event);
+        });
+      }
+    }
   });
 
-  mouse.forEach((eventName) => {
-    map.on(eventName, (e) => {
-      const event = new CustomEvent(`map:${eventName}`, { detail: { point: e.latlng }, _leafletEvent: e });
-      eventTarget.dispatchEvent(event);
-    });
-  });
 
-  if (extra.includes('ready')) {
+  if (mapEvents.ready) {
     map.whenReady(() => {
       const event = createStateEvent(map, 'map:ready');
       eventTarget.dispatchEvent(event);

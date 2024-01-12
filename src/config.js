@@ -6,18 +6,32 @@ const defaultOptions = {
   events: {
     map: {
       target: 'window',
-      mouse: ['click'],
-      state: ['zoom', 'move'],
-      extra: ['ready'],
+      click: true,
+      dlbclick: false,
+      mousedown: false,
+      mouseover: false,
+      mousemove: false,
+      mouseout: false,
+      contextmenu: false,
+      preclick: false,
+      zoom: true,
+      move: true,
+      zoomstart: false,
+      zoomend: false,
+      movestart: false,
+      moveend: false,
+      ready: true,
+
     },
     geometry: {
       target: 'window',
-      mouse: ['click'],
-      state: ['add'],
+      click: true,
+      move: false,
+      add: false,
     },
     hyperleaflet: {
       target: 'window',
-      state: ['ready'],
+      ready: true
     },
   },
   styles: {},

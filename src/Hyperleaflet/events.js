@@ -1,7 +1,7 @@
 import { Config } from '../config';
 
 export function sendHyperleafletReady(map) {
-  if (Config.options.events.hyperleaflet.state.includes('ready')) {
+  if (Config.options.events.hyperleaflet.add) {
     const bounds = map.getBounds();
     const min = bounds.getSouthWest();
     const max = bounds.getNorthEast();

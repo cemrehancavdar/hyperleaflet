@@ -3,7 +3,7 @@ import { Config } from '../config';
 const eventTarget = Config.getTarget('map');
 
 export function setEvents(leafletObject, id, eventType) {
-  if (Config.options.events.geometry.mouse.includes('click')) {
+  if (Config.options.events.geometry.click) {
     if (eventType === 'mono') {
       leafletObject.on('click', (e) => {
         const event = new CustomEvent('geometry:click', {
@@ -29,7 +29,7 @@ export function setEvents(leafletObject, id, eventType) {
 }
 
 export function sendEvent(eventType, leafletGeometry, id, geometryType, target) {
-  if (Config.options.events.geometry.state.includes('add')) {
+  if (Config.options.events.geometry.add) {
     const event = new CustomEvent(`geometry:${eventType}`, {
       detail: { id, geometryType, target },
     });
