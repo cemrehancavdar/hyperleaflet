@@ -4,8 +4,8 @@ const defaultOptions = {
   reverseCoordinateOrder: false,
   mapElement: '#map',
   events: {
+    target: 'window',
     map: {
-      target: 'window',
       click: true,
       dblclick: false,
       mousedown: false,
@@ -21,17 +21,14 @@ const defaultOptions = {
       movestart: false,
       moveend: false,
       ready: true,
-
     },
     geometry: {
-      target: 'window',
       click: true,
       move: false,
       add: false,
     },
     hyperleaflet: {
-      target: 'window',
-      ready: true
+      ready: true,
     },
   },
   styles: {},
@@ -51,10 +48,20 @@ export const Config = {
     this._options = defaultOptions;
   },
 
+  getTargetElement(target, type) {
+    if (typeof target === 'string') {
+      return target;
+    }
+    if (target.constructor === Object) {
+      return target[type] || 'window';
+    }
+    return 'window';
+  },
+
   getTarget(type) {
-    const { events } = this.options;
-    const { target } = events[type];
-    switch (target) {
+    const { target } = this.options.events;
+    const eventTarget = this.getTargetElement(target, type);
+    switch (eventTarget) {
       case 'window':
         return window;
       case 'document':
@@ -64,7 +71,7 @@ export const Config = {
       case 'hyperleaflet-source':
         return document.querySelector('[data-hyperleaflet-source]');
       default:
-        return document.querySelector(target);
+        return document.querySelector(eventTarget);
     }
   },
 };
