@@ -1,6 +1,8 @@
 import { Config } from '../config';
 
 export function sendHyperleafletReady(map) {
+  const eventTarget = Config.getTarget('hyperleaflet');
+
   if (Config.options.events.hyperleaflet.ready) {
     const bounds = map.getBounds();
     const min = bounds.getSouthWest();
@@ -9,6 +11,6 @@ export function sendHyperleafletReady(map) {
     const event = new CustomEvent('hyperleaflet:ready', {
       detail: { zoom: map.getZoom(), center: map.getCenter(), bbox: { min, max }, bboxString },
     });
-    window.dispatchEvent(event);
+    eventTarget.dispatchEvent(event);
   }
 }
