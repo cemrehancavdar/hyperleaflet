@@ -1,8 +1,8 @@
 import { Config } from '../config';
 
-const eventTarget = Config.getTarget('map');
-
 export function setEvents(leafletObject, id, eventType) {
+  const eventTarget = Config.getTarget('map');
+
   if (Config.options.events.geometry.click) {
     if (eventType === 'mono') {
       leafletObject.on('click', (e) => {
@@ -29,6 +29,8 @@ export function setEvents(leafletObject, id, eventType) {
 }
 
 export function sendEvent(eventType, leafletGeometry, id, geometryType, target) {
+  const eventTarget = Config.getTarget('map');
+
   if (Config.options.events.geometry.add) {
     const event = new CustomEvent(`geometry:${eventType}`, {
       detail: { id, geometryType, target },
