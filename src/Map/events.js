@@ -11,12 +11,20 @@ function createStateEvent(map, eventName, _leafletEvent) {
 }
 
 const stateEvents = ['zoomstart', 'zoomend', 'movestart', 'moveend', 'zoom', 'move'];
-const mouseEvents = ['click', 'dblclick', 'mousedown', 'mouseover', 'mouseout', 'mousemove', 'contextmenu', 'preclick'];
+const mouseEvents = [
+  'click',
+  'dblclick',
+  'mousedown',
+  'mouseover',
+  'mouseout',
+  'mousemove',
+  'contextmenu',
+  'preclick',
+];
 
 export function setMapEvents(map) {
   const eventTarget = Config.getTarget('map');
   const mapEvents = Config.options.events.map;
-
   Object.entries(mapEvents).forEach(([eventName, value]) => {
     if (value) {
       if (stateEvents.includes(eventName)) {
@@ -33,7 +41,6 @@ export function setMapEvents(map) {
       }
     }
   });
-
 
   if (mapEvents.ready) {
     map.whenReady(() => {

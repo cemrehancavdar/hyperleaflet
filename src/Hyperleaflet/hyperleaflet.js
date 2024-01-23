@@ -175,4 +175,4 @@ Hyperleaflet.addGeometryType = (type, customGeometryType) => {
   Geometry.addType(type, customGeometryType);
 };
 
-Hyperleaflet.options = Config.options;
+Hyperleaflet.config = Config;

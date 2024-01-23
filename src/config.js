@@ -7,7 +7,7 @@ const defaultOptions = {
     map: {
       target: 'window',
       click: true,
-      dlbclick: false,
+      dblclick: false,
       mousedown: false,
       mouseover: false,
       mousemove: false,
@@ -61,7 +61,7 @@ export const Config = {
         return document;
       case 'map':
         return this.options.mapElement;
-      case 'hyperleaflet':
+      case 'hyperleaflet-source':
         return document.querySelector('[data-hyperleaflet-source]');
       default:
         return document.querySelector(target);
