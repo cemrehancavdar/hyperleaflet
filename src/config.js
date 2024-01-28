@@ -34,6 +34,7 @@ const defaultOptions = {
   styles: {},
 };
 export const Config = {
+  _hyperleaflet: null,
   _options: defaultOptions,
 
   get options() {
@@ -48,30 +49,16 @@ export const Config = {
     this._options = defaultOptions;
   },
 
-  getTargetElement(target, type) {
-    if (typeof target === 'string') {
-      return target;
-    }
-    if (target.constructor === Object) {
-      return target[type] || 'window';
-    }
-    return 'window';
-  },
-
-  getTarget(type) {
+  getTarget() {
     const { target } = this.options.events;
-    const eventTarget = this.getTargetElement(target, type);
-    switch (eventTarget) {
+    switch (target) {
       case 'window':
         return window;
       case 'document':
         return document;
-      case 'map':
-        return this.options.mapElement;
-      case 'hyperleaflet-source':
-        return document.querySelector('[data-hyperleaflet-source]');
+      case 'hyperleaflet':
       default:
-        return document.querySelector(eventTarget);
+        return this._hyperleaflet;
     }
   },
 };

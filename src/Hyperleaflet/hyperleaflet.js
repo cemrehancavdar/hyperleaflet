@@ -7,6 +7,7 @@ import { Geometry } from '../Geometry/geometry';
 import { Layers } from '../Layers/layers';
 import { TileLayers } from '../Layers';
 import { Config } from '../config';
+import { makeEventTarget } from './eventTarget';
 
 const HYPERLEAFLET_DATA_SOURCE = '[data-hyperleaflet-source]';
 
@@ -23,6 +24,7 @@ export const Hyperleaflet = {
   customMapEvents: [],
 
   initialize(mapContainer) {
+    mapContainer.setAttribute('hyperleaflet', "")
     const [map, target] = Map_.create(mapContainer);
     this.map = map;
     this.target = target;
@@ -175,4 +177,8 @@ Hyperleaflet.addGeometryType = (type, customGeometryType) => {
   Geometry.addType(type, customGeometryType);
 };
 
+makeEventTarget(Hyperleaflet);
+
 Hyperleaflet.config = Config;
+
+Config._hyperleaflet = Hyperleaflet;
