@@ -105,6 +105,11 @@ function changeGeometry(leafletObject, change) {
   }
 }
 
+function changeOptions(leafletObject, change) {
+  const { to: options } = change;
+  return leafletObject.setStyle(JSON.parse(options));
+}
+
 export function createLeafletObject(dataset) {
   const { geometry, popup, tooltip, geometryType, id, reverseOrder, options = '{}' } = dataset;
   const parsedGeometry = JSON.parse(geometry);
@@ -122,9 +127,13 @@ export function createLeafletObject(dataset) {
 }
 
 export function changeLeafletObject(leafletObject, change) {
+  console.log(change);
   switch (change.attribute) {
     case 'data-geometry': {
       return changeGeometry(leafletObject, change);
+    }
+    case 'data-options': {
+      return changeOptions(leafletObject, change);
     }
     default: {
       throw new Error('Parameter is not a number!');
