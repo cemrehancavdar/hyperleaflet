@@ -52,10 +52,15 @@ export default function hyperleafletGeometryHandler(map, { addCallback = () => {
   function changeNodesInHyperleaflet(changes) {
     // changes is an array of changes and a dataset
     changes.forEach((change) => {
+      // NOTE: Some changes have shape { node, changes }, but these seem to be related to add/remove
+      //       lifecycle events.
       const { dataset, ...partialChanges } = change;
-      Object.values(partialChanges).forEach((partialChange) => {
-        changeNodeInHyperleaflet({ ...partialChange, dataset }, map);
-      });
+      if (typeof dataset !== 'undefined') {
+        // Handle { dataset, { i: change } } format
+        Object.values(partialChanges).forEach((partialChange) => {
+          changeNodeInHyperleaflet({ ...partialChange, dataset }, map);
+        });
+      }
     });
   }
 
