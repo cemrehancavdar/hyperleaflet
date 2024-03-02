@@ -26,10 +26,10 @@ function changePointGeometry(leafletObject, parsedGeometry, options) {
 }
 
 const createLineGeometry = (parsedGeometry, options) => {
-  const { reverseOrderAll, reverseOrder } = options;
+  const { reverseOrderAll, reverseOrder, options: polylineOptions } = options;
   const isLonLat = reverseOrderAll || reverseOrder !== undefined;
   const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 0) : parsedGeometry;
-  const leafletGeometry = polyline(geometry);
+  const leafletGeometry = polyline(geometry, polylineOptions);
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
   }

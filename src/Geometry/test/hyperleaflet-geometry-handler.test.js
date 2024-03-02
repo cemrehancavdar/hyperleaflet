@@ -137,4 +137,17 @@ describe('createLeafletObject', () => {
       [L.latLng(37.776, -122.414), L.latLng(37.775, -122.413), L.latLng(37.776, -122.413)],
     ]);
   });
+
+  it('should create a Leaflet polyline object with polyline options', () => {
+    const row = {
+      geometry: '[[-122.414,37.776],[-122.413,37.775]]',
+      geometryType: 'LineString',
+      id: '123',
+      options: '{"weight": 1}',
+    };
+    const polyline = createLeafletObject(row);
+    expect(polyline).toBeInstanceOf(L.Polyline);
+    expect(polyline.options).toEqual({ weight: 1 });
+    expect(polyline.getLatLngs()).toEqual([L.latLng(-122.414, 37.776), L.latLng(-122.413, 37.775)]);
+  });
 });
