@@ -121,4 +121,20 @@ describe('createLeafletObject', () => {
     expect(polygon.getPopup().getContent()).toEqual('Hello, world!');
     expect(polygon.getTooltip().getContent()).toEqual('I am a polygon');
   });
+
+  it('should create a Leaflet polygon object with polyline options', () => {
+    const row = {
+      geometry: '[[[-122.414,37.776],[-122.413,37.775],[-122.413,37.776],[-122.414,37.776]]]',
+      geometryType: 'Polygon',
+      id: '123',
+      reverseOrder: '',
+      options: '{"color": "blue"}',
+    };
+    const polygon = createLeafletObject(row);
+    expect(polygon).toBeInstanceOf(L.Polygon);
+    expect(polygon.options).toEqual({ color: 'blue' });
+    expect(polygon.getLatLngs()).toEqual([
+      [L.latLng(37.776, -122.414), L.latLng(37.775, -122.413), L.latLng(37.776, -122.413)],
+    ]);
+  });
 });

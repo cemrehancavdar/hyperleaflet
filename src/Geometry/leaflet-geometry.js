@@ -49,10 +49,10 @@ function changeLineGeometry(leafletObject, parsedGeometry, options) {
 }
 
 const createPolygonGeometry = (parsedGeometry, options) => {
-  const { reverseOrderAll, reverseOrder } = options;
+  const { reverseOrderAll, reverseOrder, options: polylineOptions } = options;
   const isLonLat = reverseOrderAll || reverseOrder !== undefined;
   const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 1) : parsedGeometry;
-  const leafletGeometry = polygon(geometry);
+  const leafletGeometry = polygon(geometry, polylineOptions);
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
   }
@@ -106,11 +106,19 @@ function changeGeometry(leafletObject, change) {
 }
 
 export function createLeafletObject(dataset) {
-  const { geometry, popup, tooltip, geometryType, id, reverseOrder } = dataset;
+  const { geometry, popup, tooltip, geometryType, id, reverseOrder, options = '{}' } = dataset;
   const parsedGeometry = JSON.parse(geometry);
+  const parsedOptions = JSON.parse(options);
   const { reverseOrderAll } = hyperleafletConfig;
   const createGeometryFn = createGeometry(geometryType);
-  return createGeometryFn(parsedGeometry, { popup, tooltip, id, reverseOrderAll, reverseOrder });
+  return createGeometryFn(parsedGeometry, {
+    popup,
+    tooltip,
+    id,
+    reverseOrderAll,
+    reverseOrder,
+    options: parsedOptions,
+  });
 }
 
 export function changeLeafletObject(leafletObject, change) {
