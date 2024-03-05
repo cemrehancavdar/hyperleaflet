@@ -1,12 +1,17 @@
-import { GeoJSON, marker, polygon, polyline } from 'leaflet';
+import { GeoJSON, icon, marker, polygon, polyline } from 'leaflet';
 import { setPointEvents, setPolyGeometryEvents } from './events';
 import hyperleafletConfig from '../config';
 
 const createPointGeometry = (parsedGeometry, options) => {
-  const { reverseOrderAll, reverseOrder } = options;
+  const { reverseOrderAll, reverseOrder, icon: iconSettings } = options;
   const isLonLat = reverseOrderAll || reverseOrder !== undefined;
   const geometry = isLonLat ? [...parsedGeometry].reverse() : parsedGeometry;
-  const leafletGeometry = marker(geometry);
+  let leafletGeometry;
+  if (options.icon) {
+    leafletGeometry = marker(geometry, { icon: icon(JSON.parse(options.icon)) });
+  } else {
+    leafletGeometry = marker(geometry);
+  }
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
   }
@@ -111,7 +116,7 @@ function changeOptions(leafletObject, change) {
 }
 
 export function createLeafletObject(dataset) {
-  const { geometry, popup, tooltip, geometryType, id, reverseOrder, options = '{}' } = dataset;
+  const { geometry, popup, tooltip, geometryType, id, reverseOrder, options = '{}', icon } = dataset;
   const parsedGeometry = JSON.parse(geometry);
   const parsedOptions = JSON.parse(options);
   const { reverseOrderAll } = hyperleafletConfig;
@@ -123,6 +128,7 @@ export function createLeafletObject(dataset) {
     reverseOrderAll,
     reverseOrder,
     options: parsedOptions,
+    icon,
   });
 }
 
