@@ -133,7 +133,6 @@ export function createLeafletObject(dataset) {
 }
 
 export function changeLeafletObject(leafletObject, change) {
-  console.log(change);
   switch (change.attribute) {
     case 'data-geometry': {
       return changeGeometry(leafletObject, change);
