@@ -1,0 +1,971 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../samples/">
+      
+      
+      
+      <link rel="icon" href="../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.15">
+    
+    
+      
+        <title>Usage - hyperleaflet</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e359304.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#installing" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="hyperleaflet" class="md-header__button md-logo" aria-label="hyperleaflet" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            hyperleaflet
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Usage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/cemrehancavdar/hyperleaflet" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cemrehancavdar/hyperleaflet
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="hyperleaflet" class="md-nav__button md-logo" aria-label="hyperleaflet" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    hyperleaflet
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/cemrehancavdar/hyperleaflet" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    cemrehancavdar/hyperleaflet
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../samples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Samples
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adding-hyperleaflet-to-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding Hyperleaflet to Project
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-hyperleaflet-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Hyperleaflet Map
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating Hyperleaflet Map">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handle-with-data-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handle with Data Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Handle with Data Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#map-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Map Attributes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tile-layers-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tile Layers Attributes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geometry-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Geometry Attributes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Event Handling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Event Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hyperleaflet-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hyperleaflet Events
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#map-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      Map Events
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geometry-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      Geometry Events
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adding-hyperleaflet-to-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding Hyperleaflet to Project
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-hyperleaflet-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating Hyperleaflet Map
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating Hyperleaflet Map">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handle-with-data-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handle with Data Attributes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Handle with Data Attributes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#map-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Map Attributes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tile-layers-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tile Layers Attributes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geometry-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Geometry Attributes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#event-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Event Handling
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Event Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hyperleaflet-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hyperleaflet Events
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#map-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      Map Events
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geometry-events" class="md-nav__link">
+    <span class="md-ellipsis">
+      Geometry Events
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+  <h1>Usage</h1>
+
+<h2 id="installing">Installing</h2>
+<p>Hyperleaflet is browser-oriented library. To install simply add the following <code class="language-html highlight"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span></code> tag to your HTML document:</p>
+<div class="language-html highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">&lt;</span><span class="nt">script</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://www.unpkg.com/hyperleaflet&quot;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  <span class="na">integrity</span><span class="o">=</span><span class="s">&quot;sha384-hJcYnhFwc9+OUe4q7GsQz3cYn5tXKOzO6pl/wjSc2FKofcAfN/nsQg5Il+jCiFN+&quot;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  <span class="na">crossorigin</span><span class="o">=</span><span class="s">&quot;anonymous&quot;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></code></pre></div>
+<h3 id="adding-hyperleaflet-to-project">Adding Hyperleaflet to Project</h3>
+<p>Hyperleaflet is built on top of Leaflet, so you must include Leaflet in your project first. Refer to the Leaflet Quick Start guide <a href="https://leafletjs.com/examples/quick-start/">here</a> to learn how to add Leaflet to your project.</p>
+<p>Once you have Leaflet included, add the Hyperleaflet script tag to your HTML document. Make sure to include the defer attribute in the script tag to ensure it runs after the document has finished parsing.</p>
+<details class="warning">
+<summary>Don't forget to style your map</summary>
+<p>Make sure to add a minimum height to the container element that defines your Leaflet map, otherwise it may not appear in your document.</p>
+<div class="language-css highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">#</span><span class="nn">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="k">height</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="kt">px</span><span class="p">;</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="k">width</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="kt">px</span><span class="p">;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">   </span><span class="p">}</span>
+</span></code></pre></div>
+</details>
+<h2 id="creating-hyperleaflet-map">Creating Hyperleaflet Map</h2>
+<p>All you need to do is add a div element with the id "map" to your HTML document, and a Leaflet map will be rendered automatically.</p>
+<div class="language-html highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;map&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></code></pre></div>
+<h3 id="handle-with-data-attributes">Handle with Data Attributes</h3>
+<p>Hyperleaflet leverages Leaflet's functionality by reading predefined data-* attributes, such as <code>data-center</code> and <code>data-geometry</code>, to handle map rendering and other features.</p>
+<h5 id="map-attributes">Map Attributes</h5>
+<p>Map attributes define the characteristics of a map, including the tile layer, zoom level, center point, and default tile. </p>
+<div class="language-html highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">&lt;</span><span class="nt">div</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  <span class="na">id</span><span class="o">=</span><span class="s">&quot;map&quot;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>  <span class="na">data-center</span><span class="o">=</span><span class="s">&quot;[38.5, 37.0]&quot;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  <span class="na">data-zoom</span><span class="o">=</span><span class="s">&quot;5&quot;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>  <span class="na">data-min-zoom</span><span class="o">=</span><span class="s">&quot;4&quot;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>  <span class="na">data-max-zoom</span><span class="o">=</span><span class="s">&quot;11&quot;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">&gt;</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>  ...
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></code></pre></div>
+<dl>
+<dt><code class="language-css highlight"><span class="nt">data-center</span></code></dt>
+<dd>
+<p>The center point of the map.<br>
+Valid values: [latitude, longitude]. <br></p>
+</dd>
+<dt><code class="language-css highlight"><span class="nt">data-zoom</span></code></dt>
+<dd>The zoom level of the map.<br>
+Valid values: integer 1-18. <br></dd>
+<dt><code class="language-css highlight"><span class="nt">data-min-zoom</span></code></dt>
+<dd>The minimum zoom level of the map. <br>
+Valid values: integer 1-18.<br></dd>
+<dt><code class="language-css highlight"><span class="nt">data-max-zoom</span></code></dt>
+<dd>The maximum zoom level of the map. <br>
+Valid values: integer 1-18.<br></dd>
+<dt><code class="language-css highlight"><span class="nt">data-reverse-order-all</span></code></dt>
+<dd>If present, all geometries added will be expected longitude, latitude (as geojson)  <br>
+Hyperleaflet by default takes all geometries as latitude, longitude (as leaflet). <br>
+<a href="https://macwright.com/lonlat/" target="_blank">Further reading</a> on coordinate orders.</dd>
+</dl>
+<h5 id="tile-layers-attributes">Tile Layers Attributes</h5>
+<div class="language-html highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;map&quot;</span> <span class="err">...</span><span class="p">&gt;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  <span class="p">&lt;</span><span class="nt">div</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="na">data-tile</span><span class="o">=</span><span class="s">&quot;EsriWorldImagery&quot;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="na">data-max-zoom</span><span class="o">=</span><span class="s">&quot;19&quot;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="na">data-min-zoom</span><span class="o">=</span><span class="s">&quot;5&quot;</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="na">data-default-tile</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  <span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">data-tile</span><span class="o">=</span><span class="s">&quot;OpenStreetMap&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>  <span class="p">&lt;</span><span class="nt">div</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="na">data-tile</span><span class="o">=</span><span class="s">&quot;OpenTopoMap&quot;</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="na">data-tile-url</span><span class="o">=</span><span class="s">&quot;https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png&quot;</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>  <span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>  <span class="p">&lt;</span><span class="nt">div</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>    <span class="na">data-tile</span><span class="o">=</span><span class="s">&quot;ExampleTmsTile&quot;</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="na">data-tile-url</span><span class="o">=</span><span class="s">&quot;http://example.com/{z}/{x}/{y}.png&quot;</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    <span class="na">data-tms</span><span class="o">=</span><span class="s">&quot;true&quot;</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>  <span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></code></pre></div>
+<dl>
+<dt><code class="language-css highlight"><span class="nt">data-tile</span></code></dt>
+<dd>The tile layer to be displayed on the map.<br>
+Valid values: string, one of: "OpenStreetMap", "EsriWorldImagery", or the custom tile layer name.
+If a custom tile layer is used, it can be defined using data-tile-url.</dd>
+<dt><code class="language-css highlight"><span class="nt">data-tile-url</span></code></dt>
+<dd>The URL template for the custom tile layer. The placeholders {s}, {z}, {x}, and {y} will be replaced with the appropriate values for each tile.<br>
+Valid format: string, URL template.</dd>
+<dt><code class="language-css highlight"><span class="nt">data-min-zoom</span></code></dt>
+<dd>The minimum zoom level of the tile layer. <br>
+Valid values: integer 1-18.<br></dd>
+<dt><code class="language-css highlight"><span class="nt">data-max-zoom</span></code></dt>
+<dd>The maximum zoom level of the tile layer. <br>
+Valid values: integer 1-18.<br></dd>
+<dt><code class="language-css highlight"><span class="nt">data-default-tile</span></code></dt>
+<dd>If present, tile layer will be set as the default tile. <br></dd>
+<dt><code class="language-css highlight"><span class="nt">data-tms</span></code></dt>
+<dd>Indicates that the tile layer is a TMS (Tiled Map Service) layer. This is only necessary if using a custom tile layer that is in TMS format.<br>
+Valid values: true/false. Default: false</dd>
+</dl>
+<details class="info">
+<summary>Primary Tile</summary>
+<p>When no tile layer is specified, the primary tile layer for a map is <a href="https://www.openstreetmap.org/" target="_blank">Open Street Map (OSM)</a> by default.
+However, if one or more layers are specified, the first one listed will be the primary tile layer unless data-default-tile is specified for a different layer.
+In that case, the layer specified with data-default-tile will be set as the default tile layer.</p>
+</details>
+<h5 id="geometry-attributes">Geometry Attributes</h5>
+<p>The "data-hyperleaflet-source" attribute is used to specify the data source for the map, including the type of geometry and the coordinates for each feature.</p>
+<dl>
+<dt><div class="language-html highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">&lt;</span><span class="nt">div</span> <span class="na">data-hyperleaflet-source</span><span class="p">&gt;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  <span class="p">&lt;</span><span class="nt">span</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="na">data-id</span><span class="o">=</span><span class="s">&quot;1&quot;</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="na">data-geometry-type</span><span class="o">=</span><span class="s">&quot;Point&quot;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="na">data-geometry</span><span class="o">=</span><span class="s">&quot;[38.5, 37.0]&quot;</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>  <span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>  <span class="p">&lt;</span><span class="nt">span</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="na">data-id</span><span class="o">=</span><span class="s">&quot;2&quot;</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="na">data-geometry-type</span><span class="o">=</span><span class="s">&quot;LineString&quot;</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="na">data-geometry</span><span class="o">=</span><span class="s">&quot;[[32.7782,38.5250],[39.9032,39.6290],[41.2462,38.9089]]&quot;</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>  <span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>  <span class="p">&lt;</span><span class="nt">span</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>    <span class="na">data-id</span><span class="o">=</span><span class="s">&quot;3&quot;</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>    <span class="na">data-geometry-type</span><span class="o">=</span><span class="s">&quot;Polygon&quot;</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    <span class="na">data-geometry</span><span class="o">=</span><span class="s">&quot;[[[35.6105693392152,40.23301476976525],[35.6105693392152,38.233456796364635],[40.0710185579654,38.233456796364635],[40.0710185579654,40.23301476976525],[35.6105693392152,40.23301476976525]]]&quot;</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>  <span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></code></pre></div></dt>
+<dt><code class="language-css highlight"><span class="nt">data-hyperleaflet-source</span></code></dt>
+<dd>Identifies the container element that holds the geometry data.<br></dd>
+<dt><code class="language-css highlight"><span class="nt">data-id</span></code></dt>
+<dd>Identifies each feature by its unique ID.<br>
+Valid format: string or number.<br></dd>
+<dt><code class="language-css highlight"><span class="nt">data-geometry-type</span></code></dt>
+<dd>Identifies the type of geometry for each feature. <br>
+Valid values: string: [ Point, LineString, Polygon ].<br></dd>
+<dt><code class="language-css highlight"><span class="nt">data-geometry</span></code></dt>
+<dd>Specifies the geometry data for each feature. <br>
+Valid format: array of coordinates for Point and LineString, array of arrays of coordinates for Polygon.</dd>
+<dt><code class="language-css highlight"><span class="nt">data-popup</span></code></dt>
+<dd>Specifies the <a href="https://leafletjs.com/reference.html#popup">popup</a> content for each feature. Use in combination with other <code>data-*</code> attributes. <br>
+  <div class="language-html highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">&lt;</span><span class="nt">span</span> <span class="err">...</span> <span class="na">data-popup</span><span class="o">=</span><span class="s">&quot;&lt;span class=&#39;city-popup&#39;&gt;Ankara&lt;/span&gt;&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span></code></pre></div>
+  Valid format: Text or HTML for Feature.</dd>
+<dt><code class="language-css highlight"><span class="nt">data-tooltip</span></code></dt>
+<dd>Specifies the <a href="https://leafletjs.com/reference.html#tooltip">tooltip</a> content for each feature. Can be combined with other <code>data-*</code> attributes. <br>
+  <div class="language-html highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">&lt;</span><span class="nt">span</span> <span class="err">...</span> <span class="na">data-tooltip</span><span class="o">=</span><span class="s">&quot;Road to Ankara&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+</span></code></pre></div>
+  Valid format: Text or HTML for Feature.</dd>
+<dt><code class="language-css highlight"><span class="nt">data-geometry-display</span></code></dt>
+<dd>
+<p>The data-geometry-display attribute is used to control the display of geometries in a HTML element. It can take one of two valid options: <br><br>
+   <code class="language-css highlight"><span class="nt">json</span></code>: Removes the data-geometry attributes from the containing elements and creates a new script tag with application/json type that contains the geometries in a GeoJSON-like syntax.
+   <div class="language-html highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a> <span class="p">&lt;</span><span class="nt">div</span> <span class="na">data-hyperleaflet-source</span> <span class="na">data-geometry-display</span><span class="o">=</span><span class="s">&quot;json&quot;</span><span class="p">&gt;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>   <span class="cm">&lt;!-- Elements with data-geometry attributes here --&gt;</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a> <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></code></pre></div>
+   A new <code class="language-html highlight"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;application/json&quot;</span> <span class="na">data-testid</span><span class="o">=</span><span class="s">&quot;json&quot;</span><span class="p">&gt;</span></code> element will be genereated with removed geometry attributes and corresponding data-id's and atteached to end of document.
+   <div class="language-html highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a> <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;application/json&quot;</span> <span class="na">data-testid</span><span class="o">=</span><span class="s">&quot;json&quot;</span><span class="p">&gt;{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">   </span><span class="s2">&quot;type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Point&quot;</span><span class="p">,</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">   </span><span class="s2">&quot;coordinates&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">     </span><span class="mf">38.5</span><span class="p">,</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">     </span><span class="mf">37</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">   </span><span class="p">]</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">   </span><span class="p">},</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">   </span><span class="p">...</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w"> </span><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></code></pre></div>
+   <code class="language-css highlight"><span class="nt">remove</span></code>: Removes the data-geometry attributes from the containing elements.
+   <div class="language-html highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a> <span class="p">&lt;</span><span class="nt">div</span> <span class="na">data-hyperleaflet-source</span> <span class="na">data-geometry-display</span><span class="o">=</span><span class="s">&quot;remove&quot;</span><span class="p">&gt;</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>   <span class="cm">&lt;!-- Elements with data-geometry attributes here --&gt;</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a> <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</span></code></pre></div></p>
+</dd>
+</dl>
+<details class="info">
+<summary>Why do data-geometry-display exists</summary>
+<p>When using only points, data-geometry can be a simple and convenient way to include geometry information in HTML. However, as more complex geometries are added, the HTML can quickly become cluttered with lengthy geometry representations.</p>
+<p>The data-geometry-display attribute addresses this by providing two options. The remove option removes the geometry attributes from the HTML entirely, which can make it cleaner and easier to read in browser dev tools. However, it also removes the ability to check the coordinates of the geometry directly in the HTML.</p>
+<p>The json option extracts the geometries to a newly created script tag with a type of application/json, which allows you to inspect the geometries as a JSON object. This can be useful if you need to verify or debug the geometry data.</p>
+<p><strong>TL;DR</strong>: Long geometries got you down? Use data-geometry-display to clean up your HTML and make it more manageable. <br>
+remove: remove data-geometry attributes <br>
+json: remove them and add to end of the document <br></p>
+</details>
+<h3 id="event-handling">Event Handling</h3>
+<p>Hyperleaflet provides an event system for interacting with the map and geometries. It sends custom events to the <strong>window</strong> object, which can be listened to and handled by JavaScript. We recommend using either <a href="https://hyperscript.org/" target="_blank">_hyperscript</a> or <a href="https://alpinejs.dev/" target="_blank">alpine.js</a> etc. to handle the events. The custom events contain a <strong>detail</strong> object with useful attributes, such as the clicked point on the map.</p>
+<p>Events use the <strong><code>target:event</code></strong> syntax, separated by a colon.</p>
+<h4 id="hyperleaflet-events">Hyperleaflet Events</h4>
+<dl>
+<dt><code class="language-css highlight"><span class="nt">hyperleaflet</span><span class="p">:</span><span class="nd">ready</span></code></dt>
+<dd>Triggered when hyperleaflet successfuly initialized <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">zoom</span>:  the current zoom level, in the form: number <br>
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form { lat: number, lng: number } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat"</dd>
+</dl>
+<div class="language-js highlight"><span class="filename">Example</span><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;map:move&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">zoom</span><span class="p">,</span><span class="w"> </span><span class="nx">center</span><span class="p">,</span><span class="w"> </span><span class="nx">bbox</span><span class="p">,</span><span class="w"> </span><span class="nx">bboxString</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">;</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Map zoom at level </span><span class="si">${</span><span class="nx">zoom</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Centered at (</span><span class="si">${</span><span class="nx">center</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">center</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Bounded by (</span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">min</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">min</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">) and (</span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">max</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">max</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Bounding box string: </span><span class="si">${</span><span class="nx">bboxString</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">  </span><span class="p">});</span>
+</span></code></pre></div>
+<h4 id="map-events">Map Events</h4>
+<dl>
+<dt><code class="language-css highlight"><span class="nt">map</span><span class="p">:</span><span class="nd">click</span></code></dt>
+<dd>
+<p>Triggered when the user clicks on the map. <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">point</span>: the geographic coordinates of the clicked point, in the form: { lat: number, lng: number } <br></p>
+</dd>
+</dl>
+<div class="language-js highlight"><span class="filename">Example</span><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;map:click&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">event</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">point</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">event</span><span class="p">.</span><span class="nx">detail</span><span class="p">;</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Map clicked at: (</span><span class="si">${</span><span class="nx">point</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">point</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="p">});</span>
+</span></code></pre></div>
+<dl>
+<dt><code class="language-css highlight"><span class="nt">map</span><span class="p">:</span><span class="nd">zoom</span></code></dt>
+<dd>
+<p>Triggered when the map's zoom level changes. <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">zoom</span>: the new zoom level, in the form: number<br>
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form: { lat: number, lng: number } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form: { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat"</p>
+</dd>
+</dl>
+<div class="language-js highlight"><span class="filename">Example</span><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;map:zoom&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">zoom</span><span class="p">,</span><span class="w"> </span><span class="nx">center</span><span class="p">,</span><span class="w"> </span><span class="nx">bbox</span><span class="p">,</span><span class="w"> </span><span class="nx">bboxString</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">;</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Map zoomed to level </span><span class="si">${</span><span class="nx">zoom</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Centered at (</span><span class="si">${</span><span class="nx">center</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">center</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Bounded by (</span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">min</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">min</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">) and (</span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">max</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">max</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Bounding box string: </span><span class="si">${</span><span class="nx">bboxString</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span><span class="p">});</span>
+</span></code></pre></div>
+<dl>
+<dt><code class="language-css highlight"><span class="nt">map</span><span class="p">:</span><span class="nd">move</span></code></dt>
+<dd>
+<p>Triggered when the user moves the map. <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">zoom</span>:  the current zoom level, in the form: number <br>
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form { lat: number, lng: number } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat"</p>
+</dd>
+<dt><div class="language-js highlight"><span class="filename">Example</span><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;map:move&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">zoom</span><span class="p">,</span><span class="w"> </span><span class="nx">center</span><span class="p">,</span><span class="w"> </span><span class="nx">bbox</span><span class="p">,</span><span class="w"> </span><span class="nx">bboxString</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">;</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Map zoom at level </span><span class="si">${</span><span class="nx">zoom</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Centered at (</span><span class="si">${</span><span class="nx">center</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">center</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Bounded by (</span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">min</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">min</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">) and (</span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">max</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">max</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Bounding box string: </span><span class="si">${</span><span class="nx">bboxString</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">  </span><span class="p">});</span>
+</span></code></pre></div></dt>
+<dt><code class="language-css highlight"><span class="nt">map</span><span class="p">:</span><span class="nd">movestart</span></code></dt>
+<dd>
+<p>Triggered when the user starts to move the map. <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">zoom</span>:  the current zoom level, in the form: number <br>
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form { lat: number, lng: number } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat"</p>
+</dd>
+<dt><div class="language-js highlight"><span class="filename">Example</span><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;map:movestart&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">zoom</span><span class="p">,</span><span class="w"> </span><span class="nx">center</span><span class="p">,</span><span class="w"> </span><span class="nx">bbox</span><span class="p">,</span><span class="w"> </span><span class="nx">bboxString</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">;</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Map zoom at level </span><span class="si">${</span><span class="nx">zoom</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Centered at (</span><span class="si">${</span><span class="nx">center</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">center</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Bounded by (</span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">min</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">min</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">) and (</span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">max</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">max</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Bounding box string: </span><span class="si">${</span><span class="nx">bboxString</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">  </span><span class="p">});</span>
+</span></code></pre></div></dt>
+<dt><code class="language-css highlight"><span class="nt">map</span><span class="p">:</span><span class="nd">moveend</span></code></dt>
+<dd>
+<p>Triggered when the user ends moving the map. <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">zoom</span>:  the current zoom level, in the form: number <br>
+  <span style="color: var(--md-code-hl-keyword-color)">center</span>: the geographic coordinates of the center of the map, in the form { lat: number, lng: number } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bboxString</span>: the string representation of the bounding box in the format "minLng,minLat,maxLng,maxLat"</p>
+</dd>
+</dl>
+<div class="language-js highlight"><span class="filename">Example</span><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s2">&quot;map:moveend&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">zoom</span><span class="p">,</span><span class="w"> </span><span class="nx">center</span><span class="p">,</span><span class="w"> </span><span class="nx">bbox</span><span class="p">,</span><span class="w"> </span><span class="nx">bboxString</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">;</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Map zoom at level </span><span class="si">${</span><span class="nx">zoom</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Centered at (</span><span class="si">${</span><span class="nx">center</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">center</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Bounded by (</span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">min</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">min</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">) and (</span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">max</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">bbox</span><span class="p">.</span><span class="nx">max</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Bounding box string: </span><span class="si">${</span><span class="nx">bboxString</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">  </span><span class="p">});</span>
+</span></code></pre></div>
+<h4 id="geometry-events">Geometry Events</h4>
+<dl>
+<dt><code class="language-css highlight"><span class="nt">geometry</span><span class="p">:</span><span class="nd">click</span></code></dt>
+<dd>
+<p>Triggered when the user clicks on a geometry. <br>
+  Event detail attributes <br>
+  <span style="color: var(--md-code-hl-keyword-color)">clickedPoint</span>: the geographic coordinates of the clicked point, in the form { lat: number, lng: number }<br>
+  <span style="color: var(--md-code-hl-keyword-color)">geometry</span>: the geographic coordinates of the geometry, in the form { lat: number, lng: number } or list of { lat: number, lng: number }  <br>
+  <span style="color: var(--md-code-hl-keyword-color)">bbox</span>: the bounding box of the map, in the form: { min: { lat: number, lng: number }, max: { lat: number, lng: number } } <br>
+  <span style="color: var(--md-code-hl-keyword-color)">rowId</span>: the unique identifier of the geometry, which is stored in the 'data-id' attribute, in the form of string</p>
+</dd>
+</dl>
+<div class="language-js highlight"><span class="filename">Example</span><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="w">  </span><span class="nb">window</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">&#39;geometry:click&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">clickedPoint</span><span class="p">,</span><span class="w"> </span><span class="nx">geometry</span><span class="p">,</span><span class="w"> </span><span class="nx">rowId</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">;</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Clicked on row with ID </span><span class="si">${</span><span class="nx">rowId</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Geometry: </span><span class="si">${</span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">geometry</span><span class="p">)</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Clicked at (</span><span class="si">${</span><span class="nx">clickedPoint</span><span class="p">.</span><span class="nx">lat</span><span class="si">}</span><span class="sb">, </span><span class="si">${</span><span class="nx">clickedPoint</span><span class="p">.</span><span class="nx">lng</span><span class="si">}</span><span class="sb">)`</span><span class="p">);</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">  </span><span class="p">});</span>
+</span></code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "content.code.copy", "content.tabs.link", "content.code.annotate"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.bd41221c.min.js"></script>
+      
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+      
+        <script src="../javascripts/hyperleaflet.js"></script>
+      
+    
+  </body>
+</html>
