@@ -168,6 +168,20 @@ Valid values: string: [ Point, LineString, Polygon ].<br>
 : Specifies the geometry data for each feature. <br>
 Valid format: array of coordinates for Point and LineString, array of arrays of coordinates for Polygon.
 
+`#!css data-popup`
+: Specifies the [popup](https://leafletjs.com/reference.html#popup) content for each feature. Use in combination with other `data-*` attributes. <br>
+  ```html
+  <span ... data-popup="<span class='city-popup'>Ankara</span>"></span>
+  ```
+  Valid format: Text or HTML for Feature.
+
+`#!css data-tooltip`
+: Specifies the [tooltip](https://leafletjs.com/reference.html#tooltip) content for each feature. Can be combined with other `data-*` attributes. <br>
+  ```html
+  <span ... data-tooltip="Road to Ankara"></span>
+  ```
+  Valid format: Text or HTML for Feature.
+
 `#!css data-geometry-display`
 
 : The data-geometry-display attribute is used to control the display of geometries in a HTML element. It can take one of two valid options: <br><br>
