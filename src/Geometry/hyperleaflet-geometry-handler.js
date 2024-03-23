@@ -27,7 +27,7 @@ function deleteNodeFromHyperleaflet(node, map) {
 }
 
 function changeNodeInHyperleaflet(change, map) {
-  const rowId = change.changes['data-id'];
+  const rowId = change['data-id'];
   // eslint-disable-next-line no-underscore-dangle
   const leafletLayers = Object.values(map._layers);
   const leafletObject = leafletLayers.find((layer) => layer.hlID === rowId);
@@ -50,8 +50,17 @@ export default function hyperleafletGeometryHandler(map, { addCallback = () => {
   }
 
   function changeNodesInHyperleaflet(changes) {
+    // changes is an array of changes and a dataset
     changes.forEach((change) => {
-      changeNodeInHyperleaflet(change, map);
+      // NOTE: Some changes have shape { node, changes }, but these seem to be related to add/remove
+      //       lifecycle events.
+      const { dataset, ...partialChanges } = change;
+      if (typeof dataset !== 'undefined') {
+        // Handle { dataset, { i: change } } format
+        Object.values(partialChanges).forEach((partialChange) => {
+          changeNodeInHyperleaflet({ ...partialChange, dataset }, map);
+        });
+      }
     });
   }
 
