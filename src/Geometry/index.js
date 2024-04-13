@@ -36,8 +36,8 @@ function hyperleafletDataToMap(map) {
 
   hyperChangeDetection.observe({
     targetSelector: HYPERLEAFLET_DATA_SOURCE,
-    uniqueAttribute: 'data-id',
-    attributeFilter: ['data-geometry'],
+    uniqueAttribute: "data-id",
+    attributeFilter: ["data-geometry", "data-l"],
   });
 
   hyperChangeDetection.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_adds', (data) => {
