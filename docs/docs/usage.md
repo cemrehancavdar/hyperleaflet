@@ -168,6 +168,20 @@ Valid values: string: [ Point, LineString, Polygon ].<br>
 : Specifies the geometry data for each feature. <br>
 Valid format: array of coordinates for Point and LineString, array of arrays of coordinates for Polygon.
 
+`#!css data-icon`
+: Specifies an icon to use with Point geometries. See Leaflet documentation for [icon](https://leafletjs.com/reference.html#icon). <br>
+  ```html
+  <span ... data-icon='{"iconUrl": "/url/icon.png", "iconSize": [38, 38]}'></span>
+  ```
+  Valid format: JSON representing L.icon settings.
+
+`#!css data-options`
+: Specifies Polyline and Polygon options. See Leaflet documentation for [Polyline options](https://leafletjs.com/reference.html#polyline-option) and [Polygon options](https://leafletjs.com/reference.html#polygon). <br>
+  ```html
+  <span ... data-options='{"color": "red", "weight": 1, "opacity": 0.8}'></span>
+  ```
+  Valid format: JSON representing options compatible with L.polyline and L.polygon leaflet methods.
+
 `#!css data-popup`
 : Specifies the [popup](https://leafletjs.com/reference.html#popup) content for each feature. Use in combination with other `data-*` attributes. <br>
   ```html
