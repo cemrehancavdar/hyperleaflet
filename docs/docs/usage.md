@@ -228,7 +228,7 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
 
 Support for `L.imageOverlay(url, bounds, options)` can be accessed by using the `data-l`,
 `data-image-url`,
-`data-image-bounds` and 
+`data-image-bounds` and
 `data-options` attributes.
 
 ``` html
@@ -258,7 +258,6 @@ Support for `L.imageOverlay(url, bounds, options)` can be accessed by using the 
   <span ... data-image-bounds="[[38.5, 37.0], [40.5, 39.0]]"></span>
   ```
   Valid format: Text.
-
 
 ### Event Handling
   Hyperleaflet provides an event system for interacting with the map and geometries. It sends custom events to the **window** object, which can be listened to and handled by JavaScript. We recommend using either [_hyperscript](https://hyperscript.org/){:target="_blank"} or [alpine.js](https://alpinejs.dev/){:target="_blank"} etc. to handle the events. The custom events contain a **detail** object with useful attributes, such as the clicked point on the map.
