@@ -79,7 +79,11 @@ describe('geometryObjectHandler', () => {
       },
       '2': {
         type: 'LineString',
-        coordinates: [[1, 2], [3, 4], [5, 6]],
+        coordinates: [
+          [1, 2],
+          [3, 4],
+          [5, 6],
+        ],
       },
     });
   });

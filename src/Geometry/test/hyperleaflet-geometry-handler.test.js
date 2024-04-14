@@ -121,4 +121,55 @@ describe('createLeafletObject', () => {
     expect(polygon.getPopup().getContent()).toEqual('Hello, world!');
     expect(polygon.getTooltip().getContent()).toEqual('I am a polygon');
   });
+
+  it('should create a Leaflet polygon object with polyline options', () => {
+    const row = {
+      geometry: '[[[-122.414,37.776],[-122.413,37.775],[-122.413,37.776],[-122.414,37.776]]]',
+      geometryType: 'Polygon',
+      id: '123',
+      reverseOrder: '',
+      options: '{"color": "blue"}',
+    };
+    const polygon = createLeafletObject(row);
+    expect(polygon).toBeInstanceOf(L.Polygon);
+    expect(polygon.options).toEqual({ color: 'blue' });
+    expect(polygon.getLatLngs()).toEqual([
+      [L.latLng(37.776, -122.414), L.latLng(37.775, -122.413), L.latLng(37.776, -122.413)],
+    ]);
+  });
+
+  it('should create a Leaflet polyline object with polyline options', () => {
+    const row = {
+      geometry: '[[-122.414,37.776],[-122.413,37.775]]',
+      geometryType: 'LineString',
+      id: '123',
+      options: '{"weight": 1}',
+    };
+    const polyline = createLeafletObject(row);
+    expect(polyline).toBeInstanceOf(L.Polyline);
+    expect(polyline.options).toEqual({ weight: 1 });
+    expect(polyline.getLatLngs()).toEqual([L.latLng(-122.414, 37.776), L.latLng(-122.413, 37.775)]);
+  });
+
+  it('should change Leaflet polyline object given new options', () => {
+    const row = {
+      geometry: '[[-122.414,37.776],[-122.413,37.775]]',
+      geometryType: 'LineString',
+      id: '123',
+      options: '{"weight": 1}',
+    };
+    const polyline = createLeafletObject(row);
+    expect(polyline).toBeInstanceOf(L.Polyline);
+    expect(polyline.options).toEqual({ weight: 1 });
+
+    changeLeafletObject(polyline, {
+      from: '{"weight": 1}',
+      to: '{"weight": 2}',
+      attribute: 'data-options',
+      'data-id': 123,
+      dataset: { geometry: '[-122.414,37.776]', geometryType: 'Point', id: '123' },
+    });
+    expect(polyline).toBeInstanceOf(L.Polyline);
+    expect(polyline.options).toEqual({ weight: 2 });
+  });
 });

@@ -1,12 +1,17 @@
-import { GeoJSON, marker, polygon, polyline } from 'leaflet';
+import { GeoJSON, icon, marker, polygon, polyline } from 'leaflet';
 import { setPointEvents, setPolyGeometryEvents } from './events';
 import hyperleafletConfig from '../config';
 
 const createPointGeometry = (parsedGeometry, options) => {
-  const { reverseOrderAll, reverseOrder } = options;
+  const { reverseOrderAll, reverseOrder, icon: iconSettings } = options;
   const isLonLat = reverseOrderAll || reverseOrder !== undefined;
   const geometry = isLonLat ? [...parsedGeometry].reverse() : parsedGeometry;
-  const leafletGeometry = marker(geometry);
+  let leafletGeometry;
+  if (options.icon) {
+    leafletGeometry = marker(geometry, { icon: icon(JSON.parse(options.icon)) });
+  } else {
+    leafletGeometry = marker(geometry);
+  }
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
   }
@@ -26,10 +31,10 @@ function changePointGeometry(leafletObject, parsedGeometry, options) {
 }
 
 const createLineGeometry = (parsedGeometry, options) => {
-  const { reverseOrderAll, reverseOrder } = options;
+  const { reverseOrderAll, reverseOrder, options: polylineOptions } = options;
   const isLonLat = reverseOrderAll || reverseOrder !== undefined;
   const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 0) : parsedGeometry;
-  const leafletGeometry = polyline(geometry);
+  const leafletGeometry = polyline(geometry, polylineOptions);
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
   }
@@ -49,10 +54,10 @@ function changeLineGeometry(leafletObject, parsedGeometry, options) {
 }
 
 const createPolygonGeometry = (parsedGeometry, options) => {
-  const { reverseOrderAll, reverseOrder } = options;
+  const { reverseOrderAll, reverseOrder, options: polylineOptions } = options;
   const isLonLat = reverseOrderAll || reverseOrder !== undefined;
   const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 1) : parsedGeometry;
-  const leafletGeometry = polygon(geometry);
+  const leafletGeometry = polygon(geometry, polylineOptions);
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
   }
@@ -105,18 +110,35 @@ function changeGeometry(leafletObject, change) {
   }
 }
 
+function changeOptions(leafletObject, change) {
+  const { to: options } = change;
+  return leafletObject.setStyle(JSON.parse(options));
+}
+
 export function createLeafletObject(dataset) {
-  const { geometry, popup, tooltip, geometryType, id, reverseOrder } = dataset;
+  const { geometry, popup, tooltip, geometryType, id, reverseOrder, options = '{}', icon } = dataset;
   const parsedGeometry = JSON.parse(geometry);
+  const parsedOptions = JSON.parse(options);
   const { reverseOrderAll } = hyperleafletConfig;
   const createGeometryFn = createGeometry(geometryType);
-  return createGeometryFn(parsedGeometry, { popup, tooltip, id, reverseOrderAll, reverseOrder });
+  return createGeometryFn(parsedGeometry, {
+    popup,
+    tooltip,
+    id,
+    reverseOrderAll,
+    reverseOrder,
+    options: parsedOptions,
+    icon,
+  });
 }
 
 export function changeLeafletObject(leafletObject, change) {
   switch (change.attribute) {
     case 'data-geometry': {
       return changeGeometry(leafletObject, change);
+    }
+    case 'data-options': {
+      return changeOptions(leafletObject, change);
     }
     default: {
       throw new Error('Parameter is not a number!');
