@@ -1,6 +1,6 @@
-import { GeoJSON, marker, polygon, polyline } from "leaflet";
-import { setPointEvents, setPolyGeometryEvents } from "./events";
-import hyperleafletConfig from "../config";
+import { GeoJSON, marker, polygon, polyline } from 'leaflet';
+import { setPointEvents, setPolyGeometryEvents } from './events';
+import hyperleafletConfig from '../config';
 
 const createPointGeometry = (parsedGeometry, options) => {
   const { reverseOrderAll, reverseOrder } = options;
@@ -28,9 +28,7 @@ function changePointGeometry(leafletObject, parsedGeometry, options) {
 const createLineGeometry = (parsedGeometry, options) => {
   const { reverseOrderAll, reverseOrder } = options;
   const isLonLat = reverseOrderAll || reverseOrder !== undefined;
-  const geometry = isLonLat
-    ? GeoJSON.coordsToLatLngs(parsedGeometry, 0)
-    : parsedGeometry;
+  const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 0) : parsedGeometry;
   const leafletGeometry = polyline(geometry);
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
@@ -45,9 +43,7 @@ const createLineGeometry = (parsedGeometry, options) => {
 function changeLineGeometry(leafletObject, parsedGeometry, options) {
   const { reverseOrderAll, reverseOrder } = options;
   const isLonLat = reverseOrderAll || reverseOrder !== undefined;
-  const geometry = isLonLat
-    ? GeoJSON.coordsToLatLngs(parsedGeometry, 0)
-    : parsedGeometry;
+  const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 0) : parsedGeometry;
   leafletObject.setLatLngs(geometry);
   return leafletObject;
 }
@@ -55,9 +51,7 @@ function changeLineGeometry(leafletObject, parsedGeometry, options) {
 const createPolygonGeometry = (parsedGeometry, options) => {
   const { reverseOrderAll, reverseOrder } = options;
   const isLonLat = reverseOrderAll || reverseOrder !== undefined;
-  const geometry = isLonLat
-    ? GeoJSON.coordsToLatLngs(parsedGeometry, 1)
-    : parsedGeometry;
+  const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 1) : parsedGeometry;
   const leafletGeometry = polygon(geometry);
   if (options.popup) {
     leafletGeometry.bindPopup(options.popup);
@@ -72,20 +66,18 @@ const createPolygonGeometry = (parsedGeometry, options) => {
 function changePolygonGeometry(leafletObject, parsedGeometry, options) {
   const { reverseOrderAll, reverseOrder } = options;
   const isLonLat = reverseOrderAll || reverseOrder !== undefined;
-  const geometry = isLonLat
-    ? GeoJSON.coordsToLatLngs(parsedGeometry, 1)
-    : parsedGeometry;
+  const geometry = isLonLat ? GeoJSON.coordsToLatLngs(parsedGeometry, 1) : parsedGeometry;
   leafletObject.setLatLngs(geometry);
   return leafletObject;
 }
 
 const createGeometry = (geometryType) => (parsedGeometry, options) => {
   switch (geometryType) {
-    case "Point":
+    case 'Point':
       return createPointGeometry(parsedGeometry, options);
-    case "LineString":
+    case 'LineString':
       return createLineGeometry(parsedGeometry, options);
-    case "Polygon":
+    case 'Polygon':
       return createPolygonGeometry(parsedGeometry, options);
     default:
       // eslint-disable-next-line no-console
@@ -100,17 +92,17 @@ function changeGeometry(leafletObject, change) {
   const { reverseOrderAll } = hyperleafletConfig;
 
   switch (geometryType) {
-    case "Point":
+    case 'Point':
       return changePointGeometry(leafletObject, parsedGeometry, {
         ...change.dataset,
         reverseOrderAll,
       });
-    case "LineString":
+    case 'LineString':
       return changeLineGeometry(leafletObject, parsedGeometry, {
         ...change.dataset,
         reverseOrderAll,
       });
-    case "Polygon":
+    case 'Polygon':
       return changePolygonGeometry(leafletObject, parsedGeometry, {
         ...change.dataset,
         reverseOrderAll,
@@ -124,7 +116,7 @@ function changeGeometry(leafletObject, change) {
 
 export function createLeafletObject(dataset) {
   // Image overlay
-  if ("l" in dataset) {
+  if ('l' in dataset) {
     return createL(dataset);
   }
 
@@ -146,8 +138,8 @@ export function createLeafletObject(dataset) {
  * Create a L.* leaflet object from HTML data-* attributes
  */
 function createL(dataset) {
-  if (dataset.l.toLowerCase() === "imageoverlay") {
-    ["imageUrl", "imageBounds"].forEach((attr) => {
+  if (dataset.l.toLowerCase() === 'imageoverlay') {
+    ['imageUrl', 'imageBounds'].forEach((attr) => {
       if (!dataset[attr]) {
         throw new Error(`attribute ${attr} not specified`);
       }
@@ -163,9 +155,9 @@ function createL(dataset) {
  */
 function changeL(leafletObject, change) {
   switch (change.attribute.toLowerCase()) {
-    case "data-image-bounds":
+    case 'data-image-bounds':
       return leafletObject.setBounds(JSON.parse(change.to));
-    case "data-image-url":
+    case 'data-image-url':
       return leafletObject.setUrl(change.to);
     default:
       throw new Error(`change to ${change.attribute} not supported`);
@@ -174,15 +166,15 @@ function changeL(leafletObject, change) {
 
 export function changeLeafletObject(leafletObject, change) {
   switch (change.attribute.toLowerCase()) {
-    case "data-geometry": {
+    case 'data-geometry': {
       return changeGeometry(leafletObject, change);
     }
-    case "data-l":
-    case "data-image-url":
-    case "data-image-bounds":
+    case 'data-l':
+    case 'data-image-url':
+    case 'data-image-bounds':
       return changeL(leafletObject, change);
     default: {
-      throw new Error("Parameter is not a number!");
+      throw new Error('Parameter is not a number!');
     }
   }
 }
