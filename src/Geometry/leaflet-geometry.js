@@ -177,7 +177,7 @@ export function changeLeafletObject(leafletObject, change) {
     case 'data-image-bounds':
       return changeL(leafletObject, change);
     default: {
-      throw new Error('Parameter is not a number!');
+      throw new Error(`Unsupported attribute ${change.attribute} in dataset for changing Leaflet object.`);
     }
   }
 }
