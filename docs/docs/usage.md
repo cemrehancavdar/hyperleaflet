@@ -224,6 +224,42 @@ Valid format: array of coordinates for Point and LineString, array of arrays of 
     remove: remove data-geometry attributes <br>
     json: remove them and add to end of the document <br>
 
+##### ImageOverlay Attributes
+
+Support for `L.imageOverlay(url, bounds, options)` can be accessed by using the `data-l`,
+`data-image-url`,
+`data-image-bounds` and 
+`data-options` attributes.
+
+``` html
+<div data-hyperleaflet-source>
+  <span
+    data-id="1"
+    data-l="imageOverlay"
+    data-image-url="/static/image.png"
+    data-image-bounds="[[38.5, 37.0], [40.5, 39.0]]"
+  ></span>
+</div>
+```
+
+`#!css data-l`
+: Specifies the constructor used to generate a leaflet object, e.g. `L.imageOverlay` can be accessed using `data-l="imageOverlay"`.
+
+`#!css data-image-url`
+: Specifies the URL used to generate an imageOverlay.
+  ```html
+  <span ... data-image-url="/static/image.png"></span>
+  ```
+  Valid format: Text.
+
+`#!css data-image-bounds`
+: Specifies the `L.latLngBounds` needed to place an image overlay on the map.
+  ```html
+  <span ... data-image-bounds="[[38.5, 37.0], [40.5, 39.0]]"></span>
+  ```
+  Valid format: Text.
+
+
 ### Event Handling
   Hyperleaflet provides an event system for interacting with the map and geometries. It sends custom events to the **window** object, which can be listened to and handled by JavaScript. We recommend using either [_hyperscript](https://hyperscript.org/){:target="_blank"} or [alpine.js](https://alpinejs.dev/){:target="_blank"} etc. to handle the events. The custom events contain a **detail** object with useful attributes, such as the clicked point on the map.
 
