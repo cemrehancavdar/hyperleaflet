@@ -139,9 +139,12 @@ export function createLeafletObject(dataset) {
  */
 function createL(dataset) {
   if (dataset.l.toLowerCase() === 'imageoverlay') {
-    ['imageUrl', 'imageBounds'].forEach((attr) => {
-      if (!dataset[attr]) {
-        throw new Error(`attribute ${attr} not specified`);
+    [
+      ['imageUrl', 'data-image-url'],
+      ['imageBounds', 'data-image-bounds'],
+    ].forEach(([attr, htmlAttr]) => {
+      if (typeof dataset[attr] === 'undefined') {
+        throw new Error(`Required attribute ${htmlAttr} for image overlay not specified in dataset.`);
       }
     });
     return L.imageOverlay(dataset.imageUrl, JSON.parse(dataset.imageBounds));

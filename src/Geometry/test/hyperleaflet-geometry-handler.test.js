@@ -130,7 +130,7 @@ describe('createLeafletObject', () => {
     const dataset = {
       l: 'imageOverlay',
       imageUrl: '/static/image.png',
-      latLngBounds: '[[0, 1], [2, 3]]',
+      imageBounds: '[[0, 1], [2, 3]]',
     };
     const overlay = createLeafletObject(dataset);
     expect(overlay).toBeInstanceOf(L.ImageOverlay);
@@ -146,7 +146,7 @@ describe('createLeafletObject', () => {
     const dataset = {
       l: 'imageOverlay',
       imageUrl: 'url.png',
-      latLngBounds: '[[0, 1], [2, 3]]',
+      imageBounds: '[[0, 1], [2, 3]]',
     };
     let overlay = createLeafletObject(dataset);
     const change = {
@@ -170,7 +170,7 @@ describe('createLeafletObject', () => {
     const dataset = {
       l: 'imageOverlay',
       imageUrl: 'foo.png',
-      latLngBounds: '[[0, 1], [2, 3]]',
+      imageBounds: '[[0, 1], [2, 3]]',
     };
     let overlay = createLeafletObject(dataset);
     const change = {
