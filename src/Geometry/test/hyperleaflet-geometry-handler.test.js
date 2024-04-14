@@ -37,7 +37,11 @@ describe('createLeafletObject', () => {
       to: '[-110.414,30.776]',
       attribute: 'data-geometry',
       'data-id': 123,
-      dataset: { geometry: '[-122.414,37.776]', geometryType: 'Point', id: '123' },
+      dataset: {
+        geometry: '[-122.414,37.776]',
+        geometryType: 'Point',
+        id: '123',
+      },
     });
     expect(marker).toBeInstanceOf(L.Marker);
     expect(marker.getLatLng()).toEqual(L.latLng(-110.414, 30.776));
@@ -120,5 +124,63 @@ describe('createLeafletObject', () => {
     ]);
     expect(polygon.getPopup().getContent()).toEqual('Hello, world!');
     expect(polygon.getTooltip().getContent()).toEqual('I am a polygon');
+  });
+
+  it('should create a Leaflet imageOverlay given imageUrl', () => {
+    const dataset = {
+      l: 'imageOverlay',
+      imageUrl: '/static/image.png',
+      imageBounds: '[[0, 1], [2, 3]]',
+    };
+    const overlay = createLeafletObject(dataset);
+    expect(overlay).toBeInstanceOf(L.ImageOverlay);
+    expect(overlay.getBounds()).toEqual(
+      L.latLngBounds([
+        [0, 1],
+        [2, 3],
+      ]),
+    );
+  });
+
+  it('should change imageOverlay latLngBounds', () => {
+    const dataset = {
+      l: 'imageOverlay',
+      imageUrl: 'url.png',
+      imageBounds: '[[0, 1], [2, 3]]',
+    };
+    let overlay = createLeafletObject(dataset);
+    const change = {
+      'data-id': 123,
+      attribute: 'data-image-bounds',
+      dataset,
+      from: '[[0, 1], [2, 3]]',
+      to: '[[1, 1], [2, 3]]',
+    };
+    overlay = changeLeafletObject(overlay, change);
+    expect(overlay).toBeInstanceOf(L.ImageOverlay);
+    expect(overlay.getBounds()).toEqual(
+      L.latLngBounds([
+        [1, 1],
+        [2, 3],
+      ]),
+    );
+  });
+
+  it('should change imageOverlay imageurl', () => {
+    const dataset = {
+      l: 'imageOverlay',
+      imageUrl: 'foo.png',
+      imageBounds: '[[0, 1], [2, 3]]',
+    };
+    let overlay = createLeafletObject(dataset);
+    const change = {
+      'data-id': 123,
+      attribute: 'data-image-url',
+      dataset,
+      from: 'foo.png',
+      to: 'bar.png',
+    };
+    overlay = changeLeafletObject(overlay, change);
+    expect(overlay).toBeInstanceOf(L.ImageOverlay);
   });
 });

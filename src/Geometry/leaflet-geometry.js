@@ -93,11 +93,20 @@ function changeGeometry(leafletObject, change) {
 
   switch (geometryType) {
     case 'Point':
-      return changePointGeometry(leafletObject, parsedGeometry, { ...change.dataset, reverseOrderAll });
+      return changePointGeometry(leafletObject, parsedGeometry, {
+        ...change.dataset,
+        reverseOrderAll,
+      });
     case 'LineString':
-      return changeLineGeometry(leafletObject, parsedGeometry, { ...change.dataset, reverseOrderAll });
+      return changeLineGeometry(leafletObject, parsedGeometry, {
+        ...change.dataset,
+        reverseOrderAll,
+      });
     case 'Polygon':
-      return changePolygonGeometry(leafletObject, parsedGeometry, { ...change.dataset, reverseOrderAll });
+      return changePolygonGeometry(leafletObject, parsedGeometry, {
+        ...change.dataset,
+        reverseOrderAll,
+      });
     default:
       // eslint-disable-next-line no-console
       console.warn(`${geometryType} is not supported`);
@@ -106,20 +115,69 @@ function changeGeometry(leafletObject, change) {
 }
 
 export function createLeafletObject(dataset) {
+  // Image overlay
+  if ('l' in dataset) {
+    return createL(dataset);
+  }
+
+  // Geometry based L objects
   const { geometry, popup, tooltip, geometryType, id, reverseOrder } = dataset;
   const parsedGeometry = JSON.parse(geometry);
   const { reverseOrderAll } = hyperleafletConfig;
   const createGeometryFn = createGeometry(geometryType);
-  return createGeometryFn(parsedGeometry, { popup, tooltip, id, reverseOrderAll, reverseOrder });
+  return createGeometryFn(parsedGeometry, {
+    popup,
+    tooltip,
+    id,
+    reverseOrderAll,
+    reverseOrder,
+  });
+}
+
+/**
+ * Create a L.* leaflet object from HTML data-* attributes
+ */
+function createL(dataset) {
+  if (dataset.l.toLowerCase() === 'imageoverlay') {
+    [
+      ['imageUrl', 'data-image-url'],
+      ['imageBounds', 'data-image-bounds'],
+    ].forEach(([attr, htmlAttr]) => {
+      if (typeof dataset[attr] === 'undefined') {
+        throw new Error(`Required attribute ${htmlAttr} for image overlay not specified in dataset.`);
+      }
+    });
+    return L.imageOverlay(dataset.imageUrl, JSON.parse(dataset.imageBounds));
+  } else {
+    throw new Error(`data-l ${dataset.l} not supported`);
+  }
+}
+
+/**
+ * Create a L.* leaflet object attributes
+ */
+function changeL(leafletObject, change) {
+  switch (change.attribute.toLowerCase()) {
+    case 'data-image-bounds':
+      return leafletObject.setBounds(JSON.parse(change.to));
+    case 'data-image-url':
+      return leafletObject.setUrl(change.to);
+    default:
+      throw new Error(`change to ${change.attribute} not supported`);
+  }
 }
 
 export function changeLeafletObject(leafletObject, change) {
-  switch (change.attribute) {
+  switch (change.attribute.toLowerCase()) {
     case 'data-geometry': {
       return changeGeometry(leafletObject, change);
     }
+    case 'data-l':
+    case 'data-image-url':
+    case 'data-image-bounds':
+      return changeL(leafletObject, change);
     default: {
-      throw new Error('Parameter is not a number!');
+      throw new Error(`Unsupported attribute ${change.attribute} in dataset for changing Leaflet object.`);
     }
   }
 }
