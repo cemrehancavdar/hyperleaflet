@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Updates</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body { margin: 0; }
+    #map { height: 500px; width: 100%; }
+    #controls { padding: 8px; }
+    table { display: none; }
+  </style>
+</head>
+<body>
+  <div id="map" data-center="[39.92, 32.85]" data-zoom="6">
+    <div data-tile="OpenStreetMap" data-default-tile></div>
+  </div>
+
+  <table data-hyperleaflet-source id="source">
+    <tr data-id="existing-1" data-geometry="[39.92, 32.85]" data-geometry-type="Point" data-popup="Ankara">
+      <td>Ankara</td>
+    </tr>
+    <tr data-id="existing-2" data-geometry="[41.01, 28.97]" data-geometry-type="Point" data-popup="Istanbul">
+      <td>Istanbul</td>
+    </tr>
+  </table>
+
+  <div id="controls">
+    <button id="btn-add" onclick="addRow()">Add Izmir</button>
+    <button id="btn-remove" onclick="removeRow()">Remove Istanbul</button>
+    <button id="btn-change" onclick="changeRow()">Move Ankara</button>
+  </div>
+
+  <script src="/dist/hyperleaflet.umd.js"></script>
+  <script>
+    function addRow() {
+      const table = document.getElementById('source');
+      const tr = document.createElement('tr');
+      tr.dataset.id = 'dynamic-1';
+      tr.dataset.geometry = '[38.42, 27.14]';
+      tr.dataset.geometryType = 'Point';
+      tr.dataset.popup = 'Izmir';
+      tr.innerHTML = '<td>Izmir</td>';
+      table.appendChild(tr);
+    }
+
+    function removeRow() {
+      const row = document.querySelector('[data-id="existing-2"]');
+      if (row) row.remove();
+    }
+
+    function changeRow() {
+      const row = document.querySelector('[data-id="existing-1"]');
+      if (row) row.setAttribute('data-geometry', '[40.5, 30.0]');
+    }
+  </script>
+</body>
+</html>

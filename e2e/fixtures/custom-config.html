@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Config</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body { margin: 0; }
+    #my-map { height: 500px; width: 100%; }
+    table { display: none; }
+    #log { padding: 8px; font-family: monospace; font-size: 12px; background: #f0f0f0; min-height: 50px; }
+  </style>
+</head>
+<body>
+  <div id="my-map" data-center="[48.85, 2.35]" data-zoom="12">
+    <div data-tile="OpenStreetMap" data-default-tile></div>
+  </div>
+
+  <table data-hyperleaflet-source>
+    <tr data-id="paris-1" data-geometry="[48.8566, 2.3522]" data-geometry-type="Point" data-popup="Eiffel Tower">
+      <td>Eiffel Tower</td>
+    </tr>
+  </table>
+
+  <div id="log"></div>
+
+  <script src="/dist/hyperleaflet.umd.js"></script>
+  <script>
+    // Configure hyperleaflet before initialization
+    window.hyperleaflet.config.options = {
+      mapElement: '#my-map',
+    };
+
+    // Manually initialize since DOMContentLoaded already fired
+    // and auto-init looked for #map (which doesn't exist)
+    const container = document.querySelector('#my-map');
+    window.hyperleaflet.initialize(container);
+
+    // Log ready state
+    const log = document.getElementById('log');
+    log.textContent = 'initialized: ' + (window.hyperleaflet.map !== null);
+  </script>
+</body>
+</html>
