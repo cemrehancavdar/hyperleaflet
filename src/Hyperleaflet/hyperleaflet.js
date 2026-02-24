@@ -24,13 +24,17 @@ export const Hyperleaflet = {
   customMapEvents: [],
 
   initialize(mapContainer) {
-    mapContainer.setAttribute('hyperleaflet', "")
+    if (!mapContainer) {
+      console.warn('Hyperleaflet: No map container found.');
+      return;
+    }
+    mapContainer.setAttribute('hyperleaflet', '');
     const [map, target] = Map_.create(mapContainer);
     this.map = map;
     this.target = target;
     this.initializeLayerControl(mapContainer, this.map);
     this.initializeHyperleafletDataSource();
-    this.customMapEvents.forEach((hook) => hook);
+    this.customMapEvents.forEach((hook) => hook(this.map, this.target));
     sendHyperleafletReady(this.map);
   },
 
@@ -111,13 +115,13 @@ export const Hyperleaflet = {
         } else {
           deleteNodeFromHyperleaflet(node);
         }
-        this.beforeNodeRemove.forEach((hook) => hook(node));
+        this.afterNodeRemove.forEach((hook) => hook(node));
       });
     });
 
     hyperChangeDetection.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_changes', (changes) => {
       changes.forEach((change) => {
-        this.afterNodeChange.forEach((hook) => hook(change));
+        this.beforeNodeChange.forEach((hook) => hook(change));
         if (change.dataset.hyperleafletExtension) {
           this.changeNode.forEach((hook) => hook(change));
         } else {
@@ -164,7 +168,7 @@ export const Hyperleaflet = {
   panTo(center) {
     this.map.panTo(center);
   },
-  fltTo(center, zoom = undefined) {
+  flyTo(center, zoom = undefined) {
     zoom = zoom || this.map.getZoom();
     this.map.flyTo(center, zoom);
   },

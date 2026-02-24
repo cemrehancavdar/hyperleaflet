@@ -18,7 +18,7 @@ export const TileLayers = {
       return;
     }
     const newTileLayer = new L.TileLayer(url, { minZoom, maxZoom, tms: !!tms });
-    this._tileLayers[name] = newTileLayer.tile;
+    this._tileLayers[name] = newTileLayer;
   },
 
   _getDefaultHyperleafletTile(tileLayerElementList) {
@@ -41,7 +41,7 @@ export const TileLayers = {
 
       if (!(tile in this._tileLayers)) {
         const { tileUrl, tms, minZoom, maxZoom } = tileLayerElement.dataset;
-        this._addTileLayer(tile, { tileUrl, tms, minZoom, maxZoom });
+        this._addTileLayer(tile, { url: tileUrl, tms, minZoom, maxZoom });
       }
       this.tiles.push({ name: tile, tile: this._tileLayers[tile] });
     });

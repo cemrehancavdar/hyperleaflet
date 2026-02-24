@@ -7,13 +7,13 @@ export function mergeDeep(target, source) {
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach((key) => {
       if (isObject(source[key])) {
-        if (!isObject(target[key])) Object.assign(output, { [key]: source[key] });
-        else if (!(key in target)) Object.assign(output, { [key]: source[key] });
-        else output[key] = mergeDeep(target[key], source[key]);
-      } else if (isObject(source)) {
-        output[key] = source[key];
+        if (key in target && isObject(target[key])) {
+          output[key] = mergeDeep(target[key], source[key]);
+        } else {
+          output[key] = source[key];
+        }
       } else {
-        Object.assign(output, { [key]: source[key] });
+        output[key] = source[key];
       }
     });
   }

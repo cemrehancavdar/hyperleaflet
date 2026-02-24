@@ -1,18 +1,5 @@
 import * as L from 'leaflet';
 
-function reverseCoordinates(point) {
-  return point.reverse();
-}
-
-export function safeParsePoint(pointJson, reverse = false) {
-  try {
-    const point = JSON.parse(pointJson);
-    return reverse ? reverseCoordinates(point) : point;
-  } catch (_) {
-    return [0, 0];
-  }
-}
-
 export const Layers = {
   control: L.control.layers(),
   layerGroups: {},
