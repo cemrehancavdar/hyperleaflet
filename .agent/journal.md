@@ -1,4 +1,19 @@
 ---
+### [OK] EXAMPLE-APP-TABLER-REWRITE | 2026-02-24
+- **Status**: [OK] ADOPTED
+- **Objective**: Rewrite example app from DaisyUI to Tabler CSS, add inline edit
+- **Hypothesis**: Tabler CSS has fewer Leaflet conflicts, HTMX swap causes MutationObserver bugs
+- **Approach**: Replace DaisyUI with Tabler, vanilla JS for filter/CRUD, setTimeout(0) for edit
+- **Result**:
+    - UI: Tabler CSS + 2 Leaflet overrides (box-sizing, max-width)
+    - Filter: Client-side CSS toggle (HTMX innerHTML swap breaks hyperchange.js jointNodeSet)
+    - Edit: setTimeout(0) separates remove/add for MutationObserver compatibility
+    - Bidirectional: geometry:click + row click → flyTo + popup + glow
+    - Removed: tabler.min.js (caused page load issues), report_table.html
+    - Outcome: Success — all features verified in browser
+- **The Delta**: Cleaner UI, fewer deps, no HTMX/MutationObserver conflicts
+- **Next Step**: Update README, merge to master
+---
 ### [OK] COMMIT-ALL-CHANGES | 2026-02-24
 - **Status**: [OK] ADOPTED
 - **Objective**: Commit all pending work to hyperleaflet-refactor branch
