@@ -6,9 +6,19 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from db import create_report, delete_report, get_all_reports, get_categories, init_db
+from db import (
+    create_report,
+    delete_report,
+    get_all_reports,
+    get_categories,
+    get_report,
+    init_db,
+    update_report,
+)
 
 BASE_DIR = Path(__file__).parent
+
+CATEGORIES = ["landmark", "nature", "tourism", "infrastructure", "other"]
 
 
 @asynccontextmanager
@@ -20,8 +30,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
-
-CATEGORIES = ["landmark", "nature", "tourism", "infrastructure", "other"]
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -52,22 +60,43 @@ async def add_report(
     return templates.TemplateResponse(
         request=request,
         name="partials/report_row.html",
-        context={"report": report},
+        context={"report": report, "all_categories": CATEGORIES},
+    )
+
+
+@app.get("/reports/{report_id}/edit", response_class=HTMLResponse)
+async def edit_report_form(request: Request, report_id: int):
+    report = get_report(report_id)
+    if not report:
+        return HTMLResponse("", status_code=404)
+    return templates.TemplateResponse(
+        request=request,
+        name="partials/report_edit_row.html",
+        context={"report": report, "all_categories": CATEGORIES},
+    )
+
+
+@app.put("/reports/{report_id}", response_class=HTMLResponse)
+async def save_report(
+    request: Request,
+    report_id: int,
+    name: str = Form(...),
+    category: str = Form(...),
+    notes: str = Form(""),
+    lat: float = Form(...),
+    lng: float = Form(...),
+):
+    report = update_report(report_id, name, category, notes, lat, lng)
+    if not report:
+        return HTMLResponse("", status_code=404)
+    return templates.TemplateResponse(
+        request=request,
+        name="partials/report_row.html",
+        context={"report": report, "all_categories": CATEGORIES},
     )
 
 
 @app.delete("/reports/{report_id}", response_class=HTMLResponse)
 async def remove_report(report_id: int):
     delete_report(report_id)
-    # Return empty string — HTMX will remove the target row via hx-swap="delete"
     return HTMLResponse("")
-
-
-@app.get("/reports", response_class=HTMLResponse)
-async def filter_reports(request: Request, category: str = "all"):
-    reports = get_all_reports(category if category != "all" else None)
-    return templates.TemplateResponse(
-        request=request,
-        name="partials/report_table.html",
-        context={"reports": reports},
-    )

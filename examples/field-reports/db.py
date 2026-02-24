@@ -16,9 +16,21 @@ CREATE TABLE IF NOT EXISTS reports (
 """
 
 SEED_DATA = [
-    ("Ankara Castle", "landmark", "Historic citadel in the old quarter", 39.9416, 32.8643),
+    (
+        "Ankara Castle",
+        "landmark",
+        "Historic citadel in the old quarter",
+        39.9416,
+        32.8643,
+    ),
     ("Galata Tower", "landmark", "Medieval stone tower in Istanbul", 41.0256, 28.9741),
-    ("Izmir Clock Tower", "landmark", "Iconic clock tower in Konak Square", 38.4189, 27.1287),
+    (
+        "Izmir Clock Tower",
+        "landmark",
+        "Iconic clock tower in Konak Square",
+        38.4189,
+        27.1287,
+    ),
     ("Cappadocia Balloons", "tourism", "Hot air balloon launch site", 38.6431, 34.8289),
     ("Pamukkale Terraces", "nature", "Calcium travertine terraces", 37.9204, 29.1187),
     ("Ephesus Ruins", "landmark", "Ancient Greek city ruins", 37.9393, 27.3417),
@@ -47,23 +59,48 @@ def get_all_reports(category: str | None = None) -> list[sqlite3.Row]:
     with get_db() as conn:
         if category and category != "all":
             return conn.execute(
-                "SELECT * FROM reports WHERE category = ? ORDER BY created_at DESC", (category,)
+                "SELECT * FROM reports WHERE category = ? ORDER BY created_at DESC",
+                (category,),
             ).fetchall()
         return conn.execute("SELECT * FROM reports ORDER BY created_at DESC").fetchall()
 
 
 def get_report(report_id: int) -> sqlite3.Row | None:
     with get_db() as conn:
-        return conn.execute("SELECT * FROM reports WHERE id = ?", (report_id,)).fetchone()
+        return conn.execute(
+            "SELECT * FROM reports WHERE id = ?", (report_id,)
+        ).fetchone()
 
 
-def create_report(name: str, category: str, notes: str, lat: float, lng: float) -> sqlite3.Row:
+def create_report(
+    name: str, category: str, notes: str, lat: float, lng: float
+) -> sqlite3.Row:
     with get_db() as conn:
         cursor = conn.execute(
             "INSERT INTO reports (name, category, notes, lat, lng) VALUES (?, ?, ?, ?, ?)",
             (name, category, notes, lat, lng),
         )
-        return conn.execute("SELECT * FROM reports WHERE id = ?", (cursor.lastrowid,)).fetchone()
+        return conn.execute(
+            "SELECT * FROM reports WHERE id = ?", (cursor.lastrowid,)
+        ).fetchone()
+
+
+def update_report(
+    report_id: int,
+    name: str,
+    category: str,
+    notes: str,
+    lat: float,
+    lng: float,
+) -> sqlite3.Row | None:
+    with get_db() as conn:
+        conn.execute(
+            "UPDATE reports SET name=?, category=?, notes=?, lat=?, lng=? WHERE id=?",
+            (name, category, notes, lat, lng, report_id),
+        )
+        return conn.execute(
+            "SELECT * FROM reports WHERE id = ?", (report_id,)
+        ).fetchone()
 
 
 def delete_report(report_id: int) -> bool:
@@ -74,5 +111,7 @@ def delete_report(report_id: int) -> bool:
 
 def get_categories() -> list[str]:
     with get_db() as conn:
-        rows = conn.execute("SELECT DISTINCT category FROM reports ORDER BY category").fetchall()
+        rows = conn.execute(
+            "SELECT DISTINCT category FROM reports ORDER BY category"
+        ).fetchall()
         return [row["category"] for row in rows]
