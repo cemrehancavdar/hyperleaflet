@@ -2,7 +2,7 @@ name: docs
 on:
   push:
     branches:
-      - master 
+      - master
       - main
     paths:
       - docs/**
@@ -12,14 +12,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.x
-      - uses: actions/cache@v2
-        with:
-          key: ${{ github.ref }}
-          path: .cache
-      - run: cd docs
       - run: pip install mkdocs-material
       - run: mkdocs gh-deploy --force -f docs/mkdocs.yml
