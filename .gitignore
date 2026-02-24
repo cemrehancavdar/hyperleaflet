@@ -6,3 +6,8 @@ node_modules
 test.html
 playwright-report/
 test-results/
+__pycache__/
+*.pyc
+*.db
+*.db-shm
+*.db-wal
