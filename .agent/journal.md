@@ -1,0 +1,52 @@
+---
+### [OK] COMMIT-ALL-CHANGES | 2026-02-24
+- **Status**: [OK] ADOPTED
+- **Objective**: Commit all pending work to hyperleaflet-refactor branch
+- **Hypothesis**: Clean commit history helps future merge to master
+- **Approach**: Split into 7 logical commits (fixes, config, dist, unit tests, e2e, example app, gitignore cleanup)
+- **Result**:
+    - Commits: 7 (69b9deb → 9e1af37)
+    - Artifacts removed: __pycache__, *.db files untracked
+    - Outcome: Success — all work committed
+- **The Delta**: Branch now has clean git history, ready for README update and merge
+- **Next Step**: Rewrite README for new API, merge to master, unarchive repo
+---
+### [OK] EXAMPLE-APP-FIELD-REPORTS | 2026-02-24
+- **Status**: [OK] ADOPTED
+- **Objective**: Build FastAPI + HTMX example app showcasing Hyperleaflet
+- **Hypothesis**: Real-world demo proves library works and attracts users
+- **Approach**: FastAPI + Jinja2 + HTMX + DaisyUI v5 (nord theme) + Hyperleaflet UMD
+- **Result**:
+    - Features: Map click → pick location, table row click → fly to marker, toast notifications, pulse animation
+    - DaisyUI v5: Works via CDN, needs CSS overrides for Leaflet compatibility
+    - Pico CSS: Discarded — classless CSS breaks Leaflet internals
+    - Outcome: Success
+- **The Delta**: First working full-stack example for hyperleaflet
+- **Next Step**: Add example app README with setup instructions
+---
+### [OK] E2E-TESTS-PLAYWRIGHT | 2026-02-24
+- **Status**: [OK] ADOPTED
+- **Objective**: Add browser-level e2e tests for hyperleaflet
+- **Hypothesis**: E2E tests catch integration bugs unit tests miss
+- **Approach**: Playwright + Chromium, 6 HTML fixtures, static file server
+- **Result**:
+    - Tests: 33 passing across 6 suites (map-init, geometries, dynamic-updates, events, spa, api)
+    - Fixtures: 6 standalone HTML files
+    - Outcome: Success
+- **The Delta**: Full test coverage from unit to browser level
+- **Next Step**: Consider CI integration for e2e tests
+---
+### [OK] POLISH-REFACTOR-BRANCH | 2026-02-24
+- **Status**: [OK] ADOPTED
+- **Objective**: Fix bugs in hyperleaflet-refactor branch, clean up, make production-ready
+- **Hypothesis**: Refactor branch has better architecture but needs bug fixes + tests
+- **Approach**: Fixed copy-paste bugs, debug leftovers, rebuilt dist, added tests, verified in browser
+- **Result**:
+    - Bugs fixed: 8 (afterNodeRemove, afterNodeChange x2, fltTo, tileLayer, customMapEvents, tileUrl param, mergeDeep)
+    - Debug removed: 3 (console.log, window.pubsub, eslint-disable)
+    - Tests: 31 passing (config, utils, eventTarget, geometry)
+    - Browser: Map renders, tiles load, markers show, popups work, events fire
+    - Outcome: Success
+- **The Delta**: Refactor branch now builds clean, all known bugs fixed, SPA observeMap restored
+- **Next Step**: Consider merging to master, unarchive repo, update docs for new API
+---
