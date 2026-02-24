@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Map with instruction overlay -->
+<div class="relative">
+  <div id="map" class="h-[450px] w-full rounded-xl border border-base-content/10 shadow-sm"
+       data-center="[39.0, 32.0]" data-zoom="6">
+    <div data-tile="OpenStreetMap" data-default-tile></div>
+  </div>
+
+  <!-- Floating instruction badge on the map -->
+  <div id="map-hint" class="absolute top-3 left-1/2 -translate-x-1/2 z-[1000] pointer-events-none transition-all duration-300">
+    <div class="badge badge-neutral badge-lg shadow-lg gap-1 px-4 py-3">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+      </svg>
+      Click the map to pick a location
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-4 items-start">
+
+  <!-- Add Report Form -->
+  <div class="card bg-base-100 shadow-sm">
+    <div class="card-body p-5">
+      <h2 class="card-title text-base gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        New Report
+      </h2>
+
+      <form id="report-form"
+            hx-post="/reports"
+            hx-target="#report-list"
+            hx-swap="afterbegin"
+            hx-on::after-request="if(event.detail.successful) { this.reset(); clearPickMarker(); showToast('Report added!', 'success'); }"
+            class="space-y-3 mt-2">
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend text-xs">Name</legend>
+          <input type="text" id="name" name="name"
+                 class="input input-bordered input-sm w-full"
+                 placeholder="e.g. Ancient Bridge" required>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend text-xs">Category</legend>
+          <select id="category" name="category" class="select select-bordered select-sm w-full" required>
+            {% for cat in all_categories %}
+            <option value="{{ cat }}">{{ cat | title }}</option>
+            {% endfor %}
+          </select>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend text-xs">Notes</legend>
+          <textarea id="notes" name="notes" rows="2"
+                    class="textarea textarea-bordered textarea-sm w-full"
+                    placeholder="Optional description..."></textarea>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend text-xs flex items-center gap-1">
+            Coordinates
+            <span id="coord-status" class="badge badge-ghost badge-xs">click map</span>
+          </legend>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="number" id="lat" name="lat" step="any"
+                   class="input input-bordered input-sm w-full font-mono text-xs"
+                   placeholder="Latitude" required readonly>
+            <input type="number" id="lng" name="lng" step="any"
+                   class="input input-bordered input-sm w-full font-mono text-xs"
+                   placeholder="Longitude" required readonly>
+          </div>
+        </fieldset>
+
+        <button type="submit" id="submit-btn" class="btn btn-primary btn-sm w-full" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Add Report
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reports Table -->
+  <div class="space-y-3">
+    <!-- Filter bar -->
+    <div class="flex items-center gap-2">
+      <span class="text-sm font-medium">Filter:</span>
+      <select class="select select-bordered select-sm select-ghost"
+              hx-get="/reports"
+              hx-target="#report-list"
+              hx-swap="innerHTML"
+              hx-indicator="#filter-spinner"
+              name="category">
+        <option value="all">All categories</option>
+        {% for cat in categories %}
+        <option value="{{ cat }}">{{ cat | title }}</option>
+        {% endfor %}
+      </select>
+      <span id="filter-spinner" class="loading loading-spinner loading-xs htmx-indicator"></span>
+      <span class="ml-auto text-xs text-base-content/50" id="report-count">{{ reports | length }} reports</span>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto rounded-xl border border-base-content/5 bg-base-100 shadow-sm">
+      <table class="table table-sm" data-hyperleaflet-source>
+        <thead>
+          <tr class="bg-base-200/50">
+            <th>Name</th>
+            <th>Category</th>
+            <th>Coordinates</th>
+            <th class="w-16"></th>
+          </tr>
+        </thead>
+        <tbody id="report-list">
+          {% for report in reports %}
+          {% include "partials/report_row.html" %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // --- Map click → pick location UX ---
+  let pickMarker = null;
+  const mapEl = document.getElementById('map');
+  const latInput = document.getElementById('lat');
+  const lngInput = document.getElementById('lng');
+  const coordStatus = document.getElementById('coord-status');
+  const submitBtn = document.getElementById('submit-btn');
+  const mapHint = document.getElementById('map-hint');
+
+  // Enable crosshair cursor on the map
+  function waitForMap() {
+    if (mapEl.classList.contains('leaflet-container')) {
+      mapEl.classList.add('pick-mode');
+    } else {
+      setTimeout(waitForMap, 100);
+    }
+  }
+  waitForMap();
+
+  window.addEventListener('map:click', (e) => {
+    const { lat, lng } = e.detail.point;
+
+    // Fill coordinates
+    latInput.value = lat.toFixed(6);
+    lngInput.value = lng.toFixed(6);
+
+    // Visual feedback on coordinate fields
+    latInput.classList.remove('coord-flash');
+    lngInput.classList.remove('coord-flash');
+    void latInput.offsetWidth; // force reflow
+    latInput.classList.add('coord-flash');
+    lngInput.classList.add('coord-flash');
+
+    // Update status badge
+    coordStatus.textContent = 'set';
+    coordStatus.classList.remove('badge-ghost');
+    coordStatus.classList.add('badge-success');
+
+    // Enable submit button
+    submitBtn.disabled = false;
+
+    // Hide map hint
+    mapHint.style.opacity = '0';
+
+    // Drop a temporary marker on the map
+    const map = window.hyperleaflet.map;
+    if (pickMarker) {
+      map.removeLayer(pickMarker);
+    }
+    pickMarker = L.circleMarker([lat, lng], {
+      radius: 8,
+      color: '#6366f1',
+      fillColor: '#6366f1',
+      fillOpacity: 0.4,
+      weight: 2,
+      dashArray: '4 4',
+    }).addTo(map);
+    pickMarker.bindTooltip('New report location', { direction: 'top', offset: [0, -10] }).openTooltip();
+  });
+
+  // --- Table row click → highlight marker on map ---
+  function highlightReport(row) {
+    // Don't trigger on delete button clicks
+    if (event.target.closest('button')) return;
+
+    const id = row.dataset.id;
+    const map = window.hyperleaflet.map;
+
+    // Find the matching Leaflet layer
+    const layers = Object.values(map._layers);
+    const target = layers.find((l) => l.hlID === id);
+    if (!target) return;
+
+    // Get marker position
+    const latlng = target.getLatLng();
+
+    // Pan map to the marker
+    map.flyTo(latlng, Math.max(map.getZoom(), 8), { duration: 0.5 });
+
+    // Open popup
+    target.openPopup();
+
+    // Add pulse ring at the marker's position
+    setTimeout(() => {
+      const point = map.latLngToContainerOffset
+        ? map.latLngToContainerPoint(latlng)
+        : map.latLngToContainerPoint(latlng);
+      const pulse = document.createElement('div');
+      pulse.className = 'marker-highlight';
+      pulse.style.left = (point.x - 10) + 'px';
+      pulse.style.top = (point.y - 10) + 'px';
+      mapEl.appendChild(pulse);
+      setTimeout(() => pulse.remove(), 900);
+    }, 550);
+
+    // Highlight the row briefly
+    document.querySelectorAll('tr.row-active').forEach((r) => r.classList.remove('row-active'));
+    row.classList.add('row-active');
+    setTimeout(() => row.classList.remove('row-active'), 2000);
+  }
+
+  function clearPickMarker() {
+    if (pickMarker) {
+      window.hyperleaflet.map.removeLayer(pickMarker);
+      pickMarker = null;
+    }
+    // Reset coordinate UI
+    coordStatus.textContent = 'click map';
+    coordStatus.classList.remove('badge-success');
+    coordStatus.classList.add('badge-ghost');
+    submitBtn.disabled = true;
+    mapHint.style.opacity = '1';
+  }
+</script>
+{% endblock %}

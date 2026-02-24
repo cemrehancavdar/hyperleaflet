@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="nord">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Field Reports{% endblock %} — Hyperleaflet Demo</title>
+
+  <!-- DaisyUI + Tailwind (CDN, no build step) -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- HTMX -->
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
+
+  <style type="text/tailwindcss">
+    /* Prevent Tailwind base from breaking Leaflet internals */
+    .leaflet-container,
+    .leaflet-container * {
+      box-sizing: content-box;
+    }
+    .leaflet-container img {
+      max-width: none !important;
+    }
+    /* Crosshair cursor when picking a location */
+    .leaflet-container.pick-mode {
+      cursor: crosshair !important;
+    }
+    /* Pulse on coord fields after map click */
+    @keyframes coord-flash {
+      0% { box-shadow: 0 0 0 3px oklch(0.7 0.15 150 / 0.6); }
+      100% { box-shadow: 0 0 0 0 oklch(0.7 0.15 150 / 0); }
+    }
+    .coord-flash {
+      animation: coord-flash 0.5s ease-out;
+    }
+    /* Highlight pulse ring around a marker */
+    @keyframes marker-pulse {
+      0% { transform: scale(0.5); opacity: 1; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+    .marker-highlight {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: oklch(0.6 0.2 260 / 0.4);
+      position: absolute;
+      pointer-events: none;
+      animation: marker-pulse 0.8s ease-out forwards;
+    }
+    /* Active row highlight */
+    tr.row-active {
+      background: oklch(0.9 0.05 260 / 0.3) !important;
+      transition: background 0.3s;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-base-200">
+
+  <!-- Navbar -->
+  <div class="navbar bg-base-100 shadow-sm px-4">
+    <div class="navbar-start gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      <span class="text-lg font-bold tracking-tight">Field Reports</span>
+    </div>
+    <div class="navbar-end">
+      <span class="badge badge-soft badge-neutral text-xs">FastAPI + HTMX + Hyperleaflet</span>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto p-4 space-y-4">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Toast container for notifications -->
+  <div id="toast-container" class="toast toast-end toast-bottom z-50"></div>
+
+  <!-- Hyperleaflet -->
+  <script src="/static/hyperleaflet.umd.js"></script>
+
+  <!-- Shared toast helper -->
+  <script>
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `alert alert-${type} alert-soft shadow-lg text-sm py-2 px-4`;
+      toast.innerHTML = `<span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; }, 2000);
+      setTimeout(() => toast.remove(), 2400);
+    }
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
