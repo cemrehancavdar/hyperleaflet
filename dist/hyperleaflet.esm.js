@@ -26,75 +26,92 @@ function _objectWithoutPropertiesLoose(source, excluded) {
   }
   return target;
 }
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+  return arr2;
+}
+function _createForOfIteratorHelperLoose(o, allowArrayLike) {
+  var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"];
+  if (it) return (it = it.call(o)).next.bind(it);
+  if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") {
+    if (it) o = it;
+    var i = 0;
+    return function () {
+      if (i >= o.length) return {
+        done: true
+      };
+      return {
+        done: false,
+        value: o[i++]
+      };
+    };
+  }
+  throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
 
-/* eslint-disable object-shorthand */
 var hyperChangeDetection = {
   events: {},
-  /**
-   * @param {string} targetSelector
-   * @param {string} uniqueAttribute
-   * @param {string[]} attributeFilter
-   */
-  observe: function observe(_ref) {
+  /** @param {{ targetSelector: string, uniqueAttribute: string, attributeFilter: string[] }} options */observe: function observe(_ref) {
     var targetSelector = _ref.targetSelector,
       uniqueAttribute = _ref.uniqueAttribute,
       attributeFilter = _ref.attributeFilter;
     if (this.events[targetSelector]) {
-      throw new Error("Can't observer twice");
+      throw new Error("Can't observe the same target twice");
     }
     observeChangesInTarget(targetSelector, uniqueAttribute, attributeFilter);
     this.events[targetSelector] = {};
   },
-  /**
-   * @param {string} targetSelector
-   * @param {'node_adds' | 'node_removes', 'node_changes'} evName
-   * @param {(nodes: Node[] | *)=>void} secondFunction
-   */
-  subscribe: function subscribe(targetSelector, evName, secondFunction) {
+  /** @param {string} targetSelector @param {string} evName @param {Function} callback */subscribe: function subscribe(targetSelector, evName, callback) {
     this.events[targetSelector][evName] = this.events[targetSelector][evName] || [];
-    this.events[targetSelector][evName].push(secondFunction);
+    this.events[targetSelector][evName].push(callback);
   },
-  /**
-   * @param {string} targetSelector
-   * @param {'node_adds' | 'node_removes', 'node_changes'} evName
-   * @param {*} fn
-   * */
-  unsubscribe: function unsubscribe(targetSelector, evName, fn) {
+  /** @param {string} targetSelector @param {string} evName @param {Function} callback */unsubscribe: function unsubscribe(targetSelector, evName, callback) {
     if (this.events[targetSelector][evName]) {
       this.events[targetSelector][evName] = this.events[targetSelector][evName].filter(function (f) {
-        return f !== fn;
+        return f !== callback;
       });
     }
   },
-  /**
-   * @param {string} targetSelector
-   * @param {'node_adds' | 'node_removes', 'node_changes'} evName
-   * @param {*} data
-   */
-  publish: function publish(targetSelector, evName, data) {
+  /** @param {string} targetSelector @param {string} evName @param {*} data */publish: function publish(targetSelector, evName, data) {
     if (this.events[targetSelector][evName]) {
       this.events[targetSelector][evName].forEach(function (f) {
-        f(data);
+        return f(data);
       });
     }
   }
 };
-window.pubsub = hyperChangeDetection;
-
-/**
- * @param {string} targetSelector
- * @param {string} uniqueAttribute
- * @param {string[]} attributeFilter
- */
 function observeChangesInTarget(targetSelector, uniqueAttribute, attributeFilter) {
+  var isEqualNode = function isEqualNode(oldNode, newNode, attributes) {
+    return attributes.every(function (attribute) {
+      return oldNode.getAttribute(attribute) === newNode.getAttribute(attribute);
+    });
+  };
+  function findNodesWithAttribute(nodes) {
+    var result = [];
+    nodes.forEach(function (node) {
+      if (node.nodeType === 1) {
+        if (node.hasAttribute(uniqueAttribute)) {
+          result.push(node);
+        }
+        result.push.apply(result, findNodesWithAttribute(node.childNodes));
+      }
+    });
+    return result;
+  }
   var observer = new MutationObserver(function (mutationsList) {
-    var _removedNodes$filter, _addedNodes$filter;
     var removedNodes = [];
     var addedNodes = [];
-    // Iterate through the mutations
     mutationsList.forEach(function (mutation) {
       if (mutation.type === 'childList') {
-        // Child nodes added or removed
         removedNodes.push.apply(removedNodes, findNodesWithAttribute(mutation.removedNodes));
         addedNodes.push.apply(addedNodes, findNodesWithAttribute(mutation.addedNodes));
       } else if (mutation.type === 'attributes') {
@@ -108,9 +125,7 @@ function observeChangesInTarget(targetSelector, uniqueAttribute, attributeFilter
         var changedNode = [_extends({
           dataset: mutation.target.dataset
         }, attributeChange)];
-        if (changedNode.length) {
-          hyperChangeDetection.publish(targetSelector, 'node_changes', changedNode);
-        }
+        hyperChangeDetection.publish(targetSelector, 'node_changes', changedNode);
       }
     });
     var changedNodes = [];
@@ -125,13 +140,13 @@ function observeChangesInTarget(targetSelector, uniqueAttribute, attributeFilter
         jointNodeSet.add(addNodeId);
       }
       if (oldNode && !isEqualNode(oldNode, addNode, attributeFilter)) {
-        var attributeChanges = attributeFilter.reduce(function (changes, attribute) {
-          var from = oldNode.getAttribute(attribute);
-          var to = addNode.getAttribute(attribute);
+        var attributeChanges = attributeFilter.reduce(function (changes, attr) {
+          var from = oldNode.getAttribute(attr);
+          var to = addNode.getAttribute(attr);
           if (from !== to) {
             var _changes$push;
             changes.push((_changes$push = {
-              attribute: attribute,
+              attribute: attr,
               from: from,
               to: to
             }, _changes$push[uniqueAttribute] = addNodeId, _changes$push));
@@ -143,12 +158,12 @@ function observeChangesInTarget(targetSelector, uniqueAttribute, attributeFilter
         }));
       }
     });
-    var reallyRemovedNodes = (_removedNodes$filter = removedNodes.filter(function (node) {
+    var reallyRemovedNodes = removedNodes.filter(function (node) {
       return !jointNodeSet.has(node.getAttribute(uniqueAttribute));
-    })) != null ? _removedNodes$filter : [];
-    var reallyAddedNodes = (_addedNodes$filter = addedNodes.filter(function (node) {
+    });
+    var reallyAddedNodes = addedNodes.filter(function (node) {
       return !jointNodeSet.has(node.getAttribute(uniqueAttribute));
-    })) != null ? _addedNodes$filter : [];
+    });
     if (reallyAddedNodes.length) {
       hyperChangeDetection.publish(targetSelector, 'node_adds', reallyAddedNodes);
     }
@@ -159,34 +174,14 @@ function observeChangesInTarget(targetSelector, uniqueAttribute, attributeFilter
       hyperChangeDetection.publish(targetSelector, 'node_removes', reallyRemovedNodes);
     }
   });
-  var isEqualNode = function isEqualNode(oldNode, newNode, attributes) {
-    return attributes.every(function (attribute) {
-      return oldNode.getAttribute(attribute) === newNode.getAttribute(attribute);
-    });
-  };
-  function findNodesWithAttribute(nodes) {
-    var result = [];
-    nodes.forEach(function (node) {
-      if (node.nodeType === 1) {
-        if (node.hasAttribute(uniqueAttribute)) {
-          result.push(node);
-        }
-        result.push.apply(result, findNodesWithAttribute(node == null ? void 0 : node.childNodes));
-      }
-    });
-    return result;
-  }
-
-  // Configuration options for the observer
-  var config = {
+  var targetNode = document.querySelector(targetSelector);
+  observer.observe(targetNode, {
     childList: true,
     subtree: true,
     attributes: true,
     attributeFilter: attributeFilter,
     attributeOldValue: true
-  };
-  var targetNode = document.querySelector(targetSelector);
-  observer.observe(targetNode, config);
+  });
 }
 
 function isObject(item) {
@@ -197,11 +192,13 @@ function mergeDeep(target, source) {
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach(function (key) {
       if (isObject(source[key])) {
-        var _Object$assign;
-        if (!(key in target)) Object.assign(output, (_Object$assign = {}, _Object$assign[key] = source[key], _Object$assign));else output[key] = mergeDeep(target[key], source[key]);
+        if (key in target && isObject(target[key])) {
+          output[key] = mergeDeep(target[key], source[key]);
+        } else {
+          output[key] = source[key];
+        }
       } else {
-        var _Object$assign2;
-        Object.assign(output, (_Object$assign2 = {}, _Object$assign2[key] = source[key], _Object$assign2));
+        output[key] = source[key];
       }
     });
   }
@@ -212,25 +209,37 @@ var defaultOptions = {
   reverseCoordinateOrder: false,
   mapElement: '#map',
   events: {
+    target: 'window',
     map: {
-      target: 'window',
-      mouse: ['click'],
-      state: ['zoom', 'move'],
-      extra: ['ready']
+      click: true,
+      dblclick: false,
+      mousedown: false,
+      mouseover: false,
+      mousemove: false,
+      mouseout: false,
+      contextmenu: false,
+      preclick: false,
+      zoom: true,
+      move: true,
+      zoomstart: false,
+      zoomend: false,
+      movestart: false,
+      moveend: false,
+      ready: true
     },
     geometry: {
-      target: 'window',
-      mouse: ['click'],
-      state: ['add']
+      click: true,
+      move: false,
+      add: false
     },
     hyperleaflet: {
-      target: 'window',
-      state: ['ready']
+      ready: true
     }
   },
   styles: {}
 };
 var Config = {
+  _hyperleaflet: null,
   _options: defaultOptions,
   get options() {
     return this._options;
@@ -241,20 +250,16 @@ var Config = {
   reset: function reset() {
     this._options = defaultOptions;
   },
-  getTarget: function getTarget(type) {
-    var events = this.options.events;
-    var target = events[type].target;
+  getTarget: function getTarget() {
+    var target = this.options.events.target;
     switch (target) {
       case 'window':
         return window;
       case 'document':
         return document;
-      case 'map':
-        return this.options.mapElement;
       case 'hyperleaflet':
-        return document.querySelector('[data-hyperleaflet-source]');
       default:
-        return document.querySelector(target);
+        return this._hyperleaflet;
     }
   }
 };
@@ -277,30 +282,35 @@ function createStateEvent(map, eventName, _leafletEvent) {
     }
   });
 }
+var stateEvents = ['zoomstart', 'zoomend', 'movestart', 'moveend', 'zoom', 'move'];
+var mouseEvents = ['click', 'dblclick', 'mousedown', 'mouseover', 'mouseout', 'mousemove', 'contextmenu', 'preclick'];
 function setMapEvents(map) {
   var eventTarget = Config.getTarget('map');
-  var _Config$options$event = Config.options.events.map,
-    mouse = _Config$options$event.mouse,
-    state = _Config$options$event.state,
-    extra = _Config$options$event.extra;
-  state.forEach(function (eventName) {
-    map.on(eventName, function (e) {
-      var event = createStateEvent(map, "map:" + eventName, e);
-      eventTarget.dispatchEvent(event);
-    });
+  var mapEvents = Config.options.events.map;
+  Object.entries(mapEvents).forEach(function (_ref) {
+    var eventName = _ref[0],
+      value = _ref[1];
+    if (value) {
+      if (stateEvents.includes(eventName)) {
+        map.on(eventName, function (e) {
+          var event = createStateEvent(map, "map:" + eventName, e);
+          eventTarget.dispatchEvent(event);
+        });
+      }
+      if (mouseEvents.includes(eventName)) {
+        map.on(eventName, function (e) {
+          var event = new CustomEvent("map:" + eventName, {
+            detail: {
+              point: e.latlng
+            },
+            _leafletEvent: e
+          });
+          eventTarget.dispatchEvent(event);
+        });
+      }
+    }
   });
-  mouse.forEach(function (eventName) {
-    map.on(eventName, function (e) {
-      var event = new CustomEvent("map:" + eventName, {
-        detail: {
-          point: e.latlng
-        },
-        _leafletEvent: e
-      });
-      eventTarget.dispatchEvent(event);
-    });
-  });
-  if (extra.includes('ready')) {
+  if (mapEvents.ready) {
     map.whenReady(function () {
       var event = createStateEvent(map, 'map:ready');
       eventTarget.dispatchEvent(event);
@@ -322,15 +332,18 @@ function safeParsePoint(pointJson, reverse) {
     return [0, 0];
   }
 }
-var Map$1 = {
+var Map_ = {
   map: null,
   create: function create(mapContainer) {
     var config = Config;
-    var _mapContainer$dataset = mapContainer.dataset,
-      center = _mapContainer$dataset.center,
-      zoom = _mapContainer$dataset.zoom,
-      minZoom = _mapContainer$dataset.minZoom,
-      maxZoom = _mapContainer$dataset.maxZoom;
+    var mapConfig = mapContainer.dataset.mapConfig;
+    var target = mapConfig ? document.querySelector(mapConfig) : mapContainer;
+    if (!target) throw new Error('No map config found');
+    var _target$dataset = target.dataset,
+      center = _target$dataset.center,
+      zoom = _target$dataset.zoom,
+      minZoom = _target$dataset.minZoom,
+      maxZoom = _target$dataset.maxZoom;
     var reverseCoordinateOrder = config.options.reverseCoordinateOrder;
     var mapView = {
       center: safeParsePoint(center, reverseCoordinateOrder),
@@ -343,14 +356,13 @@ var Map$1 = {
       maxZoom: maxZoom || 18
     });
     setMapEvents(leafletMap);
-    this.map = leafletMap;
-    return leafletMap;
+    return [leafletMap, target];
   }
 };
 
-var eventTarget = Config.getTarget('map');
 function setEvents(leafletObject, id, eventType) {
-  if (Config.options.events.geometry.state.includes('click')) {
+  var eventTarget = Config.getTarget('map');
+  if (Config.options.events.geometry.click) {
     if (eventType === 'mono') {
       leafletObject.on('click', function (e) {
         var event = new CustomEvent('geometry:click', {
@@ -379,7 +391,8 @@ function setEvents(leafletObject, id, eventType) {
   }
 }
 function sendEvent(eventType, leafletGeometry, id, geometryType, target) {
-  if (Config.options.events.geometry.state.includes('add')) {
+  var eventTarget = Config.getTarget('map');
+  if (Config.options.events.geometry.add) {
     var event = new CustomEvent("geometry:" + eventType, {
       detail: {
         id: id,
@@ -463,7 +476,7 @@ var Geometry = {
       convert: function convert(geometry, isLonLat) {
         return isLonLat ? L.GeoJSON.coordsToLatLngs(geometry, 1) : geometry;
       },
-      eventType: 'mono'
+      eventType: 'poly'
     }
   },
   addType: function addType(type, handlers) {
@@ -568,7 +581,7 @@ function createGeometryHandler(map, layerModule) {
         }
       default:
         {
-          throw new Error('Parameter is not a number!');
+          throw new Error('Unsupported attribute change!');
         }
     }
   }
@@ -580,7 +593,8 @@ function createGeometryHandler(map, layerModule) {
 }
 
 function sendHyperleafletReady(map) {
-  if (Config.options.events.hyperleaflet.state.includes('ready')) {
+  var eventTarget = Config.getTarget('hyperleaflet');
+  if (Config.options.events.hyperleaflet.ready) {
     var bounds = map.getBounds();
     var min = bounds.getSouthWest();
     var max = bounds.getNorthEast();
@@ -596,7 +610,7 @@ function sendHyperleafletReady(map) {
         bboxString: bboxString
       }
     });
-    window.dispatchEvent(event);
+    eventTarget.dispatchEvent(event);
   }
 }
 
@@ -643,18 +657,20 @@ var TileLayers = {
   _addTileLayer: function _addTileLayer(name, _temp) {
     var _ref = _temp === void 0 ? {} : _temp,
       url = _ref.url,
-      minZoom = _ref.minZoom,
-      maxZoom = _ref.maxZoom,
+      _ref$minZoom = _ref.minZoom,
+      minZoom = _ref$minZoom === void 0 ? 0 : _ref$minZoom,
+      _ref$maxZoom = _ref.maxZoom,
+      maxZoom = _ref$maxZoom === void 0 ? 18 : _ref$maxZoom,
       tms = _ref.tms;
     if (this._tileLayers[name]) {
       return;
     }
     var newTileLayer = new L.TileLayer(url, {
-      minZoom: minZoom || 0,
-      maxZoom: maxZoom || 18,
+      minZoom: minZoom,
+      maxZoom: maxZoom,
       tms: !!tms
     });
-    this._tileLayers[name] = newTileLayer.tile;
+    this._tileLayers[name] = newTileLayer;
   },
   _getDefaultHyperleafletTile: function _getDefaultHyperleafletTile(tileLayerElementList) {
     var defaultTileLayerElement = tileLayerElementList.find(function (t) {
@@ -682,7 +698,7 @@ var TileLayers = {
           minZoom = _tileLayerElement$dat.minZoom,
           maxZoom = _tileLayerElement$dat.maxZoom;
         _this._addTileLayer(tile, {
-          tileUrl: tileUrl,
+          url: tileUrl,
           tms: tms,
           minZoom: minZoom,
           maxZoom: maxZoom
@@ -701,6 +717,38 @@ var TileLayers = {
   }
 };
 
+function makeEventTarget(object) {
+  var eventListeners = {};
+  Object.assign(object, {
+    addEventListener: function addEventListener(type, listener) {
+      if (!(type in eventListeners)) {
+        eventListeners[type] = [];
+      }
+      eventListeners[type].push(listener);
+    },
+    removeEventListener: function removeEventListener(type, listener) {
+      if (!(type in eventListeners)) {
+        return;
+      }
+      var index = eventListeners[type].indexOf(listener);
+      if (index !== -1) {
+        eventListeners[type].splice(index, 1);
+      }
+    },
+    dispatchEvent: function dispatchEvent(event) {
+      if (!(event.type in eventListeners)) {
+        return true;
+      }
+      var listeners = eventListeners[event.type].slice();
+      for (var _iterator = _createForOfIteratorHelperLoose(listeners), _step; !(_step = _iterator()).done;) {
+        var listener = _step.value;
+        listener.call(object, event);
+      }
+      return !event.defaultPrevented;
+    }
+  });
+}
+
 var HYPERLEAFLET_DATA_SOURCE = '[data-hyperleaflet-source]';
 var Hyperleaflet = {
   beforeNodeAdd: [],
@@ -712,56 +760,47 @@ var Hyperleaflet = {
   addNode: [],
   removeNode: [],
   changeNode: [],
+  customMapEvents: [],
   initialize: function initialize(mapContainer) {
-    this.map = Map$1.create(mapContainer);
+    var _this = this;
+    if (!mapContainer) {
+      console.warn('Hyperleaflet: No map container found.');
+      return;
+    }
+    mapContainer.setAttribute('hyperleaflet', '');
+    var _Map_$create = Map_.create(mapContainer),
+      map = _Map_$create[0],
+      target = _Map_$create[1];
+    this.map = map;
+    this.target = target;
     this.initializeLayerControl(mapContainer, this.map);
     this.initializeHyperleafletDataSource();
+    this.customMapEvents.forEach(function (hook) {
+      return hook(_this.map, _this.target);
+    });
     sendHyperleafletReady(this.map);
   },
   addExtension: function addExtension(extension) {
+    var _this2 = this;
     if (extension.layer) {
       Layers.control.addOverlay(extension.layer);
     }
-    if (extension.addNode && typeof extension.addNode === 'function') {
-      this.addNode.push(function (node) {
-        return extension.addNode(node);
+    if (extension.handleMap) {
+      this.customMapEvents.push(function (map, mapTarget) {
+        return extension.handleMap(map, mapTarget);
       });
     }
-    if (extension.removeNode && typeof extension.removeNode === 'function') {
-      this.removeNode.push(function (node) {
-        return extension.removeNode(node);
-      });
-    }
-    if (extension.changeNode && typeof extension.changeNode === 'function') {
-      this.changeNode.push(function (node) {
-        return extension.changeNode(node);
-      });
-    }
-
-    // If the extension has a custom onNodeAdded hook, add it to the list
-    if (extension.beforeNodeAdd && typeof extension.beforeNodeAdd === 'function') {
-      this.beforeNodeAdd.push(function (node) {
-        return extension.beforeNodeAdd(node);
-      });
-    }
-    if (extension.afterNodeAdd && typeof extension.afterNodeAdd === 'function') {
-      this.afterNodeAdd.push(extension.afterNodeAdd);
-    }
-    if (extension.beforeNodeRemove && typeof extension.beforeNodeRemove === 'function') {
-      this.beforeNodeRemove.push(extension.beforeNodeRemove);
-    }
-    if (extension.afterNodeRemove && typeof extension.afterNodeRemove === 'function') {
-      this.afterNodeRemove.push(extension.afterNodeRemove);
-    }
-    if (extension.beforeNodeChange && typeof extension.beforeNodeChange === 'function') {
-      this.beforeNodeChange.push(extension.beforeNodeChange);
-    }
-    if (extension.afterNodeChange && typeof extension.afterNodeChange === 'function') {
-      this.afterNodeChange.push(extension.afterNodeChange);
-    }
+    var functionNames = ['addNode', 'removeNode', 'changeNode', 'beforeNodeAdd', 'afterNodeAdd', 'beforeNodeRemove', 'afterNodeRemove', 'beforeNodeChange', 'afterNodeChange'];
+    functionNames.forEach(function (functionName) {
+      if (extension[functionName] && typeof extension[functionName] === 'function') {
+        _this2[functionName].push(function (node) {
+          return extension[functionName](node);
+        });
+      }
+    });
   },
   initializeHyperleafletDataSource: function initializeHyperleafletDataSource() {
-    var _this = this;
+    var _this3 = this;
     var hyperleafletDataSource = document.querySelector(HYPERLEAFLET_DATA_SOURCE);
     if (!hyperleafletDataSource) return;
     var _createGeometryHandle = createGeometryHandler(this.map, Layers),
@@ -771,17 +810,17 @@ var Hyperleaflet = {
     this.map.whenReady(function () {
       var nodes = hyperleafletDataSource.querySelectorAll('[data-id]');
       nodes.forEach(function (node) {
-        _this.beforeNodeAdd.forEach(function (hook) {
+        _this3.beforeNodeAdd.forEach(function (hook) {
           return hook(node);
         });
         if (node.dataset.hyperleafletExtension) {
-          _this.addNode.forEach(function (hook) {
+          _this3.addNode.forEach(function (hook) {
             return hook(node);
           });
         } else {
           addNodeToHyperleaflet(node);
         }
-        _this.afterNodeAdd.forEach(function (hook) {
+        _this3.afterNodeAdd.forEach(function (hook) {
           return hook(node);
         });
       });
@@ -793,51 +832,51 @@ var Hyperleaflet = {
     });
     hyperChangeDetection.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_adds', function (nodes) {
       nodes.forEach(function (node) {
-        _this.beforeNodeAdd.forEach(function (hook) {
+        _this3.beforeNodeAdd.forEach(function (hook) {
           return hook(node);
         });
         if (node.dataset.hyperleafletExtension) {
-          _this.addNode.forEach(function (hook) {
+          _this3.addNode.forEach(function (hook) {
             return hook(node);
           });
         } else {
           addNodeToHyperleaflet(node);
         }
-        _this.afterNodeAdd.forEach(function (hook) {
+        _this3.afterNodeAdd.forEach(function (hook) {
           return hook(node);
         });
       });
     });
     hyperChangeDetection.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_removes', function (nodes) {
       nodes.forEach(function (node) {
-        _this.beforeNodeRemove.forEach(function (hook) {
+        _this3.beforeNodeRemove.forEach(function (hook) {
           return hook(node);
         });
         if (node.dataset.hyperleafletExtension) {
-          _this.removeNode.forEach(function (hook) {
+          _this3.removeNode.forEach(function (hook) {
             return hook(node);
           });
         } else {
           deleteNodeFromHyperleaflet(node);
         }
-        _this.beforeNodeRemove.forEach(function (hook) {
+        _this3.afterNodeRemove.forEach(function (hook) {
           return hook(node);
         });
       });
     });
     hyperChangeDetection.subscribe(HYPERLEAFLET_DATA_SOURCE, 'node_changes', function (changes) {
       changes.forEach(function (change) {
-        _this.afterNodeChange.forEach(function (hook) {
+        _this3.beforeNodeChange.forEach(function (hook) {
           return hook(change);
         });
         if (change.dataset.hyperleafletExtension) {
-          _this.changeNode.forEach(function (hook) {
+          _this3.changeNode.forEach(function (hook) {
             return hook(change);
           });
         } else {
           changeNodeInHyperleaflet(change);
         }
-        _this.afterNodeChange.forEach(function (hook) {
+        _this3.afterNodeChange.forEach(function (hook) {
           return hook(change);
         });
       });
@@ -856,20 +895,73 @@ var Hyperleaflet = {
       Layers.addBaseLayer(tile, name);
     });
     defaultTile.addTo(this.map);
+  },
+  getZoom: function getZoom() {
+    return this.map.getZoom();
+  },
+  setZoom: function setZoom(zoom) {
+    this.map.setZoom(zoom);
+  },
+  getCenter: function getCenter() {
+    return this.map.getCenter();
+  },
+  fitBounds: function fitBounds(bounds) {
+    this.map.fitBounds(bounds);
+  },
+  getBounds: function getBounds() {
+    return this.map.getBounds();
+  },
+  getBBoxString: function getBBoxString() {
+    return this.map.getBounds().toBBoxString();
+  },
+  panTo: function panTo(center) {
+    this.map.panTo(center);
+  },
+  flyTo: function flyTo(center, zoom) {
+    if (zoom === void 0) {
+      zoom = undefined;
+    }
+    zoom = zoom || this.map.getZoom();
+    this.map.flyTo(center, zoom);
+  },
+  flyToBounds: function flyToBounds(bounds) {
+    this.map.flyToBounds(bounds);
   }
 };
 Hyperleaflet.addGeometryType = function (type, customGeometryType) {
   Geometry.addType(type, customGeometryType);
 };
-Hyperleaflet.options = Config.options;
+makeEventTarget(Hyperleaflet);
+Hyperleaflet.config = Config;
+Config._hyperleaflet = Hyperleaflet;
 
+function initializeMap() {
+  var mapContainer = document.querySelector(Config.options.mapElement);
+  if (mapContainer) {
+    Hyperleaflet.initialize(mapContainer);
+    return true;
+  }
+  return false;
+}
+function observeMap() {
+  var observer = new MutationObserver(function (_mutations, obs) {
+    if (initializeMap()) {
+      obs.disconnect();
+    }
+  });
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+}
 (function () {
   document.addEventListener('DOMContentLoaded', function () {
-    Hyperleaflet.initialize(document.querySelector(Config.options.mapElement));
+    if (!initializeMap()) {
+      observeMap();
+    }
   });
 })();
 window.hyperleaflet = Hyperleaflet;
-var hyperleaflet = Hyperleaflet;
 
-export { hyperleaflet };
+export { Hyperleaflet as hyperleaflet };
 //# sourceMappingURL=hyperleaflet.esm.js.map
