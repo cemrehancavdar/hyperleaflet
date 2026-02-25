@@ -1,4 +1,63 @@
 ---
+### [OK] EARTHQUAKE-EXPLORER-DEMO | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: Build real-world demo with USGS earthquake data, SQLite, bbox+time+mag filtering
+- **Hypothesis**: Proves hyperleaflet works with large datasets, CircleMarker styles, and HTMX swaps
+- **Approach**: FastAPI + SQLite (81K events, 5yr M4+) + HTMX + Hyperleaflet CircleMarker + inline styles
+- **Result**:
+    - Data: 81,038 events seeded from USGS API (5 years, M4+, globally)
+    - DB: 22.7 MB SQLite with bbox/time/mag indexes
+    - Features: bbox filter (map:move), date range picker, magnitude dropdown, hx-swap-oob multi-target
+    - Styling: depth-based colors (red/orange/blue), magnitude-based radius, all via data-* attributes
+    - Bug fix: HTMX OOB swap fails on bare <tbody> — wrapped in <div id="table-wrap"> instead
+    - Outcome: Success — verified Japan zoom, M7+ global view, filter changes
+- **The Delta**: First demo with real external data + SQLite + multiple HTMX filter controls
+- **Next Step**: Add click-to-flyTo from table rows, consider SVG sparklines
+---
+### [OK] CIRCLEMARKER-AND-INLINE-STYLES | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: Add CircleMarker geometry type + inline data-* attribute styling
+- **Hypothesis**: Users need colored circles and inline styles without JS config
+- **Approach**: Added circlemarker to GEOMETRY_TYPES, extractInlineStyle() for Leaflet Path options
+- **Result**:
+    - New type: CircleMarker (same coord system as Point, SVG rendering)
+    - Inline styles: color, weight, opacity, fillColor, fillOpacity, radius, dashArray, etc.
+    - Merge order: config preset as base, inline data-* overrides
+    - Tests: 53 unit + 47 e2e pass
+    - Build: 5.28 KB gzipped UMD
+    - Demo: examples/circle-markers/ (earthquake + city overlay with styled geometries)
+    - Outcome: Success
+- **The Delta**: New geometry type + pure-HTML styling — zero JS required for colors/sizes
+- **Next Step**: Consider innerHTML swap tests for styled geometries
+---
+### [OK] INNERHTML-SWAP-TESTS | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: E2e tests for innerHTML swap (the htmx/Turbo scenario)
+- **Hypothesis**: innerHTML swap is the critical path — must be tested thoroughly
+- **Approach**: 10 Playwright tests covering add/remove/change/mixed/identical/empty/rapid/coexist
+- **Result**:
+    - Tests: 10 new e2e tests, all pass
+    - Coverage: single swap, mixed operations, identical (no-op), empty→repopulate, rapid consecutive, swap+appendChild coexistence
+    - Outcome: Success
+- **The Delta**: Core htmx use case now has comprehensive browser-level test coverage
+- **Next Step**: CircleMarker + inline styles feature
+---
+### [OK] FLAT-REWRITE | 2026-02-25
+- **Status**: [OK] ADOPTED
+- **Objective**: Flatten 14 files / 6 dirs into 4 flat files
+- **Hypothesis**: Less code, fewer abstractions, easier to maintain/regenerate
+- **Approach**: Merged all modules into 4 files, killed extension hooks, killed EventTarget polyfill, killed separate config/utils, fixed changeNodeInHyperleaflet API bug, added O(1) geometry index
+- **Result**:
+    - Files: 14 → 4 (hyperchange.js, geometry.js, hyperleaflet.js, index.js)
+    - Tests: 3 files, 45 unit tests pass + 33 e2e tests pass
+    - Build: 5.05 KB gzipped UMD
+    - Bugs fixed: changeNodeInHyperleaflet (change['data-id'] → change.key, change.dataset → change.node.dataset)
+    - Killed: config.js, utils.js, eventTarget.js, 9-hook extension system, barrel files, 2 test files
+    - Added: O(1) Map-based geometry lookup (was O(n) _layers scan)
+    - Outcome: Success — all tests pass, build clean
+- **The Delta**: 14 files → 4, zero regressions, fixed broken change API, O(1) lookups
+- **Next Step**: Commit, update README, merge to master
+---
 ### [OK] EXAMPLE-APP-TABLER-REWRITE | 2026-02-24
 - **Status**: [OK] ADOPTED
 - **Objective**: Rewrite example app from DaisyUI to Tabler CSS, add inline edit

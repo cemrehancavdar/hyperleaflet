@@ -1,10 +1,16 @@
-import { Hyperleaflet } from './Hyperleaflet';
-import { Config } from './config';
+/**
+ * Hyperleaflet entry point.
+ *
+ * Auto-initializes on DOMContentLoaded. If #map isn't in the DOM yet
+ * (SPA routing), watches for it with a body MutationObserver.
+ */
+
+import { Hyperleaflet } from './hyperleaflet';
 
 function initializeMap() {
-  const mapContainer = document.querySelector(Config.options.mapElement);
-  if (mapContainer) {
-    Hyperleaflet.initialize(mapContainer);
+  const container = document.querySelector(Hyperleaflet.config.options.mapElement);
+  if (container) {
+    Hyperleaflet.initialize(container);
     return true;
   }
   return false;

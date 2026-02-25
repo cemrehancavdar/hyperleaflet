@@ -1,52 +1,52 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Config } from '../config';
+import { Hyperleaflet } from '../hyperleaflet';
 
-describe('Config', () => {
+const config = Hyperleaflet.config;
+
+describe('Config (via Hyperleaflet.config)', () => {
   beforeEach(() => {
-    Config.reset();
+    config.reset();
   });
 
   it('has default options', () => {
-    expect(Config.options.mapElement).toBe('#map');
-    expect(Config.options.reverseCoordinateOrder).toBe(false);
-    expect(Config.options.events.map.click).toBe(true);
-    expect(Config.options.events.map.dblclick).toBe(false);
+    expect(config.options.mapElement).toBe('#map');
+    expect(config.options.reverseCoordinateOrder).toBe(false);
+    expect(config.options.events.map.click).toBe(true);
+    expect(config.options.events.map.dblclick).toBe(false);
   });
 
   it('merges options with setter', () => {
-    Config.options = { reverseCoordinateOrder: true };
-    expect(Config.options.reverseCoordinateOrder).toBe(true);
+    config.options = { reverseCoordinateOrder: true };
+    expect(config.options.reverseCoordinateOrder).toBe(true);
     // Other defaults should be preserved
-    expect(Config.options.mapElement).toBe('#map');
-    expect(Config.options.events.map.click).toBe(true);
+    expect(config.options.mapElement).toBe('#map');
+    expect(config.options.events.map.click).toBe(true);
   });
 
   it('deep merges event options', () => {
-    Config.options = { events: { map: { dblclick: true } } };
-    expect(Config.options.events.map.dblclick).toBe(true);
-    expect(Config.options.events.map.click).toBe(true);
+    config.options = { events: { map: { dblclick: true } } };
+    expect(config.options.events.map.dblclick).toBe(true);
+    expect(config.options.events.map.click).toBe(true);
   });
 
   it('resets to defaults', () => {
-    Config.options = { mapElement: '#custom-map' };
-    expect(Config.options.mapElement).toBe('#custom-map');
-    Config.reset();
-    expect(Config.options.mapElement).toBe('#map');
+    config.options = { mapElement: '#custom-map' };
+    expect(config.options.mapElement).toBe('#custom-map');
+    config.reset();
+    expect(config.options.mapElement).toBe('#map');
   });
 
   it('getTarget returns window by default', () => {
-    expect(Config.getTarget()).toBe(window);
+    expect(config.getTarget()).toBe(window);
   });
 
   it('getTarget returns document when configured', () => {
-    Config.options = { events: { target: 'document' } };
-    expect(Config.getTarget()).toBe(document);
+    config.options = { events: { target: 'document' } };
+    expect(config.getTarget()).toBe(document);
   });
 
   it('getTarget returns hyperleaflet object when configured', () => {
-    const mockHyperleaflet = { name: 'test' };
-    Config._hyperleaflet = mockHyperleaflet;
-    Config.options = { events: { target: 'hyperleaflet' } };
-    expect(Config.getTarget()).toBe(mockHyperleaflet);
+    config.options = { events: { target: 'hyperleaflet' } };
+    expect(config.getTarget()).toBe(Hyperleaflet);
   });
 });

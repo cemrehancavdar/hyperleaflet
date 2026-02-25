@@ -24,8 +24,34 @@ test.describe('Geometry Rendering', () => {
   test('polygon renders on map', async ({ page }) => {
     // Polygon and LineString both render as SVG paths
     const pathCount = await page.locator('.leaflet-overlay-pane path').count();
-    // Should have at least 2: LineString + Polygon
+    // Should have at least 2: LineString + Polygon (circleMarker also adds a path)
     expect(pathCount).toBeGreaterThanOrEqual(2);
+  });
+
+  test('circleMarker renders on map as SVG path', async ({ page }) => {
+    // CircleMarker renders as an SVG circle path, not a marker icon
+    const hasBursa = await page.evaluate(() => {
+      const layers = Object.values(window.hyperleaflet.map._layers);
+      const bursa = layers.find((l) => l.hlID === 'circle-1');
+      if (!bursa) return false;
+      const ll = bursa.getLatLng();
+      return Math.abs(ll.lat - 40.19) < 0.01 && Math.abs(ll.lng - 29.06) < 0.01;
+    });
+    expect(hasBursa).toBe(true);
+  });
+
+  test('circleMarker popup works', async ({ page }) => {
+    // Click the circleMarker programmatically (SVG paths are hard to click visually)
+    await page.evaluate(() => {
+      const layers = Object.values(window.hyperleaflet.map._layers);
+      const bursa = layers.find((l) => l.hlID === 'circle-1');
+      bursa.fire('click', { latlng: bursa.getLatLng() });
+      bursa.openPopup();
+    });
+
+    await page.waitForSelector('.leaflet-popup-content');
+    const text = await page.locator('.leaflet-popup-content').textContent();
+    expect(text).toContain('Bursa');
   });
 
   test('clicking marker opens popup with correct text', async ({ page }) => {
@@ -63,6 +89,44 @@ test.describe('Geometry Rendering', () => {
     expect(tooltipFound).toBe(true);
   });
 
+  test('inline styled circleMarker has correct Leaflet options', async ({ page }) => {
+    const opts = await page.evaluate(() => {
+      const layers = Object.values(window.hyperleaflet.map._layers);
+      const styled = layers.find((l) => l.hlID === 'circle-styled');
+      if (!styled) return null;
+      return {
+        radius: styled.options.radius,
+        color: styled.options.color,
+        fillColor: styled.options.fillColor,
+        fillOpacity: styled.options.fillOpacity,
+        weight: styled.options.weight,
+      };
+    });
+    expect(opts).not.toBeNull();
+    expect(opts.radius).toBe(12);
+    expect(opts.color).toBe('red');
+    expect(opts.fillColor).toBe('#ff0000');
+    expect(opts.fillOpacity).toBe(0.8);
+    expect(opts.weight).toBe(3);
+  });
+
+  test('inline styled polyline has correct Leaflet options', async ({ page }) => {
+    const opts = await page.evaluate(() => {
+      const layers = Object.values(window.hyperleaflet.map._layers);
+      const styled = layers.find((l) => l.hlID === 'line-styled');
+      if (!styled) return null;
+      return {
+        color: styled.options.color,
+        weight: styled.options.weight,
+        opacity: styled.options.opacity,
+      };
+    });
+    expect(opts).not.toBeNull();
+    expect(opts.color).toBe('green');
+    expect(opts.weight).toBe(5);
+    expect(opts.opacity).toBe(0.7);
+  });
+
   test('case-insensitive geometry type (POINT) works', async ({ page }) => {
     // Izmir has data-geometry-type="POINT" (uppercase)
     // If it renders, we have 3 markers total (already tested above, but let's verify specifically)
@@ -74,7 +138,7 @@ test.describe('Geometry Rendering', () => {
       const layers = Object.values(window.hyperleaflet.map._layers);
       return layers.filter((l) => l.getPopup && l.getPopup()).length;
     });
-    // All 5 geometries have popups (3 points + 1 line + 1 polygon)
-    expect(popupCount).toBe(5);
+    // All 8 geometries have popups (3 points + 2 lines + 1 polygon + 2 circleMarkers)
+    expect(popupCount).toBe(8);
   });
 });

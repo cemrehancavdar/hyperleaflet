@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>innerHTML Swap Test</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body { margin: 0; }
+    #map { height: 500px; width: 100%; }
+    #controls { padding: 8px; }
+    #source { display: none; }
+  </style>
+</head>
+<body>
+  <div id="map" data-center="[39.92, 32.85]" data-zoom="6">
+    <div data-tile="OpenStreetMap" data-default-tile></div>
+  </div>
+
+  <!--
+    Initial state: 3 cities (Ankara, Istanbul, Izmir).
+    Swap buttons simulate what htmx/Turbo do: replace innerHTML of the source.
+  -->
+  <div data-hyperleaflet-source id="source">
+    <div data-id="ankara"   data-geometry="[39.92, 32.85]" data-geometry-type="Point" data-popup="Ankara"></div>
+    <div data-id="istanbul" data-geometry="[41.01, 28.97]" data-geometry-type="Point" data-popup="Istanbul"></div>
+    <div data-id="izmir"    data-geometry="[38.42, 27.14]" data-geometry-type="Point" data-popup="Izmir"></div>
+  </div>
+
+  <div id="controls">
+    <!-- Swap 1: Remove Istanbul, keep Ankara & Izmir unchanged, add Bursa -->
+    <button id="btn-swap-add-remove" onclick="swapAddRemove()">Swap: +Bursa -Istanbul</button>
+
+    <!-- Swap 2: Keep all 3, but move Ankara to a new position -->
+    <button id="btn-swap-move" onclick="swapMove()">Swap: move Ankara</button>
+
+    <!-- Swap 3: Full replace — remove all, add 2 completely new cities -->
+    <button id="btn-swap-replace-all" onclick="swapReplaceAll()">Swap: replace all</button>
+
+    <!-- Swap 4: Mixed — add, remove, AND change in one shot -->
+    <button id="btn-swap-mixed" onclick="swapMixed()">Swap: add+remove+change</button>
+
+    <!-- Swap 5: Identical swap — no visual change expected -->
+    <button id="btn-swap-identical" onclick="swapIdentical()">Swap: identical</button>
+
+    <!-- Swap 6: Empty — remove everything -->
+    <button id="btn-swap-empty" onclick="swapEmpty()">Swap: empty</button>
+
+    <!-- Reset to initial state -->
+    <button id="btn-reset" onclick="resetSource()">Reset</button>
+  </div>
+
+  <script src="/dist/hyperleaflet.umd.js"></script>
+  <script>
+    const INITIAL = `
+      <div data-id="ankara"   data-geometry="[39.92, 32.85]" data-geometry-type="Point" data-popup="Ankara"></div>
+      <div data-id="istanbul" data-geometry="[41.01, 28.97]" data-geometry-type="Point" data-popup="Istanbul"></div>
+      <div data-id="izmir"    data-geometry="[38.42, 27.14]" data-geometry-type="Point" data-popup="Izmir"></div>
+    `;
+
+    function swapAddRemove() {
+      document.getElementById('source').innerHTML = `
+        <div data-id="ankara" data-geometry="[39.92, 32.85]" data-geometry-type="Point" data-popup="Ankara"></div>
+        <div data-id="izmir"  data-geometry="[38.42, 27.14]" data-geometry-type="Point" data-popup="Izmir"></div>
+        <div data-id="bursa"  data-geometry="[40.19, 29.06]" data-geometry-type="Point" data-popup="Bursa"></div>
+      `;
+    }
+
+    function swapMove() {
+      document.getElementById('source').innerHTML = `
+        <div data-id="ankara"   data-geometry="[40.5, 30.0]"  data-geometry-type="Point" data-popup="Ankara (moved)"></div>
+        <div data-id="istanbul" data-geometry="[41.01, 28.97]" data-geometry-type="Point" data-popup="Istanbul"></div>
+        <div data-id="izmir"    data-geometry="[38.42, 27.14]" data-geometry-type="Point" data-popup="Izmir"></div>
+      `;
+    }
+
+    function swapReplaceAll() {
+      document.getElementById('source').innerHTML = `
+        <div data-id="antalya"  data-geometry="[36.89, 30.71]" data-geometry-type="Point" data-popup="Antalya"></div>
+        <div data-id="trabzon"  data-geometry="[41.00, 39.72]" data-geometry-type="Point" data-popup="Trabzon"></div>
+      `;
+    }
+
+    function swapMixed() {
+      // From initial: keep ankara (move it), remove istanbul, keep izmir, add bursa
+      document.getElementById('source').innerHTML = `
+        <div data-id="ankara" data-geometry="[40.5, 30.0]"  data-geometry-type="Point" data-popup="Ankara (moved)"></div>
+        <div data-id="izmir"  data-geometry="[38.42, 27.14]" data-geometry-type="Point" data-popup="Izmir"></div>
+        <div data-id="bursa"  data-geometry="[40.19, 29.06]" data-geometry-type="Point" data-popup="Bursa"></div>
+      `;
+    }
+
+    function swapIdentical() {
+      document.getElementById('source').innerHTML = INITIAL;
+    }
+
+    function swapEmpty() {
+      document.getElementById('source').innerHTML = '';
+    }
+
+    function resetSource() {
+      document.getElementById('source').innerHTML = INITIAL;
+    }
+  </script>
+</body>
+</html>
