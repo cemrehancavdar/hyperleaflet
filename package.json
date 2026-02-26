@@ -4,6 +4,10 @@
   "description": "Leaflet for HTML",
   "author": "cemrehancavdar",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cemrehancavdar/hyperleaflet"
+  },
   "source": "src/index.js",
   "type": "module",
   "exports": {
