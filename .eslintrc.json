@@ -3,7 +3,10 @@
     "browser": true,
     "es2021": true
   },
-  "extends": ["airbnb-base", "prettier"],
+  "extends": [
+    "airbnb-base",
+    "prettier"
+  ],
   "overrides": [],
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -11,6 +14,9 @@
   },
   "rules": {
     "no-param-reassign": "off",
-    "no-multiple-empty-lines": "error"
+    "no-multiple-empty-lines": "error",
+    "import/prefer-default-export": "off",
+    "import/no-default-export": "error",
+    "no-underscore-dangle": "off"
   }
 }

@@ -1,34 +1,43 @@
 {
   "name": "hyperleaflet",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "description": "Leaflet for HTML",
   "author": "cemrehancavdar",
   "license": "MIT",
-  "source": "src/hyperleaflet.js",
+  "source": "src/index.js",
   "type": "module",
   "exports": {
-    "default": "./dist/hyperleaflet.js"
+    "default": "./dist/hyperleaflet.umd.js"
   },
-  "main": "./dist/hyperleaflet.js",
+  "main": "./dist/hyperleaflet.umd.js",
   "module": "./dist/hyperleaflet.esm.js",
-  "umd:main": "./flask-app/app/static/hyperleaflet.js",
+  "files": [
+    "dist",
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "build": "microbundle --f umd",
     "build:esm": "microbundle --external leaflet -f esm --compress false",
     "dev": "microbundle watch --external leaflet -f esm --compress false",
-    "test": "vitest"
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:all": "vitest run && playwright test"
   },
   "devDependencies": {
     "@happy-dom/jest-environment": "^8.4.4",
+    "@playwright/test": "^1.58.2",
     "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "eslint": "^7.32.0 || ^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.2",
-    "happy-dom": "^8.4.4",
+    "happy-dom": "^20.7.0",
     "microbundle": "^0.15.1",
     "prettier": "2.8.0",
+    "serve": "^14.2.5",
     "vitest": "^0.28.5"
   },
   "dependencies": {

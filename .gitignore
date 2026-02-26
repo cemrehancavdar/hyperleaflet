@@ -1,3 +1,13 @@
 node_modules
-flask-app/env
-__pycache__
+.idea/
+.scannerwork/
+.DS_Store
+.rodney/
+test.html
+playwright-report/
+test-results/
+__pycache__/
+*.pyc
+*.db
+*.db-shm
+*.db-wal

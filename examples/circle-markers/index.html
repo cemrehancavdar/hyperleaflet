@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hyperleaflet — CircleMarker + Inline Styles Demo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; }
+
+    .leaflet-container, .leaflet-container * { box-sizing: content-box; }
+    .leaflet-container img { max-width: none !important; }
+
+    header {
+      padding: 16px 24px;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    header h1 { font-size: 18px; font-weight: 600; }
+    header p { font-size: 13px; color: #666; margin-top: 4px; }
+
+    .layout {
+      display: flex;
+      height: calc(100vh - 72px);
+    }
+
+    #map { flex: 1; min-width: 0; }
+
+    .sidebar {
+      width: 360px;
+      background: #fff;
+      border-left: 1px solid #e0e0e0;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .legend {
+      margin-bottom: 20px;
+    }
+    .legend h3 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+    .legend-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .legend-line {
+      width: 24px;
+      height: 4px;
+      flex-shrink: 0;
+      border-radius: 2px;
+    }
+
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre;
+      margin-bottom: 16px;
+    }
+    .code-block .attr { color: #9cdcfe; }
+    .code-block .val { color: #ce9178; }
+    .code-block .tag { color: #569cd6; }
+    .code-block .comment { color: #6a9955; }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .controls button {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 13px;
+      text-align: left;
+      transition: background 0.15s;
+    }
+    .controls button:hover { background: #f0f0f0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>CircleMarker + Inline Styles</h1>
+  <p>All styling defined in HTML data attributes. Zero JavaScript configuration.</p>
+</header>
+
+<div class="layout">
+  <div id="map" data-center="[39.5, 32.5]" data-zoom="6">
+    <div data-tile="OpenStreetMap" data-default-tile></div>
+  </div>
+
+  <div data-hyperleaflet-source id="source" style="display:none">
+    <!-- Earthquakes: red circles, size = magnitude -->
+    <div data-id="eq-1" data-geometry="[38.42, 27.14]" data-geometry-type="CircleMarker"
+         data-radius="18" data-color="#dc2626" data-fill-color="#ef4444" data-fill-opacity="0.6" data-weight="2"
+         data-popup="<b>Izmir</b><br>Magnitude 6.9<br>2020-10-30"></div>
+    <div data-id="eq-2" data-geometry="[37.77, 29.09]" data-geometry-type="CircleMarker"
+         data-radius="14" data-color="#dc2626" data-fill-color="#ef4444" data-fill-opacity="0.6" data-weight="2"
+         data-popup="<b>Denizli</b><br>Magnitude 5.5<br>2019-08-08"></div>
+    <div data-id="eq-3" data-geometry="[37.17, 36.95]" data-geometry-type="CircleMarker"
+         data-radius="20" data-color="#dc2626" data-fill-color="#ef4444" data-fill-opacity="0.6" data-weight="2"
+         data-popup="<b>Kahramanmaras</b><br>Magnitude 7.8<br>2023-02-06"></div>
+    <div data-id="eq-4" data-geometry="[40.75, 30.05]" data-geometry-type="CircleMarker"
+         data-radius="16" data-color="#dc2626" data-fill-color="#ef4444" data-fill-opacity="0.6" data-weight="2"
+         data-popup="<b>Duzce</b><br>Magnitude 7.2<br>1999-11-12"></div>
+
+    <!-- Cities: blue circles -->
+    <div data-id="city-1" data-geometry="[39.92, 32.85]" data-geometry-type="CircleMarker"
+         data-radius="10" data-color="#2563eb" data-fill-color="#3b82f6" data-fill-opacity="0.7" data-weight="2"
+         data-popup="<b>Ankara</b><br>Population: 5.7M" data-tooltip="Ankara"></div>
+    <div data-id="city-2" data-geometry="[41.01, 28.97]" data-geometry-type="CircleMarker"
+         data-radius="14" data-color="#2563eb" data-fill-color="#3b82f6" data-fill-opacity="0.7" data-weight="2"
+         data-popup="<b>Istanbul</b><br>Population: 15.8M" data-tooltip="Istanbul"></div>
+    <div data-id="city-3" data-geometry="[38.42, 27.14]" data-geometry-type="CircleMarker"
+         data-radius="8" data-color="#2563eb" data-fill-color="#3b82f6" data-fill-opacity="0.7" data-weight="2"
+         data-popup="<b>Izmir</b><br>Population: 4.4M" data-tooltip="Izmir"></div>
+    <div data-id="city-4" data-geometry="[36.89, 30.71]" data-geometry-type="CircleMarker"
+         data-radius="7" data-color="#2563eb" data-fill-color="#3b82f6" data-fill-opacity="0.7" data-weight="2"
+         data-popup="<b>Antalya</b><br>Population: 2.6M" data-tooltip="Antalya"></div>
+
+    <!-- Fault line: dashed orange polyline -->
+    <div data-id="fault-1"
+         data-geometry="[[40.75, 30.05], [40.60, 32.00], [40.20, 36.00], [39.60, 39.50]]"
+         data-geometry-type="LineString"
+         data-color="#ea580c" data-weight="4" data-opacity="0.7" data-dash-array="12 8"
+         data-popup="<b>North Anatolian Fault</b><br>1500km transform fault"></div>
+
+    <!-- Tectonic zone: semi-transparent green polygon -->
+    <div data-id="zone-1"
+         data-geometry="[[[37.0, 26.0], [37.0, 37.0], [38.5, 37.0], [38.5, 26.0]]]"
+         data-geometry-type="Polygon"
+         data-color="#16a34a" data-fill-color="#22c55e" data-fill-opacity="0.15" data-weight="2" data-dash-array="6 4"
+         data-popup="<b>Western Anatolian Graben</b><br>Active extensional zone"></div>
+  </div>
+
+  <div class="sidebar">
+    <div class="legend">
+      <h3>Legend</h3>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: #ef4444; border: 2px solid #dc2626;"></div>
+        Earthquake epicenters (size = magnitude)
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: #3b82f6; border: 2px solid #2563eb;"></div>
+        Major cities (size = population)
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background: #ea580c; border-top: 2px dashed #ea580c; background: none;"></div>
+        North Anatolian Fault
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background: #22c55e33; border: 2px dashed #16a34a; border-radius: 2px; width: 24px; height: 16px;"></div>
+        Tectonic zone
+      </div>
+    </div>
+
+    <div class="controls">
+      <h3 style="font-size: 13px; font-weight: 600; text-transform: uppercase; color: #999; margin-bottom: 4px;">Try it</h3>
+      <button onclick="addQuake()">Add Elazig earthquake</button>
+      <button onclick="removeQuake()">Remove Duzce earthquake</button>
+      <button onclick="swapCities()">Swap cities (innerHTML)</button>
+      <button onclick="resetAll()">Reset</button>
+    </div>
+
+    <div class="legend">
+      <h3>How it works</h3>
+      <div class="code-block"><span class="comment">&lt;!-- CircleMarker with inline styles --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">data-id</span>=<span class="val">"eq-1"</span>
+     <span class="attr">data-geometry</span>=<span class="val">"[38.42, 27.14]"</span>
+     <span class="attr">data-geometry-type</span>=<span class="val">"CircleMarker"</span>
+     <span class="attr">data-radius</span>=<span class="val">"18"</span>
+     <span class="attr">data-color</span>=<span class="val">"#dc2626"</span>
+     <span class="attr">data-fill-color</span>=<span class="val">"#ef4444"</span>
+     <span class="attr">data-fill-opacity</span>=<span class="val">"0.6"</span>
+     <span class="attr">data-weight</span>=<span class="val">"2"</span>
+     <span class="attr">data-popup</span>=<span class="val">"Izmir M6.9"</span><span class="tag">&gt;&lt;/div&gt;</span></div>
+
+      <div class="code-block"><span class="comment">&lt;!-- Dashed polyline --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">data-geometry-type</span>=<span class="val">"LineString"</span>
+     <span class="attr">data-color</span>=<span class="val">"#ea580c"</span>
+     <span class="attr">data-weight</span>=<span class="val">"4"</span>
+     <span class="attr">data-dash-array</span>=<span class="val">"12 8"</span>
+     ...<span class="tag">&gt;&lt;/div&gt;</span></div>
+
+      <div class="code-block"><span class="comment">&lt;!-- Styled polygon --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">data-geometry-type</span>=<span class="val">"Polygon"</span>
+     <span class="attr">data-color</span>=<span class="val">"#16a34a"</span>
+     <span class="attr">data-fill-color</span>=<span class="val">"#22c55e"</span>
+     <span class="attr">data-fill-opacity</span>=<span class="val">"0.15"</span>
+     ...<span class="tag">&gt;&lt;/div&gt;</span></div>
+    </div>
+  </div>
+</div>
+
+<script src="../../dist/hyperleaflet.umd.js"></script>
+<script>
+  const INITIAL_SOURCE = document.getElementById('source').innerHTML;
+
+  function addQuake() {
+    const source = document.getElementById('source');
+    if (source.querySelector('[data-id="eq-5"]')) return;
+    const el = document.createElement('div');
+    el.dataset.id = 'eq-5';
+    el.dataset.geometry = '[38.36, 39.23]';
+    el.dataset.geometryType = 'CircleMarker';
+    el.dataset.radius = '15';
+    el.dataset.color = '#dc2626';
+    el.dataset.fillColor = '#ef4444';
+    el.dataset.fillOpacity = '0.6';
+    el.dataset.weight = '2';
+    el.dataset.popup = '<b>Elazig</b><br>Magnitude 6.7<br>2020-01-24';
+    source.appendChild(el);
+  }
+
+  function removeQuake() {
+    const el = document.querySelector('[data-id="eq-4"]');
+    if (el) el.remove();
+  }
+
+  function swapCities() {
+    const source = document.getElementById('source');
+    // Keep everything but swap cities to show only top 2
+    const nonCities = source.querySelectorAll('[data-id^="eq-"], [data-id^="fault-"], [data-id^="zone-"]');
+    let html = '';
+    nonCities.forEach((el) => { html += el.outerHTML; });
+    html += `
+      <div data-id="city-2" data-geometry="[41.01, 28.97]" data-geometry-type="CircleMarker"
+           data-radius="14" data-color="#7c3aed" data-fill-color="#8b5cf6" data-fill-opacity="0.7" data-weight="2"
+           data-popup="<b>Istanbul</b><br>Now purple!" data-tooltip="Istanbul"></div>
+      <div data-id="city-1" data-geometry="[39.92, 32.85]" data-geometry-type="CircleMarker"
+           data-radius="10" data-color="#7c3aed" data-fill-color="#8b5cf6" data-fill-opacity="0.7" data-weight="2"
+           data-popup="<b>Ankara</b><br>Now purple!" data-tooltip="Ankara"></div>
+    `;
+    source.innerHTML = html;
+  }
+
+  function resetAll() {
+    document.getElementById('source').innerHTML = INITIAL_SOURCE;
+  }
+</script>
+</body>
+</html>

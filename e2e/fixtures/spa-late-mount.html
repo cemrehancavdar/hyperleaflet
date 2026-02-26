@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPA Late Mount</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body { margin: 0; }
+    #map { height: 500px; width: 100%; }
+    #status { padding: 8px; font-family: monospace; }
+    table { display: none; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="status">waiting</div>
+
+  <script src="/dist/hyperleaflet.umd.js"></script>
+  <script>
+    window.addEventListener('hyperleaflet:ready', () => {
+      document.getElementById('status').textContent = 'ready';
+    });
+
+    // Simulate SPA: mount #map after 500ms delay
+    setTimeout(() => {
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <div id="map" data-center="[39.92, 32.85]" data-zoom="6">
+          <div data-tile="OpenStreetMap" data-default-tile></div>
+        </div>
+        <table data-hyperleaflet-source>
+          <tr data-id="spa-point-1" data-geometry="[39.92, 32.85]" data-geometry-type="Point" data-popup="Ankara">
+            <td>Ankara</td>
+          </tr>
+        </table>
+      `;
+    }, 500);
+  </script>
+</body>
+</html>

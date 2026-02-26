@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hyperleaflet — BBox Table Demo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; display: flex; height: 100vh; }
+    .leaflet-container, .leaflet-container * { box-sizing: content-box; }
+    .leaflet-container img { max-width: none !important; }
+
+    #map { flex: 1; min-width: 0; }
+    .sidebar { width: 380px; display: flex; flex-direction: column; border-left: 1px solid #ddd; background: #fff; }
+    .sidebar-header { padding: 12px 16px; border-bottom: 1px solid #eee; }
+    .sidebar-header h3 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .sidebar-header small { font-size: 12px; color: #888; }
+    .sidebar-body { flex: 1; overflow-y: auto; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 6px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+    th { background: #fafafa; font-weight: 600; font-size: 11px; text-transform: uppercase; color: #999; position: sticky; top: 0; }
+    tr[data-id] { cursor: pointer; }
+    tr[data-id]:hover { background: #f5f8ff; }
+    .coords { font-family: monospace; font-size: 12px; color: #888; }
+    .badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 11px; font-weight: 500; }
+    .badge-blue { background: #dbeafe; color: #1d4ed8; }
+    .badge-green { background: #dcfce7; color: #16a34a; }
+    .badge-amber { background: #fef3c7; color: #b45309; }
+    .badge-red { background: #fee2e2; color: #dc2626; }
+
+    tr.active { background: #eff6ff !important; }
+    .count { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+
+<!-- Map with all places as markers -->
+<div id="map" data-center="[39.0, 35.0]" data-zoom="6">
+  <div data-tile="OpenStreetMap" data-default-tile></div>
+</div>
+
+<div class="sidebar">
+  <div class="sidebar-header">
+    <h3>Visible places <span class="count" id="count"></span></h3>
+    <small>Pan & zoom the map — the table updates</small>
+  </div>
+  <div class="sidebar-body">
+    <table>
+      <thead><tr><th>Name</th><th>Type</th><th>Coords</th></tr></thead>
+      <tbody id="visible-list"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Hidden hyperleaflet source — holds all places, drives the map markers -->
+<div data-hyperleaflet-source style="display:none">
+  <div data-id="istanbul"     data-geometry="[41.0082, 28.9784]" data-geometry-type="point" data-popup="<b>Istanbul</b><br>Largest city" data-name="Istanbul" data-type="city"></div>
+  <div data-id="ankara"       data-geometry="[39.9208, 32.8541]" data-geometry-type="point" data-popup="<b>Ankara</b><br>Capital" data-name="Ankara" data-type="city"></div>
+  <div data-id="izmir"        data-geometry="[38.4189, 27.1287]" data-geometry-type="point" data-popup="<b>Izmir</b><br>Coastal metropolis" data-name="Izmir" data-type="city"></div>
+  <div data-id="antalya"      data-geometry="[36.8969, 30.7133]" data-geometry-type="point" data-popup="<b>Antalya</b><br>Mediterranean resort" data-name="Antalya" data-type="city"></div>
+  <div data-id="bursa"        data-geometry="[40.1885, 29.0610]" data-geometry-type="point" data-popup="<b>Bursa</b><br>Green city" data-name="Bursa" data-type="city"></div>
+  <div data-id="trabzon"      data-geometry="[41.0027, 39.7168]" data-geometry-type="point" data-popup="<b>Trabzon</b><br>Black Sea port" data-name="Trabzon" data-type="city"></div>
+  <div data-id="cappadocia"   data-geometry="[38.6431, 34.8289]" data-geometry-type="point" data-popup="<b>Cappadocia</b><br>Fairy chimneys" data-name="Cappadocia" data-type="landmark"></div>
+  <div data-id="pamukkale"    data-geometry="[37.9204, 29.1187]" data-geometry-type="point" data-popup="<b>Pamukkale</b><br>Travertine terraces" data-name="Pamukkale" data-type="landmark"></div>
+  <div data-id="ephesus"      data-geometry="[37.9393, 27.3417]" data-geometry-type="point" data-popup="<b>Ephesus</b><br>Ancient Greek city" data-name="Ephesus" data-type="landmark"></div>
+  <div data-id="troy"         data-geometry="[39.9574, 26.2389]" data-geometry-type="point" data-popup="<b>Troy</b><br>Legendary ancient city" data-name="Troy" data-type="landmark"></div>
+  <div data-id="nemrut"       data-geometry="[37.9808, 38.7414]" data-geometry-type="point" data-popup="<b>Mount Nemrut</b><br>Giant stone heads" data-name="Mount Nemrut" data-type="landmark"></div>
+  <div data-id="sumela"       data-geometry="[40.6908, 39.6556]" data-geometry-type="point" data-popup="<b>Sumela Monastery</b><br>Cliff monastery" data-name="Sumela Monastery" data-type="landmark"></div>
+  <div data-id="gobekli"      data-geometry="[37.2231, 38.9225]" data-geometry-type="point" data-popup="<b>Gobekli Tepe</b><br>World's oldest temple" data-name="Gobekli Tepe" data-type="landmark"></div>
+  <div data-id="diyarbakir"   data-geometry="[37.9144, 40.2306]" data-geometry-type="point" data-popup="<b>Diyarbakir</b><br>Historic walled city" data-name="Diyarbakir" data-type="city"></div>
+  <div data-id="konya"        data-geometry="[37.8746, 32.4932]" data-geometry-type="point" data-popup="<b>Konya</b><br>Home of Rumi" data-name="Konya" data-type="city"></div>
+  <div data-id="bodrum"       data-geometry="[37.0344, 27.4305]" data-geometry-type="point" data-popup="<b>Bodrum</b><br>Aegean resort town" data-name="Bodrum" data-type="city"></div>
+  <div data-id="gaziantep"    data-geometry="[37.0662, 37.3833]" data-geometry-type="point" data-popup="<b>Gaziantep</b><br>Culinary capital" data-name="Gaziantep" data-type="city"></div>
+  <div data-id="van"          data-geometry="[38.4942, 43.3800]" data-geometry-type="point" data-popup="<b>Van</b><br>Lake Van city" data-name="Van" data-type="city"></div>
+  <div data-id="kars"         data-geometry="[40.6013, 43.0975]" data-geometry-type="point" data-popup="<b>Kars</b><br>Eastern frontier" data-name="Kars" data-type="city"></div>
+  <div data-id="ani"          data-geometry="[40.5053, 43.5728]" data-geometry-type="point" data-popup="<b>Ani Ruins</b><br>Ghost city on the border" data-name="Ani Ruins" data-type="landmark"></div>
+</div>
+
+<script src="../../dist/hyperleaflet.umd.js"></script>
+<script>
+  var allPlaces = document.querySelectorAll('[data-hyperleaflet-source] [data-id]');
+  var listEl = document.getElementById('visible-list');
+  var countEl = document.getElementById('count');
+  var badgeClass = { city: 'badge-blue', landmark: 'badge-amber' };
+
+  function updateTable(bbox) {
+    var minLat = bbox.min.lat, maxLat = bbox.max.lat;
+    var minLng = bbox.min.lng, maxLng = bbox.max.lng;
+    var html = '';
+    var n = 0;
+
+    allPlaces.forEach(function(el) {
+      var coords = JSON.parse(el.dataset.geometry);
+      var lat = coords[0], lng = coords[1];
+      if (lat >= minLat && lat <= maxLat && lng >= minLng && lng <= maxLng) {
+        n++;
+        var type = el.dataset.type;
+        html += '<tr data-id="' + el.dataset.id + '" onclick="onRowClick(this)">' +
+          '<td>' + el.dataset.name + '</td>' +
+          '<td><span class="badge ' + (badgeClass[type] || 'badge-green') + '">' + type + '</span></td>' +
+          '<td class="coords">' + lat.toFixed(2) + ', ' + lng.toFixed(2) + '</td></tr>';
+      }
+    });
+
+    listEl.innerHTML = html;
+    countEl.textContent = '(' + n + ')';
+  }
+
+  function onRowClick(tr) {
+    var src = document.querySelector('[data-hyperleaflet-source] [data-id="' + tr.dataset.id + '"]');
+    if (!src) return;
+    var coords = JSON.parse(src.dataset.geometry);
+    window.hyperleaflet.flyTo(coords, Math.max(window.hyperleaflet.getZoom(), 10));
+
+    listEl.querySelectorAll('tr.active').forEach(function(r) { r.classList.remove('active'); });
+    tr.classList.add('active');
+  }
+
+  // map:move fires on every pan/zoom and carries bbox — enabled by default
+  window.addEventListener('map:move', function(e) {
+    updateTable(e.detail.bbox);
+  });
+
+  // Initial fill once map is ready
+  window.addEventListener('hyperleaflet:ready', function(e) {
+    updateTable(e.detail.bbox);
+  });
+</script>
+</body>
+</html>

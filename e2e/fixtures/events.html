@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body { margin: 0; }
+    #map { height: 500px; width: 100%; }
+    table { display: none; }
+    #log { padding: 8px; font-family: monospace; font-size: 12px; white-space: pre-wrap; background: #f0f0f0; min-height: 100px; }
+  </style>
+</head>
+<body>
+  <div id="map" data-center="[39.92, 32.85]" data-zoom="6">
+    <div data-tile="OpenStreetMap" data-default-tile></div>
+  </div>
+
+  <table data-hyperleaflet-source>
+    <tr data-id="marker-1" data-geometry="[39.92, 32.85]" data-geometry-type="Point" data-popup="Ankara">
+      <td>Ankara</td>
+    </tr>
+  </table>
+
+  <div id="log"></div>
+
+  <script src="/dist/hyperleaflet.umd.js"></script>
+  <script>
+    const log = document.getElementById('log');
+    function addLog(type, detail) {
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.dataset.eventType = type;
+      entry.textContent = type + ': ' + JSON.stringify(detail);
+      log.appendChild(entry);
+    }
+
+    window.addEventListener('hyperleaflet:ready', (e) => {
+      addLog('hyperleaflet:ready', { zoom: e.detail.zoom, center: e.detail.center });
+    });
+    window.addEventListener('map:ready', (e) => {
+      addLog('map:ready', { zoom: e.detail.zoom });
+    });
+    window.addEventListener('map:click', (e) => {
+      addLog('map:click', { lat: e.detail.point.lat, lng: e.detail.point.lng });
+    });
+    window.addEventListener('geometry:click', (e) => {
+      addLog('geometry:click', { id: e.detail.id });
+    });
+    window.addEventListener('map:zoom', (e) => {
+      addLog('map:zoom', { zoom: e.detail.zoom });
+    });
+    window.addEventListener('map:move', (e) => {
+      addLog('map:move', { center: e.detail.center });
+    });
+  </script>
+</body>
+</html>

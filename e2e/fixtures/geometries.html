@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geometries</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body { margin: 0; }
+    #map { height: 500px; width: 100%; }
+    table { display: none; }
+  </style>
+</head>
+<body>
+  <div id="map" data-center="[39.92, 32.85]" data-zoom="6">
+    <div data-tile="OpenStreetMap" data-default-tile></div>
+  </div>
+
+  <table data-hyperleaflet-source>
+    <tr data-id="point-1" data-geometry="[39.92, 32.85]" data-geometry-type="Point" data-popup="Ankara" data-tooltip="Capital">
+      <td>Ankara</td>
+    </tr>
+    <tr data-id="point-2" data-geometry="[41.01, 28.97]" data-geometry-type="Point" data-popup="Istanbul">
+      <td>Istanbul</td>
+    </tr>
+    <tr data-id="point-3" data-geometry="[38.42, 27.14]" data-geometry-type="POINT" data-popup="Izmir">
+      <td>Izmir - case insensitive type</td>
+    </tr>
+    <tr data-id="line-1" data-geometry="[[39.92, 32.85],[41.01, 28.97]]" data-geometry-type="LineString" data-popup="Ankara-Istanbul Route">
+      <td>Route</td>
+    </tr>
+    <tr data-id="poly-1" data-geometry="[[[39.92, 32.85],[41.01, 28.97],[38.42, 27.14]]]" data-geometry-type="Polygon" data-popup="Triangle">
+      <td>Triangle</td>
+    </tr>
+    <tr data-id="circle-1" data-geometry="[40.19, 29.06]" data-geometry-type="CircleMarker" data-popup="Bursa">
+      <td>Bursa - circle marker</td>
+    </tr>
+    <tr data-id="circle-styled" data-geometry="[37.76, 30.29]" data-geometry-type="CircleMarker"
+        data-radius="12" data-color="red" data-fill-color="#ff0000" data-fill-opacity="0.8" data-weight="3"
+        data-popup="Isparta (styled)">
+      <td>Isparta - inline styled circle marker</td>
+    </tr>
+    <tr data-id="line-styled" data-geometry="[[39.92, 32.85],[37.76, 30.29]]" data-geometry-type="LineString"
+        data-color="green" data-weight="5" data-opacity="0.7"
+        data-popup="Ankara-Isparta (styled)">
+      <td>Styled line</td>
+    </tr>
+  </table>
+
+  <script src="/dist/hyperleaflet.umd.js"></script>
+</body>
+</html>

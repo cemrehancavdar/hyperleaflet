@@ -1,0 +1,171 @@
+---
+### [OK] SURREAL-JS-REPLACEMENT | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: Replace _hyperscript with Surreal.js for inline Locality of Behavior
+- **Hypothesis**: Real JS (Surreal) is better than _hyperscript DSL for maintainability
+- **Approach**: Replaced 3 `_=` attributes with inline `<script>` blocks using `me()`, `any()`, `sleep()`
+- **Result**:
+    - Slider: `me('#time-slider').on('change', ...)` + `clearTimeout` debounce (400ms)
+    - Mag filter: `me('-').on('change', ...)` — previous sibling selector
+    - Table: `me().on('click', ...)` — parent element + `me(row).classAdd()` for wrapping raw DOM
+    - Loading overlay: `me('body').on('htmx:beforeRequest/afterRequest', ...)`
+    - Gotcha: `me('-')` = previous sibling, `me()` = parent, raw DOM needs `me(el)` to get Surreal methods
+    - Gotcha: `document.body.on()` doesn't work — use `me('body').on()` instead
+    - Verified: mag filter, row click → flyTo + openPopup, loading overlay all work
+    - Outcome: Success — zero _hyperscript, 320-line Surreal.js replaces 15KB hyperscript
+- **The Delta**: Removed custom DSL dependency, inline scripts use plain JS with Surreal sugar
+- **Next Step**: Push hyperleaflet, README updates for both repos
+---
+### [OK] TIME-RANGE-SLIDER | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: Replace two date-picker inputs with a dual-handle range slider
+- **Hypothesis**: Slider is more intuitive for browsing 5 years of seismic data
+- **Approach**: Vanilla JS pointer events, ratio-to-date mapping, debounced HTMX triggers
+- **Result**:
+    - Slider: dual-handle with blue fill bar, year tick marks
+    - Interaction: pointerdown/move/up, grab cursor, 1.3x scale on active
+    - Debounce: 400ms during drag, immediate on pointerup
+    - Track click: snaps nearest thumb
+    - Verified: drag start thumb (98%→50% = Aug 2023), drag end thumb (100%→80% = Feb 2025)
+    - Stats update correctly: 161→7803→4940 quakes as range changes
+    - Mag filter still works alongside slider (M6+ = 25 quakes)
+    - Outcome: Success — all interactions verified via Rodney browser automation
+- **The Delta**: Replaced 2 date inputs with single visual slider, much better UX
+- **Next Step**: Commit both repos, consider table-row click→flyTo
+---
+### [OK] COMMITS-ROUND-2 | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: Commit all pending work across both repos
+- **Approach**: hyperleaflet: single commit for flat rewrite on hyperleaflet-refactor; earthquake: git init + initial commit
+- **Result**:
+    - hyperleaflet: commit a8f2d07, 37 files changed, branch now 11 ahead of remote
+    - earthquake: commit 4dbd26b, 11 files, new repo initialized
+    - Outcome: Success — both repos clean
+- **The Delta**: All work committed, nothing pending
+- **Next Step**: Push hyperleaflet, create GitHub repo for earthquake demo
+---
+### [OK] EARTHQUAKE-EXPLORER-DEMO | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: Build real-world demo with USGS earthquake data, SQLite, bbox+time+mag filtering
+- **Hypothesis**: Proves hyperleaflet works with large datasets, CircleMarker styles, and HTMX swaps
+- **Approach**: FastAPI + SQLite (81K events, 5yr M4+) + HTMX + Hyperleaflet CircleMarker + inline styles
+- **Result**:
+    - Data: 81,038 events seeded from USGS API (5 years, M4+, globally)
+    - DB: 22.7 MB SQLite with bbox/time/mag indexes
+    - Features: bbox filter (map:move), date range picker, magnitude dropdown, hx-swap-oob multi-target
+    - Styling: depth-based colors (red/orange/blue), magnitude-based radius, all via data-* attributes
+    - Bug fix: HTMX OOB swap fails on bare <tbody> — wrapped in <div id="table-wrap"> instead
+    - Outcome: Success — verified Japan zoom, M7+ global view, filter changes
+- **The Delta**: First demo with real external data + SQLite + multiple HTMX filter controls
+- **Next Step**: Add click-to-flyTo from table rows, consider SVG sparklines
+---
+### [OK] CIRCLEMARKER-AND-INLINE-STYLES | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: Add CircleMarker geometry type + inline data-* attribute styling
+- **Hypothesis**: Users need colored circles and inline styles without JS config
+- **Approach**: Added circlemarker to GEOMETRY_TYPES, extractInlineStyle() for Leaflet Path options
+- **Result**:
+    - New type: CircleMarker (same coord system as Point, SVG rendering)
+    - Inline styles: color, weight, opacity, fillColor, fillOpacity, radius, dashArray, etc.
+    - Merge order: config preset as base, inline data-* overrides
+    - Tests: 53 unit + 47 e2e pass
+    - Build: 5.28 KB gzipped UMD
+    - Demo: examples/circle-markers/ (earthquake + city overlay with styled geometries)
+    - Outcome: Success
+- **The Delta**: New geometry type + pure-HTML styling — zero JS required for colors/sizes
+- **Next Step**: Consider innerHTML swap tests for styled geometries
+---
+### [OK] INNERHTML-SWAP-TESTS | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: E2e tests for innerHTML swap (the htmx/Turbo scenario)
+- **Hypothesis**: innerHTML swap is the critical path — must be tested thoroughly
+- **Approach**: 10 Playwright tests covering add/remove/change/mixed/identical/empty/rapid/coexist
+- **Result**:
+    - Tests: 10 new e2e tests, all pass
+    - Coverage: single swap, mixed operations, identical (no-op), empty→repopulate, rapid consecutive, swap+appendChild coexistence
+    - Outcome: Success
+- **The Delta**: Core htmx use case now has comprehensive browser-level test coverage
+- **Next Step**: CircleMarker + inline styles feature
+---
+### [OK] FLAT-REWRITE | 2026-02-25
+- **Status**: [OK] ADOPTED
+- **Objective**: Flatten 14 files / 6 dirs into 4 flat files
+- **Hypothesis**: Less code, fewer abstractions, easier to maintain/regenerate
+- **Approach**: Merged all modules into 4 files, killed extension hooks, killed EventTarget polyfill, killed separate config/utils, fixed changeNodeInHyperleaflet API bug, added O(1) geometry index
+- **Result**:
+    - Files: 14 → 4 (hyperchange.js, geometry.js, hyperleaflet.js, index.js)
+    - Tests: 3 files, 45 unit tests pass + 33 e2e tests pass
+    - Build: 5.05 KB gzipped UMD
+    - Bugs fixed: changeNodeInHyperleaflet (change['data-id'] → change.key, change.dataset → change.node.dataset)
+    - Killed: config.js, utils.js, eventTarget.js, 9-hook extension system, barrel files, 2 test files
+    - Added: O(1) Map-based geometry lookup (was O(n) _layers scan)
+    - Outcome: Success — all tests pass, build clean
+- **The Delta**: 14 files → 4, zero regressions, fixed broken change API, O(1) lookups
+- **Next Step**: Commit, update README, merge to master
+---
+### [OK] EXAMPLE-APP-TABLER-REWRITE | 2026-02-24
+- **Status**: [OK] ADOPTED
+- **Objective**: Rewrite example app from DaisyUI to Tabler CSS, add inline edit
+- **Hypothesis**: Tabler CSS has fewer Leaflet conflicts, HTMX swap causes MutationObserver bugs
+- **Approach**: Replace DaisyUI with Tabler, vanilla JS for filter/CRUD, setTimeout(0) for edit
+- **Result**:
+    - UI: Tabler CSS + 2 Leaflet overrides (box-sizing, max-width)
+    - Filter: Client-side CSS toggle (HTMX innerHTML swap breaks hyperchange.js jointNodeSet)
+    - Edit: setTimeout(0) separates remove/add for MutationObserver compatibility
+    - Bidirectional: geometry:click + row click → flyTo + popup + glow
+    - Removed: tabler.min.js (caused page load issues), report_table.html
+    - Outcome: Success — all features verified in browser
+- **The Delta**: Cleaner UI, fewer deps, no HTMX/MutationObserver conflicts
+- **Next Step**: Update README, merge to master
+---
+### [OK] COMMIT-ALL-CHANGES | 2026-02-24
+- **Status**: [OK] ADOPTED
+- **Objective**: Commit all pending work to hyperleaflet-refactor branch
+- **Hypothesis**: Clean commit history helps future merge to master
+- **Approach**: Split into 7 logical commits (fixes, config, dist, unit tests, e2e, example app, gitignore cleanup)
+- **Result**:
+    - Commits: 7 (69b9deb → 9e1af37)
+    - Artifacts removed: __pycache__, *.db files untracked
+    - Outcome: Success — all work committed
+- **The Delta**: Branch now has clean git history, ready for README update and merge
+- **Next Step**: Rewrite README for new API, merge to master, unarchive repo
+---
+### [OK] EXAMPLE-APP-FIELD-REPORTS | 2026-02-24
+- **Status**: [OK] ADOPTED
+- **Objective**: Build FastAPI + HTMX example app showcasing Hyperleaflet
+- **Hypothesis**: Real-world demo proves library works and attracts users
+- **Approach**: FastAPI + Jinja2 + HTMX + DaisyUI v5 (nord theme) + Hyperleaflet UMD
+- **Result**:
+    - Features: Map click → pick location, table row click → fly to marker, toast notifications, pulse animation
+    - DaisyUI v5: Works via CDN, needs CSS overrides for Leaflet compatibility
+    - Pico CSS: Discarded — classless CSS breaks Leaflet internals
+    - Outcome: Success
+- **The Delta**: First working full-stack example for hyperleaflet
+- **Next Step**: Add example app README with setup instructions
+---
+### [OK] E2E-TESTS-PLAYWRIGHT | 2026-02-24
+- **Status**: [OK] ADOPTED
+- **Objective**: Add browser-level e2e tests for hyperleaflet
+- **Hypothesis**: E2E tests catch integration bugs unit tests miss
+- **Approach**: Playwright + Chromium, 6 HTML fixtures, static file server
+- **Result**:
+    - Tests: 33 passing across 6 suites (map-init, geometries, dynamic-updates, events, spa, api)
+    - Fixtures: 6 standalone HTML files
+    - Outcome: Success
+- **The Delta**: Full test coverage from unit to browser level
+- **Next Step**: Consider CI integration for e2e tests
+---
+### [OK] POLISH-REFACTOR-BRANCH | 2026-02-24
+- **Status**: [OK] ADOPTED
+- **Objective**: Fix bugs in hyperleaflet-refactor branch, clean up, make production-ready
+- **Hypothesis**: Refactor branch has better architecture but needs bug fixes + tests
+- **Approach**: Fixed copy-paste bugs, debug leftovers, rebuilt dist, added tests, verified in browser
+- **Result**:
+    - Bugs fixed: 8 (afterNodeRemove, afterNodeChange x2, fltTo, tileLayer, customMapEvents, tileUrl param, mergeDeep)
+    - Debug removed: 3 (console.log, window.pubsub, eslint-disable)
+    - Tests: 31 passing (config, utils, eventTarget, geometry)
+    - Browser: Map renders, tiles load, markers show, popups work, events fire
+    - Outcome: Success
+- **The Delta**: Refactor branch now builds clean, all known bugs fixed, SPA observeMap restored
+- **Next Step**: Consider merging to master, unarchive repo, update docs for new API
+---

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basic Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body { margin: 0; }
+    #map { height: 500px; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="map" data-center="[41.01, 28.97]" data-zoom="10" data-min-zoom="3" data-max-zoom="16">
+    <div data-tile="OpenStreetMap" data-default-tile></div>
+  </div>
+  <script src="/dist/hyperleaflet.umd.js"></script>
+</body>
+</html>
