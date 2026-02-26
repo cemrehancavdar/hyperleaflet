@@ -1,4 +1,49 @@
 ---
+### [OK] SURREAL-JS-REPLACEMENT | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: Replace _hyperscript with Surreal.js for inline Locality of Behavior
+- **Hypothesis**: Real JS (Surreal) is better than _hyperscript DSL for maintainability
+- **Approach**: Replaced 3 `_=` attributes with inline `<script>` blocks using `me()`, `any()`, `sleep()`
+- **Result**:
+    - Slider: `me('#time-slider').on('change', ...)` + `clearTimeout` debounce (400ms)
+    - Mag filter: `me('-').on('change', ...)` — previous sibling selector
+    - Table: `me().on('click', ...)` — parent element + `me(row).classAdd()` for wrapping raw DOM
+    - Loading overlay: `me('body').on('htmx:beforeRequest/afterRequest', ...)`
+    - Gotcha: `me('-')` = previous sibling, `me()` = parent, raw DOM needs `me(el)` to get Surreal methods
+    - Gotcha: `document.body.on()` doesn't work — use `me('body').on()` instead
+    - Verified: mag filter, row click → flyTo + openPopup, loading overlay all work
+    - Outcome: Success — zero _hyperscript, 320-line Surreal.js replaces 15KB hyperscript
+- **The Delta**: Removed custom DSL dependency, inline scripts use plain JS with Surreal sugar
+- **Next Step**: Push hyperleaflet, README updates for both repos
+---
+### [OK] TIME-RANGE-SLIDER | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: Replace two date-picker inputs with a dual-handle range slider
+- **Hypothesis**: Slider is more intuitive for browsing 5 years of seismic data
+- **Approach**: Vanilla JS pointer events, ratio-to-date mapping, debounced HTMX triggers
+- **Result**:
+    - Slider: dual-handle with blue fill bar, year tick marks
+    - Interaction: pointerdown/move/up, grab cursor, 1.3x scale on active
+    - Debounce: 400ms during drag, immediate on pointerup
+    - Track click: snaps nearest thumb
+    - Verified: drag start thumb (98%→50% = Aug 2023), drag end thumb (100%→80% = Feb 2025)
+    - Stats update correctly: 161→7803→4940 quakes as range changes
+    - Mag filter still works alongside slider (M6+ = 25 quakes)
+    - Outcome: Success — all interactions verified via Rodney browser automation
+- **The Delta**: Replaced 2 date inputs with single visual slider, much better UX
+- **Next Step**: Commit both repos, consider table-row click→flyTo
+---
+### [OK] COMMITS-ROUND-2 | 2026-02-26
+- **Status**: [OK] ADOPTED
+- **Objective**: Commit all pending work across both repos
+- **Approach**: hyperleaflet: single commit for flat rewrite on hyperleaflet-refactor; earthquake: git init + initial commit
+- **Result**:
+    - hyperleaflet: commit a8f2d07, 37 files changed, branch now 11 ahead of remote
+    - earthquake: commit 4dbd26b, 11 files, new repo initialized
+    - Outcome: Success — both repos clean
+- **The Delta**: All work committed, nothing pending
+- **Next Step**: Push hyperleaflet, create GitHub repo for earthquake demo
+---
 ### [OK] EARTHQUAKE-EXPLORER-DEMO | 2026-02-26
 - **Status**: [OK] ADOPTED
 - **Objective**: Build real-world demo with USGS earthquake data, SQLite, bbox+time+mag filtering

@@ -428,6 +428,21 @@ export const Hyperleaflet = {
     this.map.fitBounds(bounds);
   },
 
+  getLayer(id) {
+    const entry = geometryIndex.get(id);
+    return entry ? entry.layer : null;
+  },
+
+  openPopup(id) {
+    const entry = geometryIndex.get(id);
+    if (entry && entry.layer.openPopup) entry.layer.openPopup();
+  },
+
+  closePopup(id) {
+    const entry = geometryIndex.get(id);
+    if (entry && entry.layer.closePopup) entry.layer.closePopup();
+  },
+
   addGeometryType(type, handlers) {
     addGeometryType(type, handlers);
   },
