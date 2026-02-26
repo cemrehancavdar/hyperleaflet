@@ -41,6 +41,10 @@ That's it. A map with a marker and a styled circle, popups included, zero JavaSc
 - **Events** -- `hyperleaflet:ready`, `map:click`, `map:move`, `map:zoom`, `geometry:click`
 - **SPA support** -- auto-initializes when `#map` appears in the DOM
 
+## Demo
+
+**[Earthquake Explorer](https://hyperleaflet-earthquakes.fly.dev/)** -- 81,000 earthquakes from USGS, filterable by time, magnitude, and map bounds. Built with FastAPI, HTMX, and hyperleaflet. ([source](https://github.com/cemrehancavdar/hyperleaflet-earthquakes))
+
 ## Documentation
 
 See [docs/usage.md](docs/usage.md) for the full reference.
