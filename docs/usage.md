@@ -1,3 +1,5 @@
+![hyperleaflet](assets/logo.png)
+
 # Usage
 
 ## Installation

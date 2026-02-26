@@ -1,4 +1,4 @@
-# Hyperleaflet
+![hyperleaflet](docs/assets/hyperleaflet-github-with-leaf-background.png)
 
 Leaflet maps driven entirely by HTML attributes. No JavaScript required.
 
