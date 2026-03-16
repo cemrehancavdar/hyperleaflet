@@ -17,6 +17,7 @@ import { createGeometry, updateGeometry, addGeometryType } from './geometry';
 const DEFAULT_OPTIONS = {
   reverseCoordinateOrder: false,
   mapElement: '#map',
+  locate: false,
   events: {
     target: 'window',
     map: {
@@ -43,6 +44,10 @@ const DEFAULT_OPTIONS = {
     },
     hyperleaflet: {
       ready: true,
+    },
+    locate: {
+      found: true,
+      error: true,
     },
   },
   styles: {},
@@ -201,7 +206,16 @@ function createMap(container) {
 // --- Map events ---
 
 const STATE_EVENTS = ['zoomstart', 'zoomend', 'movestart', 'moveend', 'zoom', 'move'];
-const MOUSE_EVENTS = ['click', 'dblclick', 'mousedown', 'mouseover', 'mouseout', 'mousemove', 'contextmenu', 'preclick'];
+const MOUSE_EVENTS = [
+  'click',
+  'dblclick',
+  'mousedown',
+  'mouseover',
+  'mouseout',
+  'mousemove',
+  'contextmenu',
+  'preclick',
+];
 
 function createStateEvent(map, name, leafletEvent) {
   const bounds = map.getBounds();
@@ -227,9 +241,7 @@ function bindMapEvents(map, eventTarget) {
     }
     if (MOUSE_EVENTS.includes(name)) {
       map.on(name, (e) => {
-        eventTarget.dispatchEvent(
-          new CustomEvent(`map:${name}`, { detail: { point: e.latlng, _leafletEvent: e } }),
-        );
+        eventTarget.dispatchEvent(new CustomEvent(`map:${name}`, { detail: { point: e.latlng, _leafletEvent: e } }));
       });
     }
   }
@@ -252,6 +264,120 @@ function sendHyperleafletReady(map, eventTarget) {
       },
     }),
   );
+}
+
+// --- Locate control ---
+
+const LOCATE_SVG =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>';
+
+const LocateControl = L.Control.extend({
+  options: { position: 'topleft' },
+
+  onAdd(map) {
+    const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control hyperleaflet-locate');
+    const button = L.DomUtil.create('a', 'hyperleaflet-locate-button', container);
+    button.href = '#';
+    button.title = 'Where am I?';
+    button.setAttribute('role', 'button');
+    button.setAttribute('aria-label', 'Find my location');
+    button.innerHTML = LOCATE_SVG;
+
+    // Inline styles so no external CSS is needed
+    button.style.display = 'flex';
+    button.style.alignItems = 'center';
+    button.style.justifyContent = 'center';
+    button.style.width = '30px';
+    button.style.height = '30px';
+    button.style.lineHeight = '30px';
+    button.style.cursor = 'pointer';
+    button.style.color = '#333';
+
+    this._button = button;
+    this._locating = false;
+    this._locationLayer = null;
+
+    L.DomEvent.disableClickPropagation(container);
+    L.DomEvent.on(button, 'click', this._onClick, this);
+
+    return container;
+  },
+
+  onRemove() {
+    L.DomEvent.off(this._button, 'click', this._onClick, this);
+    if (this._locationLayer) {
+      this._map.removeLayer(this._locationLayer);
+      this._locationLayer = null;
+    }
+  },
+
+  _onClick(e) {
+    L.DomEvent.preventDefault(e);
+    if (this._locating) return;
+
+    this._locating = true;
+    this._button.style.color = '#2563eb';
+
+    this._map.locate({ setView: true, maxZoom: 16 });
+  },
+
+  setFound(latlng, accuracy) {
+    this._locating = false;
+    this._button.style.color = '#16a34a';
+
+    // Remove previous location layer
+    if (this._locationLayer) {
+      this._map.removeLayer(this._locationLayer);
+    }
+
+    // Show accuracy circle + center marker
+    const group = L.layerGroup();
+    L.circle(latlng, { radius: accuracy, weight: 1, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(
+      group,
+    );
+    L.circleMarker(latlng, { radius: 6, weight: 2, color: '#fff', fillColor: '#3b82f6', fillOpacity: 1 }).addTo(group);
+    group.addTo(this._map);
+    this._locationLayer = group;
+  },
+
+  setError() {
+    this._locating = false;
+    this._button.style.color = '#dc2626';
+
+    // Reset color after 2 seconds
+    setTimeout(() => {
+      if (this._button) this._button.style.color = '#333';
+    }, 2000);
+  },
+});
+
+function createLocateControl(map, eventTarget) {
+  const control = new LocateControl();
+  control.addTo(map);
+
+  map.on('locationfound', (e) => {
+    control.setFound(e.latlng, e.accuracy);
+    if (config.options.events.locate.found) {
+      eventTarget.dispatchEvent(
+        new CustomEvent('locate:found', {
+          detail: { latlng: e.latlng, accuracy: e.accuracy, bounds: e.bounds, _leafletEvent: e },
+        }),
+      );
+    }
+  });
+
+  map.on('locationerror', (e) => {
+    control.setError();
+    if (config.options.events.locate.error) {
+      eventTarget.dispatchEvent(
+        new CustomEvent('locate:error', {
+          detail: { message: e.message, _leafletEvent: e },
+        }),
+      );
+    }
+  });
+
+  return control;
 }
 
 // --- Geometry handler (fixed: uses HyperChange API correctly) ---
@@ -327,6 +453,7 @@ export const Hyperleaflet = {
   target: null,
   _hyperchange: null,
   _layerControl: null,
+  _locateControl: null,
 
   initialize(mapContainer) {
     if (!mapContainer) {
@@ -351,6 +478,11 @@ export const Hyperleaflet = {
       this._layerControl.addBaseLayer(tile, name);
     }
     defaultTile.addTo(map);
+
+    // Locate control
+    if (config.options.locate) {
+      this._locateControl = createLocateControl(map, eventTarget);
+    }
 
     // Map events
     bindMapEvents(map, eventTarget);

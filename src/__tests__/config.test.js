@@ -13,6 +13,9 @@ describe('Config (via Hyperleaflet.config)', () => {
     expect(config.options.reverseCoordinateOrder).toBe(false);
     expect(config.options.events.map.click).toBe(true);
     expect(config.options.events.map.dblclick).toBe(false);
+    expect(config.options.locate).toBe(false);
+    expect(config.options.events.locate.found).toBe(true);
+    expect(config.options.events.locate.error).toBe(true);
   });
 
   it('merges options with setter', () => {
@@ -48,5 +51,26 @@ describe('Config (via Hyperleaflet.config)', () => {
   it('getTarget returns hyperleaflet object when configured', () => {
     config.options = { events: { target: 'hyperleaflet' } };
     expect(config.getTarget()).toBe(Hyperleaflet);
+  });
+
+  it('can enable locate control', () => {
+    config.options = { locate: true };
+    expect(config.options.locate).toBe(true);
+    // Other defaults preserved
+    expect(config.options.mapElement).toBe('#map');
+  });
+
+  it('can disable locate events independently', () => {
+    config.options = { events: { locate: { found: false } } };
+    expect(config.options.events.locate.found).toBe(false);
+    expect(config.options.events.locate.error).toBe(true);
+  });
+
+  it('resets locate to defaults', () => {
+    config.options = { locate: true, events: { locate: { found: false } } };
+    expect(config.options.locate).toBe(true);
+    config.reset();
+    expect(config.options.locate).toBe(false);
+    expect(config.options.events.locate.found).toBe(true);
   });
 });
